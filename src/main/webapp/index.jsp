@@ -37,7 +37,7 @@
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
       <h1>CodeU Chat App</h1>
-      <h2>Welcome! This is the app for Team 28 (who has yet to come up with a name).</h2>
+      <h2>Welcome!</h2>
 
       <ul>
         <li><a href="/login">Login</a> to get started.</li>
