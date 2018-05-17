@@ -23,6 +23,7 @@
 </head>
 <body>
 
+  <!-- headings and links -->
   <nav>
     <a id="navTitle" href="/">CodeU Chat App</a>
     <a href="/conversations">Conversations</a>
@@ -32,22 +33,22 @@
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
-    <a href="/activity-feed.jsp">Activity Feed</a>
+    <a href="/activity-feed">Activity Feed</a>
   </nav>
 
+  <!-- check if request goes through -->
   <div id="container">
-
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
       <h1>Activity Feed</h1>
-
-
     <% } %>
   </div>
 
+  <!-- prototype text -->
   <p> This is the activity feed. </p>
+  
 </body>
 </html>

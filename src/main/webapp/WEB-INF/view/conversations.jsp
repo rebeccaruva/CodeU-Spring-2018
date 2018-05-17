@@ -33,7 +33,7 @@
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
-    <a href="/activity-feed.jsp">Activity Feed</a>
+    <a href="/activity-feed">Activity Feed</a>
   </nav>
 
   <div id="container">

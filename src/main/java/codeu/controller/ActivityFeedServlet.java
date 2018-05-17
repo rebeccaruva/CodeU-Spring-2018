@@ -33,8 +33,26 @@ import org.jsoup.safety.Whitelist;
 
 /** servlet responsible for activity feed */
 public class ActivityFeedServlet extends HttpServlet {
+  /**
+   * This function fires when a user navigates to the activity page. It forwards to activity-feed.jsp for rendering.
+   */
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    // redirect to a GET request to get activity-feed.jsp
+    request.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp").forward(request, response);
+  }
 
-
+  /**
+   * This function fires when a user submits the form on the activty feed page. It
+   * redirects back to the activity feed page. Not used yet because no forms or data submitted.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    // redirect to a GET request to activity-feed
+    response.sendRedirect("/activity-feed");
+  }
 
 
 
