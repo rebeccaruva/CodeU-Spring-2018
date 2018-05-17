@@ -13,16 +13,18 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IMhere!</title>
+  <title>Activity Feed</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 
   <nav>
-    <a id="navTitle" href="/">IMhere!</a>
+    <a id="navTitle" href="/">CodeU Chat App</a>
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -34,22 +36,18 @@
   </nav>
 
   <div id="container">
-    <div
-      style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
-      <h1>About IMhere!</h1>
-      <p>
-        Members of The Java Llamas:
-      </p>
+    <% if(request.getAttribute("error") != null){ %>
+        <h2 style="color:red"><%= request.getAttribute("error") %></h2>
+    <% } %>
 
-      <ul>
-        <li><strong>Sachin Joglekar</strong> Project Advisor</li>
-        <li><strong>Alisha Nanda</strong> UC Davis</li>
-        <li><strong>Rebecca Ruvalcaba</strong> Parsons School of Design</li>
-        <li><strong>Jordan Tyner</strong> UCLA</li>
-      </ul>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+      <h1>Activity Feed</h1>
 
-    </div>
+
+    <% } %>
   </div>
+
+  <p> This is the activity feed. </p>
 </body>
 </html>
