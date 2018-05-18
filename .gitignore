@@ -1,6 +1,7 @@
 .idea/
 *.swp
 bin/
+src/main/webapp/WEB-INF/appengine-web.xml
 ChatApp/WEB-INF/classes/*
 ChatApp/META-INF/
 target
