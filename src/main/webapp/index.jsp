@@ -39,7 +39,6 @@
 
       <h1>IMhere!</h1>
       <h2>Welcome!</h2>
-      <a href="/admin">admin test</a>
       <ul>
         <li><a href="/login">Login</a> to get started.</li>
         <li>Go to the <a href="/conversations">conversations</a> page to
