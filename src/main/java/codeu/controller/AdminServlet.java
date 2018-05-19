@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+/*Servlet class responsible for Admin page functions */
 public class AdminServlet extends HttpServlet{
 
   /** Store class that gives access to Users. */
