@@ -34,6 +34,12 @@
   <dependencies>
 
     <dependency>
+      <groupId>com.atlassian.commonmark</groupId>
+      <artifactId>commonmark</artifactId>
+      <version>0.11.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
@@ -51,7 +57,7 @@
       <artifactId>jsoup</artifactId>
       <version>1.8.3</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
@@ -113,4 +119,3 @@
   </build>
 
 </project>
-

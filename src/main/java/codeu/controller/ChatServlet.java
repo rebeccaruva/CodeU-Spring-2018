@@ -30,6 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.nodes.Document.OutputSettings;
+
+// imports for using markdown
+// import org.commonmark.node.*;
+// import org.commonmark.parser.Parser;
+// import org.commonmark.renderer.html.HtmlRenderer;
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -140,8 +146,19 @@ public class ChatServlet extends HttpServlet {
 
     String messageContent = request.getParameter("message");
 
-    // this removes any HTML from the message content
-    String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
+    // this removes the new line from forming before acceptable html tags: b, em, i, u, strong
+    OutputSettings settings = new OutputSettings();
+    settings.prettyPrint(false);
+
+    // this removes any style / script / html (other than b, em, i, strong, u)
+    // from the message content
+    String cleanedMessageContent = Jsoup.clean(messageContent, "", Whitelist.simpleText(), settings);
+
+    // this will be used to use markdown instead of html to style text
+    // Parser parser = Parser.builder().build();
+    // Node document = parser.parse(messageContent);
+    // HtmlRenderer renderer = HtmlRenderer.builder().build();
+    // renderer.render(cleanedMessageContent);
 
     Message message =
         new Message(
