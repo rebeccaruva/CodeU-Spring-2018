@@ -46,7 +46,7 @@ public class ActivityFeedServletTest {
 
   @Before
   public void setup() {
-    activityServlet = new ActivityFeedServlet(); /
+    activityServlet = new ActivityFeedServlet(); 
 
     mockRequest = Mockito.mock(HttpServletRequest.class);
     mockSession = Mockito.mock(HttpSession.class);
