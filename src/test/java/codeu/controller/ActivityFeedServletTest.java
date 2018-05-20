@@ -46,16 +46,16 @@ public class ActivityFeedServletTest {
 
   @Before
   public void setup() {
-    activityServlet = new ActivityFeedServlet(); // create new instance of class
+    activityServlet = new ActivityFeedServlet(); /
 
     mockRequest = Mockito.mock(HttpServletRequest.class);
     mockSession = Mockito.mock(HttpSession.class);
-    Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
-
     mockResponse = Mockito.mock(HttpServletResponse.class);
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
+
+    Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp"))
-        .thenReturn(mockRequestDispatcher); // return dispatcher when get request for activity-feed.jsp
+        .thenReturn(mockRequestDispatcher);
   }
 
   /** test doGet method of ActivityFeedServlet class */
@@ -65,7 +65,7 @@ public class ActivityFeedServletTest {
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
 
-  /** test doPost method of ActivityFeedServlet class */
+  /** test that doPost redirects to /activity-feed page */
   @Test
   public void testDoPost() throws IOException, ServletException {
     activityServlet.doPost(mockRequest, mockResponse);

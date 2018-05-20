@@ -39,7 +39,6 @@ public class ActivityFeedServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    // redirect to a GET request to get activity-feed.jsp
     request.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp").forward(request, response);
   }
 

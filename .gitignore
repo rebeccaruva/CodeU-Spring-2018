@@ -9,4 +9,3 @@ target
 .settings
 *.iml
 .DS_STORE
-src/main/webapp/WEB-INF/appengine-web.xml
