@@ -30,6 +30,7 @@
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
+    <a href="/admin">Admin</a>
   </nav>
 
   <div id="container">
@@ -38,7 +39,6 @@
 
       <h1>IMhere!</h1>
       <h2>Welcome!</h2>
-
       <ul>
         <li><a href="/login">Login</a> to get started.</li>
         <li>Go to the <a href="/conversations">conversations</a> page to
