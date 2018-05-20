@@ -47,7 +47,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <body onload="scrollChat()">
 
   <nav>
-    <a id="navTitle" href="/">CodeU Chat App</a>
+    <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
       <% if (request.getSession().getAttribute("user") != null) { %>
     <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -56,6 +56,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <% } %>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
+    <a href="/admin">Admin</a>
   </nav>
 
   <div id="container">
