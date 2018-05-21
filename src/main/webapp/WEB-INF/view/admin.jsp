@@ -20,6 +20,7 @@
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <a href="/admin">Admin</a>
   </nav>
 
