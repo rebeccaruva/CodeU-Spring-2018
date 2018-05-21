@@ -154,9 +154,9 @@ public class ChatServlet extends HttpServlet {
     // from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, "", Whitelist.simpleText(), settings);
 
-    // this will be code will be used to parse markdown instead of
+    // this code will be used to parse markdown instead of
     // html to style text in next iteration
-    // below code to be figured out this week and uncommented
+    // code below is to be figured out this week and uncommented
     // --
     // Parser parser = Parser.builder().build();Parser parser = Parser.builder().build();
     // Node document = parser.parse(messageContent);
