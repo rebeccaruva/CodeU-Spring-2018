@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IMhere!</title>
+  <title>About</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
@@ -30,6 +30,7 @@
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <a href="/admin">Admin</a>
   </nav>
 

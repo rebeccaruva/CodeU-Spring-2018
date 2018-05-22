@@ -13,14 +13,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IMhere!</title>
+  <title>Activity Feed</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 
+  <!-- headings and links -->
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
@@ -34,20 +37,19 @@
     <a href="/admin">Admin</a>
   </nav>
 
+  <!-- check if request goes through -->
   <div id="container">
-    <div
-      style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
+    <% if(request.getAttribute("error") != null){ %>
+        <h2 style="color:red"><%= request.getAttribute("error") %></h2>
+    <% } %>
 
-      <h1>IMhere!</h1>
-      <h2>Welcome!</h2>
-      <ul>
-        <li><a href="/login">Login</a> to get started.</li>
-        <li>Go to the <a href="/conversations">conversations</a> page to
-            create or join a conversation.</li>
-        <li>View the <a href="/about.jsp">about</a> page to learn more about the
-            project.</li>
-      </ul>
-    </div>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+      <h1>Activity Feed</h1>
+    <% } %>
   </div>
+
+  <!-- prototype text -->
+  <p> This is the activity feed. </p>
+
 </body>
 </html>
