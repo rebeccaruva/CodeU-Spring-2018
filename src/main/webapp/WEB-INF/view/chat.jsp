@@ -56,7 +56,10 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <% } %>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
-    <a href="/admin">Admin</a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+    <% if(request.getSession().getAttribute("user").equals("jordan")){ %>
+      <a href="/admin">Admin</a>
+    <% }} %>
   </nav>
 
   <div id="container">
