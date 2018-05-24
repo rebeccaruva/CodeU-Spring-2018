@@ -195,15 +195,15 @@ public class ChatServletTest {
         .thenReturn(fakeConversation);
 
     Mockito.when(mockRequest.getParameter("message"))
-        .thenReturn("Contains <b>html</b> and <script>JavaScript</script> content.");
+        .thenReturn("Contains <ins>html</ins> and <script>JavaScript</script> content.");
 
     chatServlet.doPost(mockRequest, mockResponse);
 
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    // this bold tag addition tests if simpleText() whitelist is working
+    // this bold tag addition tests if basic() whitelist is working
     Assert.assertEquals(
-        "Contains <b>html</b> and  content.", messageArgumentCaptor.getValue().getContent());
+        "Contains <ins>html</ins> and  content.", messageArgumentCaptor.getValue().getContent());
 
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
