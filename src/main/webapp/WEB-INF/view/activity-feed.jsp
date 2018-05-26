@@ -36,6 +36,9 @@
     <a href="/activity-feed">Activity Feed</a>
   </nav>
 
+  <!-- prototype text -->
+  <h1> Activity Feed </h1>
+  
   <!-- check if request goes through -->
   <div id="container">
     <% if(request.getAttribute("error") != null){ %>
@@ -43,12 +46,9 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <h1>Activity Feed</h1>
+      <p>This is the activity feed.</p>
     <% } %>
   </div>
 
-  <!-- prototype text -->
-  <p> This is the activity feed. </p>
-  
 </body>
 </html>
