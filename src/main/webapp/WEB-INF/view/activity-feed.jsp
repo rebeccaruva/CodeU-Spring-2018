@@ -13,7 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-
+<%@ page import="java.util.List" %>
+<%@ page import="codeu.model.data.Conversation" %>
 
 <!DOCTYPE html>
 <html>
@@ -38,15 +39,27 @@
 
   <!-- prototype text -->
   <h1> Activity Feed </h1>
-  
-  <!-- check if request goes through -->
+
+  <!-- check if user logged in -->
   <div id="container">
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <p>This is the activity feed.</p>
+      <% List<Conversation> conversations = (List<Conversation>) request.getAttribute("sorted_conversations");
+      if(conversations == null || conversations.isEmpty()){ %>
+        <p>The activity feed is currently empty. Start a conversation!</p>
+      <% } else { %>
+        <ul class = "mdl-list">
+          <!-- lists all conversations in sorted order -->
+          <% for(Conversation conversation : conversations){ %>
+            <li><%= conversation.getTitle() %> <%= conversation.getCreationTime() %></li>
+          <% } %>
+        </ul>
+    <% }
+      } else{ %>
+      <p>Please login to view the activity feed.</p>
     <% } %>
   </div>
 
