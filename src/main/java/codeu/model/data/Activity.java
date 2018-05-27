@@ -14,10 +14,9 @@
 
 package codeu.model.data;
 
-import java.time.Instant;
-import java.util.UUID;
-import java.util.List;
-import java.util.Collections;
+import java.time.*;
+import java.util.*;
+import java.text.*;
 
 /** Class representing a registered user. */
 public abstract class Activity {
@@ -43,4 +42,10 @@ public abstract class Activity {
   public abstract String getUser();
 
   public abstract String getConversation();
+
+  public String formattedTime(){
+    Date date = Date.from(this.getCreationTime());
+    SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+    return formatter.format(date) + " PST";
+  }
 }

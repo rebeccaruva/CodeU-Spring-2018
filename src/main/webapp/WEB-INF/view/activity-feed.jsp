@@ -38,14 +38,13 @@
     <a href="/activity-feed">Activity Feed</a>
   </nav>
 
-  <!-- prototype text -->
-  <h1> Activity Feed </h1>
-
   <!-- check if user logged in -->
   <div id="container">
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
+
+    <h1>Activity Feed</h1>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
       <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");
@@ -60,13 +59,13 @@
                     type = 0;
             } %>
             <% if(type == 0){ %>
-                <li>New user registered: welcome <strong><%= activity.getTitle() %></strong>!</li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= activity.getTitle() %>!</li>
             <% } else if(type == 1){ %>
-                <li><strong><%= activity.getTitle() %></strong> has logged in!</li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getTitle() %> has logged in!</li>
             <% } else if(type == 2){ %>
-                <li><strong><%= activity.getUser() %></strong> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getUser() %> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
             <% } else if(type == 3){%>
-                <li><strong><%= activity.getUser() %></strong> wrote in <a href="/chat/<%=activity.getConversation() %>"><%= activity.getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getUser() %> sent a message in <a href="/chat/<%=activity.getConversation() %>"><%= activity.getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
             <% } %>
           <% } %>
         </ul>
