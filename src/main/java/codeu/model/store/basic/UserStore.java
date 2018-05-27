@@ -102,6 +102,11 @@ public class UserStore {
     persistentStorageAgent.writeThrough(user);
   }
 
+  /** Return all users */
+  public List<User> getAllUsers(){
+    return users;
+  }
+
   /**
    * Update an existing User.
    */
@@ -127,4 +132,3 @@ public class UserStore {
     this.users = users;
   }
 }
-

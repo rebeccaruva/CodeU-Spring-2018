@@ -16,16 +16,18 @@ package codeu.model.data;
 
 import java.time.Instant;
 import java.util.UUID;
+import codeu.model.store.basic.UserStore;
 
 /**
  * Class representing a conversation, which can be thought of as a chat room. Conversations are
  * created by a User and contain Messages.
  */
-public class Conversation {
-  public final UUID id;
+public class Conversation extends Activity{
   public final UUID owner;
-  public final Instant creation;
   public final String title;
+  private final UUID id;
+  private final Instant creation;
+  private int type;
 
   /**
    * Constructs a new Conversation.
@@ -42,9 +44,22 @@ public class Conversation {
     this.title = title;
   }
 
-  /** Returns the ID of this Conversation. */
+  public void setType(int type){
+    this.type = type;
+  }
+
+  public int getType(){
+    return type;
+  }
+
+  /** Returns the ID of this Activity. */
   public UUID getId() {
     return id;
+  }
+
+  /** Returns the creation time of this Activity. */
+  public Instant getCreationTime() {
+    return creation;
   }
 
   /** Returns the ID of the User who created this Conversation. */
@@ -52,13 +67,18 @@ public class Conversation {
     return owner;
   }
 
+  public String getUser(){
+    UserStore userStore = UserStore.getInstance();
+    return userStore.getUser(owner).getName();
+  }
+
   /** Returns the title of this Conversation. */
   public String getTitle() {
     return title;
   }
 
-  /** Returns the creation time of this Conversation. */
-  public Instant getCreationTime() {
-    return creation;
+  public String getConversation(){
+    return null;
   }
+
 }

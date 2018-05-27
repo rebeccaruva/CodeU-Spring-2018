@@ -14,6 +14,7 @@
   limitations under the License.
 --%>
 <%@ page import="java.util.List" %>
+<%@ page import="codeu.model.data.Activity" %>
 <%@ page import="codeu.model.data.Conversation" %>
 
 <!DOCTYPE html>
@@ -47,18 +48,30 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <% List<Conversation> conversations = (List<Conversation>) request.getAttribute("sorted_conversations");
-      if(conversations == null || conversations.isEmpty()){ %>
+      <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");
+      if(activities == null || activities.isEmpty()){ %>
         <p>The activity feed is currently empty. Start a conversation!</p>
       <% } else { %>
         <ul class = "mdl-list">
-          <!-- lists all conversations in sorted order -->
-          <% for(Conversation conversation : conversations){ %>
-            <li><%= conversation.getTitle() %> <%= conversation.getCreationTime() %></li>
+          <!-- lists all activities -->
+          <% for(int index = activities.size() - 1; index >= 0; index--){ %>
+            <% Activity activity = activities.get(index); int type = activity.getType(); %>
+            <% if(activity.getType() == 1 && activities.indexOf(activity) == index){
+                    type = 0;
+            } %>
+            <% if(type == 0){ %>
+                <li>New user registered: welcome <strong><%= activity.getTitle() %></strong>!</li>
+            <% } else if(type == 1){ %>
+                <li><strong><%= activity.getTitle() %></strong> has logged in!</li>
+            <% } else if(type == 2){ %>
+                <li><strong><%= activity.getUser() %></strong> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
+            <% } else if(type == 3){%>
+                <li><strong><%= activity.getUser() %></strong> wrote in <a href="/chat/<%=activity.getConversation() %>"><%= activity.getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
+            <% } %>
           <% } %>
         </ul>
     <% }
-      } else{ %>
+    } else{ %>
       <p>Please login to view the activity feed.</p>
     <% } %>
   </div>

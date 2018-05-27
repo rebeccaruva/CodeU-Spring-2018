@@ -17,9 +17,11 @@ package codeu.controller;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.ActivityStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -30,20 +32,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-import java.util.*;
-import java.lang.*;
-import java.io.*;
 
 /** servlet responsible for activity feed */
 public class ActivityFeedServlet extends HttpServlet{
 
   private ConversationStore conversationStore;
+  private UserStore userStore;
+  private ActivityStore activityStore;
 
   /* initialize global variables */
   @Override
   public void init() throws ServletException{
     super.init();
     setConversationStore(ConversationStore.getInstance());
+    setUserStore(UserStore.getInstance());
+    setActivityStore(ActivityStore.getInstance());
   }
 
   /**
@@ -55,24 +58,42 @@ public class ActivityFeedServlet extends HttpServlet{
   }
 
   /**
+   * Sets the ConversationStore used by this servlet. This function provides a common setup method
+   * for use by the test framework or the servlet's init() function.
+   */
+  void setUserStore(UserStore userStore) {
+    this.userStore = userStore;
+  }
+
+  /**
+   * Sets the ActivityStore used by this servlet. This function provides a common setup method
+   * for use by the test framework or the servlet's init() function.
+   */
+  void setActivityStore(ActivityStore activityStore){
+    this.activityStore = activityStore;
+  }
+
+  /**
    * This function fires when a user navigates to the activity page. It forwards to activity-feed.jsp for rendering.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    List<Conversation> conversations = new ArrayList<Conversation>();
-    conversations.addAll(conversationStore.getAllConversations()); // add all conversations to empty list
-    if(conversations != null && !conversations.isEmpty()) Collections.sort(conversations, new sortConversations());
-    request.setAttribute("sorted_conversations", conversations); // add sorted list of conversations to request
+    //List<Activity> activities = new ArrayList<Activity>();
+    //activities.addAll(conversationStore.getAllConversations()); // add all conversations to empty list
+    //activities.addAll(userStore.getAllUsers());
+    //if(activities != null && !activites.isEmpty()) Collections.sort(activities, new sortActivites());
+    List<Activity> activities = activityStore.getAllActivities();
+    request.setAttribute("all_activities", activities); // add sorted list of conversations to request
     request.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp").forward(request, response);
   }
 
-  class sortConversations implements Comparator<Conversation>{
-    /* compare method for conversations in list - return in reverse order by time */
-    public int compare(Conversation conversation1, Conversation conversation2){
-      return -1 * (((conversation1.getCreationTime()).toString()).compareTo(((conversation2.getCreationTime()).toString())));
+  /**class sortActivites implements Comparator<Activity>{
+    /* compare method for conversations in list - return in reverse order by time
+    public int compare(Activity activity1, Activity activity2){
+      return -1 * (((activity1.getCreationTime()).toString()).compareTo(((activity2.getCreationTime()).toString())));
     }
-  }
+  }*/
 
   /**
    * This function fires when a user submits the form on the activty feed page. It
