@@ -53,9 +53,6 @@
       <br/>
       <input type="password" name="password" id="password">
       <br/>
-      <label for="admin">Admin? </label>
-      <input type="checkbox" id="admin" name="admin">
-      <br/><br/>
       <button type="submit">Submit</button>
     </form>
   </div>
