@@ -52,7 +52,7 @@
       <label for="password">Password: </label>
       <br/>
       <input type="password" name="password" id="password">
-      <br/>
+      <br/><br/>
       <button type="submit">Submit</button>
     </form>
   </div>
