@@ -36,33 +36,13 @@ import org.jsoup.safety.Whitelist;
 /** servlet responsible for activity feed */
 public class ActivityFeedServlet extends HttpServlet{
 
-  private ConversationStore conversationStore;
-  private UserStore userStore;
   private ActivityStore activityStore;
 
   /* initialize global variables */
   @Override
   public void init() throws ServletException{
     super.init();
-    setConversationStore(ConversationStore.getInstance());
-    setUserStore(UserStore.getInstance());
     setActivityStore(ActivityStore.getInstance());
-  }
-
-  /**
-   * Sets the ConversationStore used by this servlet. This function provides a common setup method
-   * for use by the test framework or the servlet's init() function.
-   */
-  void setConversationStore(ConversationStore conversationStore) {
-    this.conversationStore = conversationStore;
-  }
-
-  /**
-   * Sets the ConversationStore used by this servlet. This function provides a common setup method
-   * for use by the test framework or the servlet's init() function.
-   */
-  void setUserStore(UserStore userStore) {
-    this.userStore = userStore;
   }
 
   /**

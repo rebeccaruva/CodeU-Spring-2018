@@ -39,10 +39,6 @@ public abstract class Activity {
 
   public abstract int getType();
 
-  public abstract String getUser();
-
-  public abstract String getConversation();
-
   public String formattedTime(){
     Date date = Date.from(this.getCreationTime());
     SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");

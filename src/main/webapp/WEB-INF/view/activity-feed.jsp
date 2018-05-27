@@ -16,6 +16,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Activity" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.Message" %>
 
 <!DOCTYPE html>
 <html>
@@ -63,9 +64,9 @@
             <% } else if(type == 1){ %>
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getTitle() %> has logged in!</li>
             <% } else if(type == 2){ %>
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getUser() %> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)activity).getUser() %> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
             <% } else if(type == 3){%>
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getUser() %> sent a message in <a href="/chat/<%=activity.getConversation() %>"><%= activity.getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)activity).getUser() %> sent a message in <a href="/chat/<%= ((Message)activity).getConversation() %>"><%= ((Message)activity).getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
             <% } %>
           <% } %>
         </ul>

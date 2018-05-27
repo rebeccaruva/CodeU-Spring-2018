@@ -17,9 +17,11 @@ package codeu.controller;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.ActivityStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ActivityFeedServletTest {
   private HttpSession mockSession;
   private HttpServletResponse mockResponse;
   private RequestDispatcher mockRequestDispatcher;
+  private ActivityStore mockActivityStore;
 
   @Before
   public void setup() {
@@ -56,20 +59,30 @@ public class ActivityFeedServletTest {
     Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp"))
         .thenReturn(mockRequestDispatcher);
+
+    mockActivityStore = Mockito.mock(ActivityStore.class);
+    activityServlet.setActivityStore(mockActivityStore);
   }
 
-  /* test doGet method of ActivityFeedServlet class 
+  /** test doGet method of ActivityFeedServlet class */
   @Test
   public void testDoGet() throws IOException, ServletException {
-    activityServlet.doGet(mockRequest, mockResponse);
-    Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
-  } */
+    List<Activity> fakeActivitiesList = new ArrayList<>();
+    fakeActivitiesList.add(
+        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now()));
+    Mockito.when(mockActivityStore.getAllActivities()).thenReturn(fakeActivitiesList);
 
-  /*/** test that doPost redirects to /activity-feed page
+    activityServlet.doGet(mockRequest, mockResponse);
+
+    Mockito.verify(mockRequest).setAttribute("all_activities", fakeActivitiesList);
+    Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
+  }
+
+  /** test that doPost redirects to /activity-feed page */
   @Test
   public void testDoPost() throws IOException, ServletException {
     activityServlet.doPost(mockRequest, mockResponse);
     Mockito.verify(mockResponse).sendRedirect("/activity-feed");
-  }*/
+  }
 
 }
