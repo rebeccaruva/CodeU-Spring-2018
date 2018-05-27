@@ -1,5 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
 
 <!DOCTYPE html>
 <html>
@@ -30,19 +32,26 @@
     <% }} %>
   </nav>
 
+<!--Preparing data for admin statistics -->
 <% List<Conversation> conversations =
   (List<Conversation>) request.getAttribute("conversations");
   int numConversations = 0;
   if (conversations != null){
      numConversations = conversations.size();
-  } %>
+  }
+  int numUsers = 0;
+  if (request.getAttribute("numusers") != null){
+    numUsers = (int)request.getAttribute("numusers");
+  }
+  %>
 
 <div id="container">
   <div
     style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
     <h1>Administration</h1>
       <h2>Statistics</h2>
-          <a>Number of Conversations: <%= numConversations %></a>
+          <a>Number of Conversations: <%= numConversations %></a> </br>
+          <a>Number of Users: <%= numUsers %></a>
   </div>
 </div>
 

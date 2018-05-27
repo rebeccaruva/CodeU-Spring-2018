@@ -62,6 +62,7 @@ public class AdminServlet extends HttpServlet{
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     List<Conversation> conversations = conversationStore.getAllConversations();
     request.setAttribute("conversations", conversations);
+    request.setAttribute("numusers", userStore.numUsers());
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
 
