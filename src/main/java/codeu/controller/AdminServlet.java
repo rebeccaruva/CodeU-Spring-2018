@@ -26,6 +26,8 @@ public class AdminServlet extends HttpServlet{
   /** Store class that gives access to Conversations. */
   private ConversationStore conversationStore;
 
+  /** Store class that gives access to Messages. */
+  private MessageStore messageStore;
 
   /**
    * Set up state for handling conversation-related requests. This method is only called when
@@ -36,6 +38,7 @@ public class AdminServlet extends HttpServlet{
     super.init();
     setUserStore(UserStore.getInstance());
     setConversationStore(ConversationStore.getInstance());
+    setMessageStore(MessageStore.getInstance());
   }
 
   /**
@@ -55,6 +58,14 @@ public class AdminServlet extends HttpServlet{
   }
 
   /**
+   * Sets the MessageStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setMessageStore(MessageStore messageStore) {
+    this.messageStore = messageStore;
+  }
+
+  /**
    * This function fires when a user requests the /admin URL. It simply forwards the request to
    * admin.jsp.
    */
@@ -63,6 +74,7 @@ public class AdminServlet extends HttpServlet{
     List<Conversation> conversations = conversationStore.getAllConversations();
     request.setAttribute("conversations", conversations);
     request.setAttribute("numusers", userStore.numUsers());
+    request.setAttribute("numMessages", messageStore.numberOfMessages());
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
 

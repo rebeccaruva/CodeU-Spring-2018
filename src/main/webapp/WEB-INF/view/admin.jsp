@@ -43,6 +43,10 @@
   if (request.getAttribute("numusers") != null){
     numUsers = (int)request.getAttribute("numusers");
   }
+  int numMessages = 0;
+  if (request.getAttribute("numMessages") != null){
+    numMessages = (int)request.getAttribute("numMessages");
+  }
   %>
 
 <div id="container">
@@ -51,7 +55,8 @@
     <h1>Administration</h1>
       <h2>Statistics</h2>
           <a>Number of Conversations: <%= numConversations %></a> </br>
-          <a>Number of Users: <%= numUsers %></a>
+          <a>Number of Users: <%= numUsers %></a> </br>
+          <a>Number of Messages: <%= numMessages %></a> </br>
   </div>
 </div>
 
