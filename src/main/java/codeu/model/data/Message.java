@@ -27,7 +27,7 @@ public class Message extends Activity{
   private final String content;
   private final UUID id;
   private final Instant creation;
-  private int type;
+  private int type; // the type of this Activity
 
   /**
    * Constructs a new Message.
@@ -46,10 +46,12 @@ public class Message extends Activity{
     this.creation = creation;
   }
 
+  /** Sets type of this Activity. */
   public void setType(int type){
     this.type = type;
   }
 
+  /** Returns type of this Activity. */
   public int getType(){
     return type;
   }
@@ -79,18 +81,20 @@ public class Message extends Activity{
     return content;
   }
 
+  /** Returns the text content of this Message, implements abstract method of Activity. */
   public String getTitle(){
     return this.getContent();
   }
 
+  /** Returns the name of author of Message. */
   public String getUser(){
     UserStore userStore = UserStore.getInstance();
     return userStore.getUser(author).getName();
   }
 
+  /** Returns the title of conversation this Message is under. */
   public String getConversation(){
     ConversationStore conversationStore = ConversationStore.getInstance();
     return conversationStore.getConversation(conversation).getTitle();
   }
-
 }

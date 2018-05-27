@@ -18,7 +18,7 @@ import java.time.*;
 import java.util.*;
 import java.text.*;
 
-/** Class representing a registered user. */
+/** Class representing an Activity, which includes Messages, Conversations, and User activities. */
 public abstract class Activity {
   /** Returns the ID of this Activity. */
   public abstract UUID getId();
@@ -26,6 +26,7 @@ public abstract class Activity {
   /** Returns the creation time of this Activity. */
   public abstract Instant getCreationTime();
 
+  /** Returns title/content of this Activity. */
   public abstract String getTitle();
 
   /**
@@ -37,8 +38,10 @@ public abstract class Activity {
   */
   public abstract void setType(int type);
 
+  /** Returns type of Activity. */
   public abstract int getType();
 
+  /** Formats Instant variable as date for clean output. */
   public String formattedTime(){
     Date date = Date.from(this.getCreationTime());
     SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");

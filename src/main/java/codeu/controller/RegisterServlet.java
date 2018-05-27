@@ -19,6 +19,8 @@ public class RegisterServlet extends HttpServlet {
 
   /** Store class that gives access to Users. */
   private UserStore userStore;
+
+  /** Store class that gives access to Activities. */
   private ActivityStore activityStore;
 
   /**
@@ -77,6 +79,8 @@ public class RegisterServlet extends HttpServlet {
 
     User user = new User(UUID.randomUUID(), username, hashed, Instant.now());
     userStore.addUser(user);
+
+    // set type of activity to 0 (user registered) and add to activity list
     user.setType(0);
     activityStore.addActivity(user);
 

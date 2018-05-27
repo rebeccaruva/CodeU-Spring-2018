@@ -26,11 +26,11 @@ import java.util.ArrayList;
  */
 public class ActivityStore {
 
-  /** Singleton instance of ConversationStore. */
+  /** Singleton instance of ActivityStore. */
   private static ActivityStore instance;
 
   /**
-   * Returns the singleton instance of ConversationStore that should be shared between all servlet
+   * Returns the singleton instance of ActivityStore that should be shared between all servlet
    * classes. Do not call this function from a test; use getTestInstance() instead.
    */
   public static ActivityStore getInstance() {
@@ -64,7 +64,7 @@ public class ActivityStore {
     activities = new ArrayList<>();
   }
 
-/** Access the current set of activities known to the application. */
+  /** Access the current set of activities known to the application. */
   public List<Activity> getAllActivities() {
     return activities;
   }
@@ -74,5 +74,4 @@ public class ActivityStore {
     activities.add(activity);
     persistentStorageAgent.writeThrough(activity);
   }
-
 }

@@ -182,13 +182,12 @@ public class PersistentDataStore {
     datastore.put(conversationEntity);
   }
 
-
-    /** Write an Activity object to the Datastore service. */
-    public void writeThrough(Activity activity) {
-      Entity activityEntity = new Entity("chat-activities", activity.getId().toString());
-      activityEntity.setProperty("uuid", activity.getId().toString());
-      activityEntity.setProperty("title", activity.getTitle());
-      activityEntity.setProperty("creation_time", activity.getCreationTime().toString());
-      datastore.put(activityEntity);
-    }
+  /** Write an Activity object to the Datastore service. */
+  public void writeThrough(Activity activity) {
+    Entity activityEntity = new Entity("chat-activities", activity.getId().toString());
+    activityEntity.setProperty("uuid", activity.getId().toString());
+    activityEntity.setProperty("title", activity.getTitle());
+    activityEntity.setProperty("creation_time", activity.getCreationTime().toString());
+    datastore.put(activityEntity);
+  }
 }

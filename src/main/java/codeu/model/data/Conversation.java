@@ -27,7 +27,7 @@ public class Conversation extends Activity{
   public final String title;
   private final UUID id;
   private final Instant creation;
-  private int type;
+  private int type; // the type of this Activity
 
   /**
    * Constructs a new Conversation.
@@ -44,10 +44,12 @@ public class Conversation extends Activity{
     this.title = title;
   }
 
+  /** Sets type of this Activity. */
   public void setType(int type){
     this.type = type;
   }
 
+  /** Returns type of this Activity. */
   public int getType(){
     return type;
   }
@@ -67,6 +69,7 @@ public class Conversation extends Activity{
     return owner;
   }
 
+  /** Returns name of owner of conversation. */
   public String getUser(){
     UserStore userStore = UserStore.getInstance();
     return userStore.getUser(owner).getName();
@@ -76,9 +79,4 @@ public class Conversation extends Activity{
   public String getTitle() {
     return title;
   }
-
-  public String getConversation(){
-    return null;
-  }
-
 }

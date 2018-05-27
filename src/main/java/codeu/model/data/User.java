@@ -23,7 +23,7 @@ public class User extends Activity{
   private final String passwordHash;
   private final UUID id;
   private final Instant creation;
-  private int type;
+  private int type; // the type of this Activity
 
   /**
    * Constructs a new User.
@@ -40,10 +40,12 @@ public class User extends Activity{
     this.creation = creation;
   }
 
+  /** Sets type of this Activity. */
   public void setType(int type){
     this.type = type;
   }
 
+  /** Returns type of this Activity. */
   public int getType(){
     return type;
   }
@@ -68,15 +70,8 @@ public class User extends Activity{
     return passwordHash;
   }
 
+  /** Returns username of this user - implements abstract method of Activity class. */
   public String getTitle(){
     return this.getName();
-  }
-
-  public String getUser(){
-    return null;
-  }
-
-  public String getConversation(){
-    return null;
   }
 }

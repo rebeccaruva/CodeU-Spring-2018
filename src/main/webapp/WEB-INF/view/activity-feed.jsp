@@ -48,30 +48,36 @@
     <h1>Activity Feed</h1>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
+      <!-- get list of activities -->
       <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");
       if(activities == null || activities.isEmpty()){ %>
         <p>The activity feed is currently empty. Start a conversation!</p>
       <% } else { %>
         <ul class = "mdl-list">
-          <!-- lists all activities -->
+          <!-- lists all activities in reverse chronological order -->
           <% for(int index = activities.size() - 1; index >= 0; index--){ %>
             <% Activity activity = activities.get(index); int type = activity.getType(); %>
+            <!-- if first time user logged in, set type = 0 to show user registered first -->
             <% if(activity.getType() == 1 && activities.indexOf(activity) == index){
                     type = 0;
             } %>
             <% if(type == 0){ %>
+                <!-- new user registered -->
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= activity.getTitle() %>!</li>
             <% } else if(type == 1){ %>
+                <!-- user logged in -->
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getTitle() %> has logged in!</li>
             <% } else if(type == 2){ %>
+                <!-- new conversation created -->
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)activity).getUser() %> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
             <% } else if(type == 3){%>
+                <!-- new message sent -->
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)activity).getUser() %> sent a message in <a href="/chat/<%= ((Message)activity).getConversation() %>"><%= ((Message)activity).getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
             <% } %>
           <% } %>
         </ul>
     <% }
-    } else{ %>
+  } else{ %> <!-- user not logged in -->
       <p>Please login to view the activity feed.</p>
     <% } %>
   </div>

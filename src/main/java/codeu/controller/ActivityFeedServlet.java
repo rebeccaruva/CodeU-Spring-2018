@@ -36,9 +36,10 @@ import org.jsoup.safety.Whitelist;
 /** servlet responsible for activity feed */
 public class ActivityFeedServlet extends HttpServlet{
 
+  /** Store class that gives access to Activities */
   private ActivityStore activityStore;
 
-  /* initialize global variables */
+  /** initialize global variables */
   @Override
   public void init() throws ServletException{
     super.init();
@@ -54,26 +55,16 @@ public class ActivityFeedServlet extends HttpServlet{
   }
 
   /**
-   * This function fires when a user navigates to the activity page. It forwards to activity-feed.jsp for rendering.
+   * This function fires when a user navigates to the activity page.
+   * It adds list of activities to request then forwards to activity-feed.jsp for rendering.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    //List<Activity> activities = new ArrayList<Activity>();
-    //activities.addAll(conversationStore.getAllConversations()); // add all conversations to empty list
-    //activities.addAll(userStore.getAllUsers());
-    //if(activities != null && !activites.isEmpty()) Collections.sort(activities, new sortActivites());
     List<Activity> activities = activityStore.getAllActivities();
-    request.setAttribute("all_activities", activities); // add sorted list of conversations to request
+    request.setAttribute("all_activities", activities);
     request.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp").forward(request, response);
   }
-
-  /**class sortActivites implements Comparator<Activity>{
-    /* compare method for conversations in list - return in reverse order by time
-    public int compare(Activity activity1, Activity activity2){
-      return -1 * (((activity1.getCreationTime()).toString()).compareTo(((activity2.getCreationTime()).toString())));
-    }
-  }*/
 
   /**
    * This function fires when a user submits the form on the activty feed page. It

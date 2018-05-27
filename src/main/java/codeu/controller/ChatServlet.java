@@ -44,6 +44,7 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Activities. */
   private ActivityStore activityStore;
 
   /** Set up state for handling chat requests. */
@@ -164,6 +165,8 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
+
+    // set type of activity to 3 (message sent) and add to activity list
     message.setType(3);
     activityStore.addActivity(message);
 

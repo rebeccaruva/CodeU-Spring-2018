@@ -130,6 +130,8 @@ public class ConversationServlet extends HttpServlet {
         new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
 
     conversationStore.addConversation(conversation);
+
+    // set type of activity to 2 (new conversation) and add to activity list
     conversation.setType(2);
     activityStore.addActivity(conversation);
 

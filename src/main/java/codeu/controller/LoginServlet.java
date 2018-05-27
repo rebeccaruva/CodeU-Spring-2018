@@ -31,6 +31,7 @@ public class LoginServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Activities. */
   private ActivityStore activityStore;
 
   /**
@@ -88,6 +89,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     User user = userStore.getUser(username);
+
+    // set type of activity to 1 (user logged in) and add to activity list
     user.setType(1);
     activityStore.addActivity(user);
 

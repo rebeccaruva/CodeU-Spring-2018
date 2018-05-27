@@ -64,7 +64,7 @@ public class ActivityFeedServletTest {
     activityServlet.setActivityStore(mockActivityStore);
   }
 
-  /** test doGet method of ActivityFeedServlet class */
+  /** test doGet method of ActivityFeedServlet class creates mock activities list and checks request */
   @Test
   public void testDoGet() throws IOException, ServletException {
     List<Activity> fakeActivitiesList = new ArrayList<>();
@@ -84,5 +84,4 @@ public class ActivityFeedServletTest {
     activityServlet.doPost(mockRequest, mockResponse);
     Mockito.verify(mockResponse).sendRedirect("/activity-feed");
   }
-
 }
