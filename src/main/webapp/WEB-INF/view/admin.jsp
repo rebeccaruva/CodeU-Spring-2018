@@ -1,3 +1,6 @@
+<%@ page import="java.util.List" %>
+<%@ page import="codeu.model.data.Conversation" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,13 +30,19 @@
     <% }} %>
   </nav>
 
-
+<% List<Conversation> conversations =
+  (List<Conversation>) request.getAttribute("conversations");
+  int numConversations = 0;
+  if (conversations != null){
+     numConversations = conversations.size();
+  } %>
 
 <div id="container">
   <div
     style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
-    <h1>This is the administrator page.</h1>
-      <p>This is the admin page.</p>
+    <h1>Administration</h1>
+      <h2>Statistics</h2>
+          <a>Number of Conversations: <%= numConversations %></a>
   </div>
 </div>
 

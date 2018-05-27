@@ -23,12 +23,45 @@ public class AdminServlet extends HttpServlet{
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Conversations. */
+  private ConversationStore conversationStore;
+
+
+  /**
+   * Set up state for handling conversation-related requests. This method is only called when
+   * running in a server, not when running in a test.
+   */
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    setUserStore(UserStore.getInstance());
+    setConversationStore(ConversationStore.getInstance());
+  }
+
+  /**
+   * Sets the UserStore used by this servlet. This function provides a common setup method for use
+   * by the test framework or the servlet's init() function.
+   */
+  void setUserStore(UserStore userStore) {
+    this.userStore = userStore;
+  }
+
+  /**
+   * Sets the ConversationStore used by this servlet. This function provides a common setup method
+   * for use by the test framework or the servlet's init() function.
+   */
+  void setConversationStore(ConversationStore conversationStore) {
+    this.conversationStore = conversationStore;
+  }
+
   /**
    * This function fires when a user requests the /admin URL. It simply forwards the request to
    * admin.jsp.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    List<Conversation> conversations = conversationStore.getAllConversations();
+    request.setAttribute("conversations", conversations);
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
 
