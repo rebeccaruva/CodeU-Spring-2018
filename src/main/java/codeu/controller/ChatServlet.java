@@ -35,7 +35,7 @@ import org.jsoup.nodes.Document.OutputSettings;
 // imports for using markdown with flexmark
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import  com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.options.MutableDataSet;
@@ -170,10 +170,9 @@ public class ChatServlet extends HttpServlet {
     Parser parser = Parser.builder(options).build();
     HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
-    // re-use parser and renderer instancess
+    // re-use parser and renderer instances
     Node document  = parser.parse(request.getParameter("message"));
     String markdownContent = renderer.render(document);
-
     // this deletes new line tag that parse auto creates at end of node
     markdownContent = markdownContent.replaceAll("\n", "");
 
