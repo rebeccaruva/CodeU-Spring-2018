@@ -17,7 +17,11 @@ public class ActivityStoreTest {
   private PersistentStorageAgent mockPersistentStorageAgent;
 
   private final Activity ACTIVITY_ONE =
-      new Activity(Activity.Type.LOGGED_IN, UUID.randomUUID(), Instant.ofEpochMilli(1000), UUID.randomUUID());
+      new Activity(
+          Activity.Type.LOGGED_IN,
+          UUID.randomUUID(),
+          Instant.ofEpochMilli(1000),
+          UUID.randomUUID());
 
   @Before
   public void setup() {
@@ -32,21 +36,19 @@ public class ActivityStoreTest {
   @Test
   public void testAddActivity() {
     Activity inputActivity =
-        new Activity(Activity.Type.NEW_CONVERSATION, UUID.randomUUID(), Instant.now(), UUID.randomUUID());
-
+        new Activity(
+            Activity.Type.NEW_CONVERSATION, UUID.randomUUID(), Instant.now(), UUID.randomUUID());
     activityStore.addActivity(inputActivity);
-    List<Activity> activityList = activityStore.getAllActivities();
 
-    Activity resultActivity = activityList.get(1);
+    Activity resultActivity = activityStore.getAllActivities().get(1);
 
-    assertEquals(inputActivity, resultActivity);
+    assertEquivalentActivities(inputActivity, resultActivity);
     Mockito.verify(mockPersistentStorageAgent).writeThrough(inputActivity);
   }
 
-  private void assertEquals(Activity expectedActivity, Activity actualActivity) {
+  private void assertEquivalentActivities(Activity expectedActivity, Activity actualActivity) {
     Assert.assertEquals(expectedActivity.getId(), actualActivity.getId());
     Assert.assertEquals(expectedActivity.getObjectId(), actualActivity.getObjectId());
-    Assert.assertEquals(
-        expectedActivity.getCreationTime(), actualActivity.getCreationTime());
+    Assert.assertEquals(expectedActivity.getCreationTime(), actualActivity.getCreationTime());
   }
 }

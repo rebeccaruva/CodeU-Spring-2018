@@ -14,12 +14,12 @@
 
 package codeu.controller;
 
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
-import codeu.model.data.Activity;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
-import codeu.model.store.basic.ActivityStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -70,10 +70,10 @@ public class ConversationServlet extends HttpServlet {
   }
 
   /**
-   * Sets the ActivityStore used by this servlet. This function provides a common setup method
-   * for use by the test framework or the servlet's init() function.
+   * Sets the ActivityStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
    */
-  void setActivityStore(ActivityStore activityStore){
+  void setActivityStore(ActivityStore activityStore) {
     this.activityStore = activityStore;
   }
 
@@ -133,7 +133,12 @@ public class ConversationServlet extends HttpServlet {
     conversationStore.addConversation(conversation);
 
     // create activity with type NEW_CONVERSATION and add to activity list
-    activityStore.addActivity(new Activity(Activity.Type.NEW_CONVERSATION, conversation.getId(), conversation.getCreationTime(), UUID.randomUUID()));
+    activityStore.addActivity(
+        new Activity(
+            Activity.Type.NEW_CONVERSATION,
+            conversation.getId(),
+            conversation.getCreationTime(),
+            UUID.randomUUID()));
 
     response.sendRedirect("/chat/" + conversationTitle);
   }

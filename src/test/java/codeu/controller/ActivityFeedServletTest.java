@@ -14,13 +14,7 @@
 
 package codeu.controller;
 
-import codeu.model.data.Conversation;
-import codeu.model.data.Message;
-import codeu.model.data.User;
 import codeu.model.data.Activity;
-import codeu.model.store.basic.ConversationStore;
-import codeu.model.store.basic.MessageStore;
-import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.ActivityStore;
 import java.io.IOException;
 import java.time.Instant;
@@ -32,10 +26,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class ActivityFeedServletTest {
@@ -64,7 +56,9 @@ public class ActivityFeedServletTest {
     activityServlet.setActivityStore(mockActivityStore);
   }
 
-  /** test doGet method of ActivityFeedServlet class creates mock activities list and checks request */
+  /**
+   * test doGet method of ActivityFeedServlet class creates mock activities list and checks request
+   */
   @Test
   public void testDoGet() throws IOException, ServletException {
     List<Activity> fakeActivitiesList = new ArrayList<>();

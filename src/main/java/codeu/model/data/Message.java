@@ -14,13 +14,13 @@
 
 package codeu.model.data;
 
+import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.UserStore;
 import java.time.Instant;
 import java.util.UUID;
-import codeu.model.store.basic.UserStore;
-import codeu.model.store.basic.ConversationStore;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
-public class Message{
+public class Message {
 
   private final UUID conversation;
   private final UUID author;
@@ -61,29 +61,29 @@ public class Message{
   }
 
   /** Returns the text content of this Message, implements abstract method of Activity. */
-  public String getTitle(){
+  public String getTitle() {
     return this.getContent();
   }
 
   /** Returns the name of author of Message. */
-  public String getUser(){
+  public String getUser() {
     UserStore userStore = UserStore.getInstance();
     return userStore.getUser(author).getName();
   }
 
   /** Returns the title of conversation this Message is under. */
-  public String getConversation(){
+  public String getConversation() {
     ConversationStore conversationStore = ConversationStore.getInstance();
     return conversationStore.getConversation(conversation).getTitle();
   }
 
   /** Returns the ID of this Message. */
-  public UUID getId(){
+  public UUID getId() {
     return id;
   }
 
   /** Returns the creation time of this Message. */
-  public Instant getCreationTime(){
+  public Instant getCreationTime() {
     return creation;
   }
 }

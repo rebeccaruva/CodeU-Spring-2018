@@ -103,13 +103,11 @@ public class UserStore {
   }
 
   /** Return all users */
-  public List<User> getAllUsers(){
+  public List<User> getAllUsers() {
     return users;
   }
 
-  /**
-   * Update an existing User.
-   */
+  /** Update an existing User. */
   public void updateUser(User user) {
     persistentStorageAgent.writeThrough(user);
   }

@@ -14,19 +14,23 @@
 
 package codeu.model.data;
 
-import java.time.*;
-import java.util.*;
-import java.text.*;
-import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.UserStore;
+import java.text.*;
+import java.time.*;
+import java.util.*;
 
 /** Class representing an Activity, which includes creating users, conversations, and messages. */
 public class Activity {
   // type of Activity
-  public enum Type{
-    REGISTERED, LOGGED_IN, NEW_CONVERSATION, NEW_MESSAGE
+  public enum Type {
+    REGISTERED,
+    LOGGED_IN,
+    NEW_CONVERSATION,
+    NEW_MESSAGE
   };
+
   private final UUID objectId;
   private final Type type;
   private final Instant creation;
@@ -40,7 +44,7 @@ public class Activity {
    * @param creation the time this Activity was created
    * @param id the ID of this Activity
    */
-  public Activity(Type type, UUID objectId, Instant creationTime, UUID id){
+  public Activity(Type type, UUID objectId, Instant creationTime, UUID id) {
     this.type = type;
     this.objectId = objectId;
     this.creation = creationTime;
@@ -48,43 +52,43 @@ public class Activity {
   }
 
   /** Returns type of Activity. */
-  public Type getType(){
+  public Type getType() {
     return type;
   }
 
   /** Returns id of Activity */
-  public UUID getId(){
+  public UUID getId() {
     return id;
   }
 
   /** Returns id of object that handles this Activity. */
-  public UUID getObjectId(){
+  public UUID getObjectId() {
     return objectId;
   }
 
   /** Returns time Activity was created. */
-  public Instant getCreationTime(){
+  public Instant getCreationTime() {
     return creation;
   }
 
   /** Formats Instant variable as date for clean output. */
-  public String formattedTime(){
+  public String formattedTime() {
     SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
     return formatter.format(Date.from(creation)) + " PST";
   }
 
   /** Gets User associated with Activity. */
-  public User getUser(){
+  public User getUser() {
     return (UserStore.getInstance()).getUser(objectId);
   }
 
   /** Gets Conversation associated with Activity. */
-  public Conversation getConversation(){
+  public Conversation getConversation() {
     return (ConversationStore.getInstance()).getConversation(objectId);
   }
 
   /** Gets Message associated with Activity. */
-  public Message getMessage(){
+  public Message getMessage() {
     return (MessageStore.getInstance()).getMessage(objectId);
   }
 }

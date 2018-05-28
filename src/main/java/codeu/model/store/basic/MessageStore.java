@@ -90,8 +90,8 @@ public class MessageStore {
    *
    * @return null if the UUID does not match any existing User.
    */
-  public Message getMessage(UUID id){
-    for(Message message : messages){
+  public Message getMessage(UUID id) {
+    for (Message message : messages) {
       if (message.getId().equals(id)) {
         return message;
       }

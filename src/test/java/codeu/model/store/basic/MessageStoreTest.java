@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
 public class MessageStoreTest {
 
   private MessageStore messageStore;
@@ -84,11 +83,7 @@ public class MessageStoreTest {
     UUID inputMessageId = UUID.randomUUID();
     Message inputMessage =
         new Message(
-            inputMessageId,
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            "test message",
-            Instant.now());
+            inputMessageId, UUID.randomUUID(), UUID.randomUUID(), "test message", Instant.now());
 
     messageStore.addMessage(inputMessage);
     Message resultMessage = messageStore.getMessage(inputMessageId);

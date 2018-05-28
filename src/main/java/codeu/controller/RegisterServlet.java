@@ -1,20 +1,17 @@
 package codeu.controller;
 
+import codeu.model.data.Activity;
+import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
+import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.mindrot.jbcrypt.BCrypt;
-
-import codeu.model.data.User;
-import codeu.model.data.Activity;
-import codeu.model.store.basic.UserStore;
-import codeu.model.store.basic.ActivityStore;
 
 public class RegisterServlet extends HttpServlet {
 
@@ -44,10 +41,10 @@ public class RegisterServlet extends HttpServlet {
   }
 
   /**
-   * Sets the ActivityStore used by this servlet. This function provides a common setup method
-   * for use by the test framework or the servlet's init() function.
+   * Sets the ActivityStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
    */
-  void setActivityStore(ActivityStore activityStore){
+  void setActivityStore(ActivityStore activityStore) {
     this.activityStore = activityStore;
   }
 
@@ -82,7 +79,9 @@ public class RegisterServlet extends HttpServlet {
     userStore.addUser(user);
 
     // create activity with type REGISTERED and add to activity list
-    activityStore.addActivity(new Activity(Activity.Type.REGISTERED, user.getId(), user.getCreationTime(), UUID.randomUUID()));
+    activityStore.addActivity(
+        new Activity(
+            Activity.Type.REGISTERED, user.getId(), user.getCreationTime(), UUID.randomUUID()));
 
     response.sendRedirect("/login");
   }
