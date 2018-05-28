@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
 public class MessageStoreTest {
 
   private MessageStore messageStore;
@@ -74,6 +73,20 @@ public class MessageStoreTest {
 
     messageStore.addMessage(inputMessage);
     Message resultMessage = messageStore.getMessagesInConversation(inputConversationId).get(0);
+
+    assertEquals(inputMessage, resultMessage);
+    Mockito.verify(mockPersistentStorageAgent).writeThrough(inputMessage);
+  }
+
+  @Test
+  public void testGetMessage() {
+    UUID inputMessageId = UUID.randomUUID();
+    Message inputMessage =
+        new Message(
+            inputMessageId, UUID.randomUUID(), UUID.randomUUID(), "test message", Instant.now());
+
+    messageStore.addMessage(inputMessage);
+    Message resultMessage = messageStore.getMessage(inputMessageId);
 
     assertEquals(inputMessage, resultMessage);
     Mockito.verify(mockPersistentStorageAgent).writeThrough(inputMessage);

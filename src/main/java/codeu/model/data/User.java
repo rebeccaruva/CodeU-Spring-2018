@@ -19,9 +19,9 @@ import java.util.UUID;
 
 /** Class representing a registered user. */
 public class User {
-  private final UUID id;
   private final String name;
   private final String passwordHash;
+  private final UUID id;
   private final Instant creation;
 
   /**
@@ -39,23 +39,23 @@ public class User {
     this.creation = creation;
   }
 
-  /** Returns the ID of this User. */
+  /** Returns the ID of this Activity. */
   public UUID getId() {
     return id;
+  }
+
+  /** Returns the creation time of this Activity. */
+  public Instant getCreationTime() {
+    return creation;
   }
 
   /** Returns the username of this User. */
   public String getName() {
     return name;
   }
-  
+
   /** Returns the password hash of this User. */
   public String getPasswordHash() {
     return passwordHash;
-  }
-
-  /** Returns the creation time of this User. */
-  public Instant getCreationTime() {
-    return creation;
   }
 }

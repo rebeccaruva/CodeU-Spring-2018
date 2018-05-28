@@ -14,6 +14,7 @@
 
 package codeu.model.data;
 
+import codeu.model.store.basic.UserStore;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -22,10 +23,10 @@ import java.util.UUID;
  * created by a User and contain Messages.
  */
 public class Conversation {
-  public final UUID id;
   public final UUID owner;
-  public final Instant creation;
   public final String title;
+  private final UUID id;
+  private final Instant creation;
 
   /**
    * Constructs a new Conversation.
@@ -42,19 +43,25 @@ public class Conversation {
     this.title = title;
   }
 
-  /** Returns the ID of this Conversation. */
-  public UUID getId() {
-    return id;
-  }
-
   /** Returns the ID of the User who created this Conversation. */
   public UUID getOwnerId() {
     return owner;
   }
 
+  /** Returns name of owner of conversation. */
+  public String getUser() {
+    UserStore userStore = UserStore.getInstance();
+    return userStore.getUser(owner).getName();
+  }
+
   /** Returns the title of this Conversation. */
   public String getTitle() {
     return title;
+  }
+
+  /** Returns the ID of this Conversation. */
+  public UUID getId() {
+    return id;
   }
 
   /** Returns the creation time of this Conversation. */

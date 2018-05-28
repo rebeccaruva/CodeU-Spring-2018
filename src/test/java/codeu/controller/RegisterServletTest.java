@@ -1,12 +1,13 @@
 package codeu.controller;
 
+import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
+import codeu.model.store.basic.UserStore;
 import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,15 +15,13 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import codeu.model.data.User;
-import codeu.model.store.basic.UserStore;
-
 public class RegisterServletTest {
 
   private RegisterServlet registerServlet;
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
   private RequestDispatcher mockRequestDispatcher;
+  private ActivityStore mockActivityStore;
 
   @Before
   public void setup() throws IOException {
@@ -32,6 +31,8 @@ public class RegisterServletTest {
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/register.jsp"))
         .thenReturn(mockRequestDispatcher);
+    mockActivityStore = Mockito.mock(ActivityStore.class);
+    registerServlet.setActivityStore(mockActivityStore);
   }
 
   @Test
