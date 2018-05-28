@@ -200,15 +200,18 @@ public class ChatServletTest {
         .thenReturn(fakeConversation);
 
     Mockito.when(mockRequest.getParameter("message"))
-        .thenReturn("Contains <b>html</b> and <script>JavaScript</script> content.");
-
+        .thenReturn("Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>,"
+        + " <em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, and"
+        + " <script>JavaScript</script> content.");
     chatServlet.doPost(mockRequest, mockResponse);
 
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
+    // this insert tag addition tests if whitelist is working
     Assert.assertEquals(
-        "Contains html and  content.", messageArgumentCaptor.getValue().getContent());
-
+        "Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, <em>italics</em>,"
+        + " <sub>subscript</sub>, <sup>superscript</sup>, and  content.",
+        messageArgumentCaptor.getValue().getContent());
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
 }

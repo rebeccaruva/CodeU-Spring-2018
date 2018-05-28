@@ -32,6 +32,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.nodes.Document.OutputSettings;
+
+// imports for using markdown with flexmark
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.options.MutableDataSet;
+
+import java.util.Arrays;
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -152,10 +163,39 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
-    String messageContent = request.getParameter("message");
+    // this code uses flexmark library to parse markdown to html for conversation chat
+    // Jsoup library is used to clean out any script and unwanted html tags
 
-    // this removes any HTML from the message content
-    String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
+    // use Jsoup to allow certain tags for parsing
+    Whitelist allowedTags = Whitelist.none(); //no tags allowed, empty whitelist
+    // now add tags to empty whitelist
+    // ins: underline, del: strikethrough, strong: bold
+    // em: italics, sub: subscript, sup: superscript
+    allowedTags.addTags("ins", "del", "strong", "em", "sub", "sup");
+
+    // this allows for extensions to be added for markdown
+    MutableDataSet options = new MutableDataSet();
+
+    // set underline(++) and strikethrough(~~) extension for markdown
+    options.set(Parser.EXTENSIONS, Arrays.asList(InsExtension.create(),
+    StrikethroughExtension.create()));
+
+    // parse markdown to html
+    Parser parser = Parser.builder(options).build();
+    HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+
+    // re-use parser and renderer instances
+    Node document  = parser.parse(request.getParameter("message"));
+    String markdownContent = renderer.render(document);
+    // this deletes new line tag that parse auto creates at end of node
+    markdownContent = markdownContent.replaceAll("\n", "");
+
+    // this removes the new line from forming before acceptable html tags
+    OutputSettings settings = new OutputSettings();
+    settings.prettyPrint(false);
+
+    // this removes any style / script / html (other than allowed tags) from the message content
+    String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
 
     Message message =
         new Message(

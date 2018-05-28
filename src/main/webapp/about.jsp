@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IMhere!</title>
+  <title>About</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
