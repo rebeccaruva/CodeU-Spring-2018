@@ -15,9 +15,12 @@
 package codeu.controller;
 
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.ActivityStore;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -90,10 +93,8 @@ public class LoginServlet extends HttpServlet {
 
     User user = userStore.getUser(username);
 
-    // set type of activity to 1 (user logged in) and add to activity list
-    user.setType(1);
-    activityStore.addActivity(user);
-
+    // create activity with type LOGGED_IN and add to activity list
+    activityStore.addActivity(new Activity(Activity.Type.LOGGED_IN, user.getId(), Instant.now(), UUID.randomUUID()));
 
     if (!BCrypt.checkpw(password, user.getPasswordHash())) {
       request.setAttribute("error", "Please enter a correct password.");

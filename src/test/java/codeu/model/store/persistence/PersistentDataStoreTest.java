@@ -3,6 +3,7 @@ package codeu.model.store.persistence;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
@@ -145,5 +146,40 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(authorTwo, resultMessageTwo.getAuthorId());
     Assert.assertEquals(contentTwo, resultMessageTwo.getContent());
     Assert.assertEquals(creationTwo, resultMessageTwo.getCreationTime());
+  }
+
+  @Test
+  public void testSaveAndLoadActivities() throws PersistentDataStoreException {
+    Activity.Type typeOne = Activity.Type.LOGGED_IN;
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID objectIdOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Activity inputActivityOne =
+        new Activity(typeOne, objectIdOne, creationOne, idOne);
+
+    Activity.Type typeTwo = Activity.Type.NEW_CONVERSATION;
+    UUID idTwo = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    UUID objectIdTwo = UUID.fromString("10000003-2222-3333-4444-555555555555");
+    Instant creationTwo = Instant.ofEpochMilli(1000);
+    Activity inputActivityTwo =
+        new Activity(typeTwo, objectIdTwo, creationTwo, idTwo);
+
+    // save
+    persistentDataStore.writeThrough(inputActivityOne);
+    persistentDataStore.writeThrough(inputActivityTwo);
+
+    // load
+    List<Activity> resultActivities = persistentDataStore.loadActivities();
+
+    // confirm that what we saved matches what we loaded
+    Activity resultActivityOne = resultActivities.get(0);
+    Assert.assertEquals(idOne, resultActivityOne.getId());
+    Assert.assertEquals(objectIdOne, resultActivityOne.getObjectId());
+    Assert.assertEquals(creationOne, resultActivityOne.getCreationTime());
+
+    Activity resultActivityTwo = resultActivities.get(1);
+    Assert.assertEquals(idTwo, resultActivityTwo.getId());
+    Assert.assertEquals(objectIdTwo, resultActivityTwo.getObjectId());
+    Assert.assertEquals(creationTwo, resultActivityTwo.getCreationTime());
   }
 }

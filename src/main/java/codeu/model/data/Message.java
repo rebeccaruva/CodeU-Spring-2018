@@ -20,14 +20,13 @@ import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.ConversationStore;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
-public class Message extends Activity{
+public class Message{
 
   private final UUID conversation;
   private final UUID author;
   private final String content;
   private final UUID id;
   private final Instant creation;
-  private int type; // the type of this Activity
 
   /**
    * Constructs a new Message.
@@ -44,26 +43,6 @@ public class Message extends Activity{
     this.author = author;
     this.content = content;
     this.creation = creation;
-  }
-
-  /** Sets type of this Activity. */
-  public void setType(int type){
-    this.type = type;
-  }
-
-  /** Returns type of this Activity. */
-  public int getType(){
-    return type;
-  }
-
-  /** Returns the ID of this Activity. */
-  public UUID getId() {
-    return id;
-  }
-
-  /** Returns the creation time of this Activity. */
-  public Instant getCreationTime() {
-    return creation;
   }
 
   /** Returns the ID of the Conversation this Message belongs to. */
@@ -96,5 +75,15 @@ public class Message extends Activity{
   public String getConversation(){
     ConversationStore conversationStore = ConversationStore.getInstance();
     return conversationStore.getConversation(conversation).getTitle();
+  }
+
+  /** Returns the ID of this Message. */
+  public UUID getId(){
+    return id;
+  }
+
+  /** Returns the creation time of this Message. */
+  public Instant getCreationTime(){
+    return creation;
   }
 }

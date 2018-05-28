@@ -17,6 +17,7 @@ package codeu.controller;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
@@ -166,9 +167,8 @@ public class ChatServlet extends HttpServlet {
 
     messageStore.addMessage(message);
 
-    // set type of activity to 3 (message sent) and add to activity list
-    message.setType(3);
-    activityStore.addActivity(message);
+    // create activity with type NEW_MESSAGE and add to activity list
+    activityStore.addActivity(new Activity(Activity.Type.NEW_MESSAGE, message.getId(), message.getCreationTime(), UUID.randomUUID()));
 
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);

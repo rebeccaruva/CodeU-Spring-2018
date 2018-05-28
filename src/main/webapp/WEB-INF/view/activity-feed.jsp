@@ -17,6 +17,7 @@
 <%@ page import="codeu.model.data.Activity" %>
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
+<%@ page import="codeu.model.data.User" %>
 
 <!DOCTYPE html>
 <html>
@@ -56,23 +57,19 @@
         <ul class = "mdl-list">
           <!-- lists all activities in reverse chronological order -->
           <% for(int index = activities.size() - 1; index >= 0; index--){ %>
-            <% Activity activity = activities.get(index); int type = activity.getType(); %>
-            <!-- if first time user logged in, set type = 0 to show user registered first -->
-            <% if(activity.getType() == 1 && activities.indexOf(activity) == index){
-                    type = 0;
-            } %>
-            <% if(type == 0){ %>
+            <% Activity activity = activities.get(index); Activity.Type type = activity.getType(); %>
+            <% if(type == Activity.Type.REGISTERED){ %>
                 <!-- new user registered -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= activity.getTitle() %>!</li>
-            <% } else if(type == 1){ %>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= ((User)(activity.getUser())).getName() %>!</li>
+            <% } else if(type == Activity.Type.LOGGED_IN){ %>
                 <!-- user logged in -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= activity.getTitle() %> has logged in!</li>
-            <% } else if(type == 2){ %>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((User)(activity.getUser())).getName() %> has logged in!</li>
+            <% } else if(type == Activity.Type.NEW_CONVERSATION){ %>
                 <!-- new conversation created -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)activity).getUser() %> has started a conversation: <a href="/chat/<%= activity.getTitle() %>"><%= activity.getTitle() %></a>.</li>
-            <% } else if(type == 3){%>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
+            <% } else if(type == Activity.Type.NEW_MESSAGE){%>
                 <!-- new message sent -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)activity).getUser() %> sent a message in <a href="/chat/<%= ((Message)activity).getConversation() %>"><%= ((Message)activity).getConversation() %></a>: <em><%= activity.getTitle() %></em></li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation() %></a>: <em><%= ((Message)(activity.getMessage())).getContent() %></em></li>
             <% } %>
           <% } %>
         </ul>

@@ -18,12 +18,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 /** Class representing a registered user. */
-public class User extends Activity{
+public class User{
   private final String name;
   private final String passwordHash;
   private final UUID id;
   private final Instant creation;
-  private int type; // the type of this Activity
 
   /**
    * Constructs a new User.
@@ -38,16 +37,6 @@ public class User extends Activity{
     this.name = name;
     this.passwordHash = passwordHash;
     this.creation = creation;
-  }
-
-  /** Sets type of this Activity. */
-  public void setType(int type){
-    this.type = type;
-  }
-
-  /** Returns type of this Activity. */
-  public int getType(){
-    return type;
   }
 
   /** Returns the ID of this Activity. */
@@ -68,10 +57,5 @@ public class User extends Activity{
   /** Returns the password hash of this User. */
   public String getPasswordHash() {
     return passwordHash;
-  }
-
-  /** Returns username of this user - implements abstract method of Activity class. */
-  public String getTitle(){
-    return this.getName();
   }
 }

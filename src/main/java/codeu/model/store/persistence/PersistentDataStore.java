@@ -18,6 +18,7 @@ import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.data.Activity;
+import java.lang.Enum;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -151,6 +152,39 @@ public class PersistentDataStore {
     return messages;
   }
 
+  /**
+   * Loads all Activity objects from the Datastore service and returns them in a List, sorted in
+   * descending order by creation time.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public List<Activity> loadActivities() throws PersistentDataStoreException {
+
+    List<Activity> activities = new ArrayList<>();
+
+    // Retrieve all activities from the datastore.
+    Query query = new Query("chat-activities").addSort("creation_time", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    for (Entity entity : results.asIterable()) {
+      try {
+        UUID uuid = UUID.fromString((String) entity.getProperty("uuid"));
+        UUID objectId = UUID.fromString((String) entity.getProperty("objectId"));
+        Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
+        Activity.Type type = Activity.Type.valueOf((String) (entity.getProperty("type")));
+        activities.add(new Activity(type, objectId, creationTime, uuid));
+      } catch (Exception e) {
+        // In a production environment, errors should be very rare. Errors which may
+        // occur include network errors, Datastore service errors, authorization errors,
+        // database entity definition mismatches, or service mismatches.
+        throw new PersistentDataStoreException(e);
+      }
+    }
+
+    return activities;
+  }
+
   /** Write a User object to the Datastore service. */
   public void writeThrough(User user) {
     Entity userEntity = new Entity("chat-users", user.getId().toString());
@@ -186,7 +220,8 @@ public class PersistentDataStore {
   public void writeThrough(Activity activity) {
     Entity activityEntity = new Entity("chat-activities", activity.getId().toString());
     activityEntity.setProperty("uuid", activity.getId().toString());
-    activityEntity.setProperty("title", activity.getTitle());
+    activityEntity.setProperty("objectId", activity.getObjectId().toString());
+    activityEntity.setProperty("type", activity.getType().toString());
     activityEntity.setProperty("creation_time", activity.getCreationTime().toString());
     datastore.put(activityEntity);
   }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mindrot.jbcrypt.BCrypt;
 
 import codeu.model.data.User;
+import codeu.model.data.Activity;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.ActivityStore;
 
@@ -80,9 +81,8 @@ public class RegisterServlet extends HttpServlet {
     User user = new User(UUID.randomUUID(), username, hashed, Instant.now());
     userStore.addUser(user);
 
-    // set type of activity to 0 (user registered) and add to activity list
-    user.setType(0);
-    activityStore.addActivity(user);
+    // create activity with type REGISTERED and add to activity list
+    activityStore.addActivity(new Activity(Activity.Type.REGISTERED, user.getId(), user.getCreationTime(), UUID.randomUUID()));
 
     response.sendRedirect("/login");
   }

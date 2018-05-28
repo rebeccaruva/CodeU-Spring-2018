@@ -17,34 +17,74 @@ package codeu.model.data;
 import java.time.*;
 import java.util.*;
 import java.text.*;
+import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.MessageStore;
 
-/** Class representing an Activity, which includes Messages, Conversations, and User activities. */
-public abstract class Activity {
-  /** Returns the ID of this Activity. */
-  public abstract UUID getId();
-
-  /** Returns the creation time of this Activity. */
-  public abstract Instant getCreationTime();
-
-  /** Returns title/content of this Activity. */
-  public abstract String getTitle();
+/** Class representing an Activity, which includes creating users, conversations, and messages. */
+public class Activity {
+  // type of Activity
+  public enum Type{
+    REGISTERED, LOGGED_IN, NEW_CONVERSATION, NEW_MESSAGE
+  };
+  private final UUID objectId;
+  private final Type type;
+  private final Instant creation;
+  private final UUID id;
 
   /**
-    Types distinguish activity type:
-    * 0 - user registered
-    * 1 - user logged in
-    * 2 - new conversation
-    * 3 - message posted
-  */
-  public abstract void setType(int type);
+   * Constructs a new Activity.
+   *
+   * @param objectId the ID of the object that handles this Activity
+   * @param type the type of this Activity
+   * @param creation the time this Activity was created
+   * @param id the ID of this Activity
+   */
+  public Activity(Type type, UUID objectId, Instant creationTime, UUID id){
+    this.type = type;
+    this.objectId = objectId;
+    this.creation = creationTime;
+    this.id = id;
+  }
 
   /** Returns type of Activity. */
-  public abstract int getType();
+  public Type getType(){
+    return type;
+  }
+
+  /** Returns id of Activity */
+  public UUID getId(){
+    return id;
+  }
+
+  /** Returns id of object that handles this Activity. */
+  public UUID getObjectId(){
+    return objectId;
+  }
+
+  /** Returns time Activity was created. */
+  public Instant getCreationTime(){
+    return creation;
+  }
 
   /** Formats Instant variable as date for clean output. */
   public String formattedTime(){
-    Date date = Date.from(this.getCreationTime());
     SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-    return formatter.format(date) + " PST";
+    return formatter.format(Date.from(creation)) + " PST";
+  }
+
+  /** Gets User associated with Activity. */
+  public User getUser(){
+    return (UserStore.getInstance()).getUser(objectId);
+  }
+
+  /** Gets Conversation associated with Activity. */
+  public Conversation getConversation(){
+    return (ConversationStore.getInstance()).getConversation(objectId);
+  }
+
+  /** Gets Message associated with Activity. */
+  public Message getMessage(){
+    return (MessageStore.getInstance()).getMessage(objectId);
   }
 }

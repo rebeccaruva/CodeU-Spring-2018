@@ -22,12 +22,11 @@ import codeu.model.store.basic.UserStore;
  * Class representing a conversation, which can be thought of as a chat room. Conversations are
  * created by a User and contain Messages.
  */
-public class Conversation extends Activity{
+public class Conversation{
   public final UUID owner;
   public final String title;
   private final UUID id;
   private final Instant creation;
-  private int type; // the type of this Activity
 
   /**
    * Constructs a new Conversation.
@@ -44,26 +43,6 @@ public class Conversation extends Activity{
     this.title = title;
   }
 
-  /** Sets type of this Activity. */
-  public void setType(int type){
-    this.type = type;
-  }
-
-  /** Returns type of this Activity. */
-  public int getType(){
-    return type;
-  }
-
-  /** Returns the ID of this Activity. */
-  public UUID getId() {
-    return id;
-  }
-
-  /** Returns the creation time of this Activity. */
-  public Instant getCreationTime() {
-    return creation;
-  }
-
   /** Returns the ID of the User who created this Conversation. */
   public UUID getOwnerId() {
     return owner;
@@ -78,5 +57,15 @@ public class Conversation extends Activity{
   /** Returns the title of this Conversation. */
   public String getTitle() {
     return title;
+  }
+
+  /** Returns the ID of this Conversation. */
+  public UUID getId(){
+    return id;
+  }
+
+  /** Returns the creation time of this Conversation. */
+  public Instant getCreationTime(){
+    return creation;
   }
 }

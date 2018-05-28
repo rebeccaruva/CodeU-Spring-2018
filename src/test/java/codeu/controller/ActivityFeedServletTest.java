@@ -69,7 +69,7 @@ public class ActivityFeedServletTest {
   public void testDoGet() throws IOException, ServletException {
     List<Activity> fakeActivitiesList = new ArrayList<>();
     fakeActivitiesList.add(
-        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now()));
+        new Activity(Activity.Type.LOGGED_IN, UUID.randomUUID(), Instant.now(), UUID.randomUUID()));
     Mockito.when(mockActivityStore.getAllActivities()).thenReturn(fakeActivitiesList);
 
     activityServlet.doGet(mockRequest, mockResponse);
