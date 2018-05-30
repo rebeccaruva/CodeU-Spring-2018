@@ -17,6 +17,7 @@ package codeu.controller;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
@@ -46,6 +47,7 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
+  private ActivityStore mockActivityStore;
 
   @Before
   public void setup() {
@@ -68,6 +70,9 @@ public class ChatServletTest {
 
     mockUserStore = Mockito.mock(UserStore.class);
     chatServlet.setUserStore(mockUserStore);
+
+    mockActivityStore = Mockito.mock(ActivityStore.class);
+    chatServlet.setActivityStore(mockActivityStore);
   }
 
   @Test
@@ -195,16 +200,18 @@ public class ChatServletTest {
         .thenReturn(fakeConversation);
 
     Mockito.when(mockRequest.getParameter("message"))
-        .thenReturn("Contains <b>html</b> and <script>JavaScript</script> content.");
-
+        .thenReturn("Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>,"
+        + " <em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, and"
+        + " <script>JavaScript</script> content.");
     chatServlet.doPost(mockRequest, mockResponse);
 
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    // this bold tag addition tests if simpleText() whitelist is working
+    // this insert tag addition tests if whitelist is working
     Assert.assertEquals(
-        "Contains <b>html</b> and  content.", messageArgumentCaptor.getValue().getContent());
-
+        "Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, <em>italics</em>,"
+        + " <sub>subscript</sub>, <sup>superscript</sup>, and  content.",
+        messageArgumentCaptor.getValue().getContent());
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
 }

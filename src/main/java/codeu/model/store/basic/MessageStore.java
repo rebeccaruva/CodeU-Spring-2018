@@ -85,6 +85,21 @@ public class MessageStore {
     return messagesInConversation;
   }
 
+  /**
+   * Access the Message object with the given UUID.
+   *
+   * @return null if the UUID does not match any existing User.
+   */
+  public Message getMessage(UUID id) {
+    for (Message message : messages) {
+      if (message.getId().equals(id)) {
+        return message;
+      }
+    }
+
+    return null;
+  }
+
   /** Returns the number of messages stored. */
   public int numberOfMessages(){
     return messages.size();

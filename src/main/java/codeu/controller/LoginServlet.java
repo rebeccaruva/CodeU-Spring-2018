@@ -14,14 +14,17 @@
 
 package codeu.controller;
 
+import codeu.model.data.Activity;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 /** Servlet class responsible for the login page. */
@@ -29,6 +32,9 @@ public class LoginServlet extends HttpServlet {
 
   /** Store class that gives access to Users. */
   private UserStore userStore;
+
+  /** Store class that gives access to Activities. */
+  private ActivityStore activityStore;
 
   /**
    * Set up state for handling login-related requests. This method is only called when running in a
@@ -38,6 +44,7 @@ public class LoginServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
     setUserStore(UserStore.getInstance());
+    setActivityStore(ActivityStore.getInstance());
   }
 
   /**
@@ -46,6 +53,14 @@ public class LoginServlet extends HttpServlet {
    */
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
+  }
+
+  /**
+   * Sets the ActivityStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setActivityStore(ActivityStore activityStore) {
+    this.activityStore = activityStore;
   }
 
   /**
@@ -76,6 +91,10 @@ public class LoginServlet extends HttpServlet {
     }
 
     User user = userStore.getUser(username);
+
+    // create activity with type LOGGED_IN and add to activity list
+    activityStore.addActivity(
+        new Activity(Activity.Type.LOGGED_IN, user.getId(), Instant.now(), UUID.randomUUID()));
 
     if (!BCrypt.checkpw(password, user.getPasswordHash())) {
       request.setAttribute("error", "Please enter a correct password.");

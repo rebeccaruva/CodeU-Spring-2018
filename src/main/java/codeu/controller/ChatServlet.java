@@ -14,9 +14,11 @@
 
 package codeu.controller;
 
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
@@ -32,10 +34,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.nodes.Document.OutputSettings;
 
-// imports for using markdown
-// import org.commonmark.node.*;
-// import org.commonmark.parser.Parser;
-// import org.commonmark.renderer.html.HtmlRenderer;
+// imports for using markdown with flexmark
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.options.MutableDataSet;
+
+import java.util.Arrays;
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -49,6 +56,9 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Activities. */
+  private ActivityStore activityStore;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -56,6 +66,7 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+    setActivityStore(ActivityStore.getInstance());
   }
 
   /**
@@ -80,6 +91,14 @@ public class ChatServlet extends HttpServlet {
    */
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
+  }
+
+  /**
+   * Sets the ActivityStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setActivityStore(ActivityStore activityStore) {
+    this.activityStore = activityStore;
   }
 
   /**
@@ -144,24 +163,39 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
-    String messageContent = request.getParameter("message");
+    // this code uses flexmark library to parse markdown to html for conversation chat
+    // Jsoup library is used to clean out any script and unwanted html tags
 
-    // this removes the new line from forming before acceptable html tags: b, em, i, u, strong
+    // use Jsoup to allow certain tags for parsing
+    Whitelist allowedTags = Whitelist.none(); //no tags allowed, empty whitelist
+    // now add tags to empty whitelist
+    // ins: underline, del: strikethrough, strong: bold
+    // em: italics, sub: subscript, sup: superscript
+    allowedTags.addTags("ins", "del", "strong", "em", "sub", "sup");
+
+    // this allows for extensions to be added for markdown
+    MutableDataSet options = new MutableDataSet();
+
+    // set underline(++) and strikethrough(~~) extension for markdown
+    options.set(Parser.EXTENSIONS, Arrays.asList(InsExtension.create(),
+    StrikethroughExtension.create()));
+
+    // parse markdown to html
+    Parser parser = Parser.builder(options).build();
+    HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+
+    // re-use parser and renderer instances
+    Node document  = parser.parse(request.getParameter("message"));
+    String markdownContent = renderer.render(document);
+    // this deletes new line tag that parse auto creates at end of node
+    markdownContent = markdownContent.replaceAll("\n", "");
+
+    // this removes the new line from forming before acceptable html tags
     OutputSettings settings = new OutputSettings();
     settings.prettyPrint(false);
 
-    // this removes any style / script / html (other than b, em, i, strong, u)
-    // from the message content
-    String cleanedMessageContent = Jsoup.clean(messageContent, "", Whitelist.simpleText(), settings);
-
-    // this code will be used to parse markdown instead of
-    // html to style text in next iteration
-    // code below is to be figured out this week and uncommented
-    // --
-    // Parser parser = Parser.builder().build();Parser parser = Parser.builder().build();
-    // Node document = parser.parse(messageContent);
-    // HtmlRenderer renderer = HtmlRenderer.builder().build();
-    // renderer.render(cleanedMessageContent);
+    // this removes any style / script / html (other than allowed tags) from the message content
+    String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
 
     Message message =
         new Message(
@@ -172,6 +206,14 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
+
+    // create activity with type NEW_MESSAGE and add to activity list
+    activityStore.addActivity(
+        new Activity(
+            Activity.Type.NEW_MESSAGE,
+            message.getId(),
+            message.getCreationTime(),
+            UUID.randomUUID()));
 
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);

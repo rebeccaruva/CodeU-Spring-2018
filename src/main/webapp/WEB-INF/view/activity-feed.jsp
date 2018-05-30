@@ -13,7 +13,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-
+<%@ page import="java.util.List" %>
+<%@ page import="codeu.model.data.Activity" %>
+<%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.Message" %>
+<%@ page import="codeu.model.data.User" %>
 
 <!DOCTYPE html>
 <html>
@@ -40,19 +44,43 @@
     <% }} %>
   </nav>
 
-  <!-- check if request goes through -->
+  <!-- check if user logged in -->
   <div id="container">
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
 
+    <h1>Activity Feed</h1>
+
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <h1>Activity Feed</h1>
+      <!-- get list of activities -->
+      <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");
+      if(activities == null || activities.isEmpty()){ %>
+        <p>The activity feed is currently empty. Start a conversation!</p>
+      <% } else { %>
+        <ul class = "mdl-list">
+          <!-- lists all activities in reverse chronological order -->
+          <% for(int index = activities.size() - 1; index >= 0; index--){ %>
+            <% Activity activity = activities.get(index); Activity.Type type = activity.getType(); %>
+            <% if(type == Activity.Type.REGISTERED){ %>
+                <!-- new user registered -->
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= ((User)(activity.getUser())).getName() %>!</li>
+            <% } else if(type == Activity.Type.LOGGED_IN){ %>
+                <!-- user logged in -->
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((User)(activity.getUser())).getName() %> has logged in!</li>
+            <% } else if(type == Activity.Type.NEW_CONVERSATION){ %>
+                <!-- new conversation created -->
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
+            <% } else if(type == Activity.Type.NEW_MESSAGE){%>
+                <!-- new message sent -->
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation() %></a>: <em><%= ((Message)(activity.getMessage())).getContent() %></em></li>
+            <% } %>
+          <% } %>
+        </ul>
+    <% }
+  } else{ %> <!-- user not logged in -->
+      <p>Please login to view the activity feed.</p>
     <% } %>
   </div>
-
-  <!-- prototype text -->
-  <p> This is the activity feed. </p>
-
 </body>
 </html>
