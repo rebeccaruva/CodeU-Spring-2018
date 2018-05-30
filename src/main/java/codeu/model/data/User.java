@@ -69,7 +69,7 @@ public class User {
   }
 
   /** Gives the User admin status. */
-  public void giveAdmin() {
+  public void giveUserAdminStatus() {
     admin = true;
   }
 }

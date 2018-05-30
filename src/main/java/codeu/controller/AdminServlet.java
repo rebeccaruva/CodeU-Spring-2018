@@ -98,7 +98,7 @@ public class AdminServlet extends HttpServlet {
       return;
     }
 
-    user.giveAdmin();
+    user.giveUserAdminStatus();
     request.setAttribute("success", adminUsername + " is now an admin.");
     doGet(request, response);
   }
