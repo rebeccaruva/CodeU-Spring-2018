@@ -28,7 +28,6 @@ public class UserTest {
     String passwordHash = "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy";
     Instant creation = Instant.now();
     Boolean admin = false;
-
     User user = new User(id, name, passwordHash, creation, admin);
 
     Assert.assertEquals(id, user.getId());
