@@ -84,12 +84,21 @@ public class AdminServlet extends HttpServlet {
 
     if (!userStore.isUserRegistered(adminUsername)) {
       request.setAttribute("error", "That username was not found.");
-      request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
+      doGet(request,response);
       return;
     }
 
     User user = userStore.getUser(adminUsername);
+
+    if (user.getAdmin()) {
+      request.setAttribute("error", "This user is already an admin.");
+      doGet(request,response);
+      return;
+    }
+
     user.giveAdmin();
-    response.sendRedirect("/admin");
+    request.setAttribute("success", adminUsername + " is now an admin.");
+    doGet(request,response);
+    return;
   }
 }

@@ -58,6 +58,10 @@
           <a>Number of Users: <%= numUsers %></a> </br>
           <a>Number of Messages: <%= numMessages %></a> </br> </br>
 
+      <% if(request.getAttribute("error") != null){ %>
+          <h2 style="color:red"><%= request.getAttribute("error") %></h2>
+      <% } %>
+
     <form action="/admin" method="POST">
       <label for="adminUsername">Give another user admin status:</label>
         <br/>
@@ -65,6 +69,10 @@
         <br/>
         <button type="submit">Submit</button>
     </form>
+
+    <% if(request.getAttribute("success") != null){ %>
+        <p><%= request.getAttribute("success") %></p>
+    <% } %>
   </div>
 </div>
 
