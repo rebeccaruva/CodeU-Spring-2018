@@ -73,8 +73,10 @@ public class Activity {
 
   /** Formats Instant variable as date for clean output. */
   public String formattedTime() {
-    SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-    return formatter.format(Date.from(creation)) + " PST";
+    DateFormat pstFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+    pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+
+    return pstFormat.format(Date.from(creation)).toString();
   }
 
   /** Gets User associated with Activity. */
