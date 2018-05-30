@@ -76,7 +76,7 @@ public class Activity {
     DateFormat pstFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
     pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
 
-    return pstFormat.format(Date.from(creation)).toString();
+    return (pstFormat.format(Date.from(creation)).toString() + " PST");
   }
 
   /** Gets User associated with Activity. */
