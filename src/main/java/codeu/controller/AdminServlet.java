@@ -65,7 +65,8 @@ public class AdminServlet extends HttpServlet {
    * admin.jsp.
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     List<Conversation> conversations = conversationStore.getAllConversations();
     request.setAttribute("conversations", conversations);
     request.setAttribute("numusers", userStore.numUsers());
@@ -74,8 +75,9 @@ public class AdminServlet extends HttpServlet {
   }
 
   /**
-   * This function fires when a user submits the form to give another username admin status.. It gets the username from
-   * the submitted form data, checks for validity and if correct, gives admin status to the user.
+   * This function fires when a user submits the form to give another username admin status.. It
+   * gets the username from the submitted form data, checks for validity and if correct, gives admin
+   * status to the user.
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -84,7 +86,7 @@ public class AdminServlet extends HttpServlet {
 
     if (!userStore.isUserRegistered(adminUsername)) {
       request.setAttribute("error", "That username was not found.");
-      doGet(request,response);
+      doGet(request, response);
       return;
     }
 
@@ -92,13 +94,12 @@ public class AdminServlet extends HttpServlet {
 
     if (user.getAdmin()) {
       request.setAttribute("error", "This user is already an admin.");
-      doGet(request,response);
+      doGet(request, response);
       return;
     }
 
     user.giveAdmin();
     request.setAttribute("success", adminUsername + " is now an admin.");
-    doGet(request,response);
-    return;
+    doGet(request, response);
   }
 }
