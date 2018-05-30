@@ -92,7 +92,7 @@ public class AdminServlet extends HttpServlet {
 
     User user = userStore.getUser(adminUsername);
 
-    if (user.getAdmin()) {
+    if (user.getAdminStatus()) {
       request.setAttribute("error", "This user is already an admin.");
       doGet(request, response);
       return;

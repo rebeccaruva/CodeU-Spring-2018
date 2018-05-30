@@ -66,14 +66,14 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(nameOne, resultUserOne.getName());
     Assert.assertEquals(passwordHashOne, resultUserOne.getPasswordHash());
     Assert.assertEquals(creationOne, resultUserOne.getCreationTime());
-    Assert.assertEquals(adminOne, resultUserOne.getAdmin());
+    Assert.assertEquals(adminOne, resultUserOne.getAdminStatus());
 
     User resultUserTwo = resultUsers.get(1);
     Assert.assertEquals(idTwo, resultUserTwo.getId());
     Assert.assertEquals(nameTwo, resultUserTwo.getName());
     Assert.assertEquals(passwordHashTwo, resultUserTwo.getPasswordHash());
     Assert.assertEquals(creationTwo, resultUserTwo.getCreationTime());
-    Assert.assertEquals(adminTwo, resultUserTwo.getAdmin());
+    Assert.assertEquals(adminTwo, resultUserTwo.getAdminStatus());
   }
 
   @Test
