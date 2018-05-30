@@ -26,8 +26,8 @@
     <% } %>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-    <% if(request.getSession().getAttribute("user").equals("jordan")){ %>
+    <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("admin") != null){ %>
+    <% if((Boolean)request.getSession().getAttribute("admin").equals(true)){ %>
       <a href="/admin">Admin</a>
     <% }} %>
   </nav>

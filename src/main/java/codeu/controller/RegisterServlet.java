@@ -75,7 +75,7 @@ public class RegisterServlet extends HttpServlet {
     String password = request.getParameter("password");
     String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
 
-    User user = new User(UUID.randomUUID(), username, hashed, Instant.now());
+    User user = new User(UUID.randomUUID(), username, hashed, Instant.now(), false);
     userStore.addUser(user);
 
     // create activity with type REGISTERED and add to activity list
