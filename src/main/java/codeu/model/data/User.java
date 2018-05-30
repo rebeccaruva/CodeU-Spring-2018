@@ -65,7 +65,8 @@ public class User {
   /** Returns the admin status of this User. */
   public Boolean getAdminStatus() {
     if (getName().equals("admin")) return true;
-    return admin;
+    if (admin != null) return admin;
+    else return false;
   }
 
   /** Gives the User admin status. */
