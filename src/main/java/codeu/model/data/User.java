@@ -23,7 +23,7 @@ public class User {
   private final String passwordHash;
   private final UUID id;
   private final Instant creation;
-  private Boolean admin;
+  private Boolean adminStatus;
 
   /**
    * Constructs a new User.
@@ -32,14 +32,14 @@ public class User {
    * @param name the username of this User
    * @param passwordHash the password of this User
    * @param creation the creation time of this User
-   * @param admin the admin status of this User
+   * @param adminStatus the admin status of this User
    */
-  public User(UUID id, String name, String passwordHash, Instant creation, Boolean admin) {
+  public User(UUID id, String name, String passwordHash, Instant creation, Boolean adminStatus) {
     this.id = id;
     this.name = name;
     this.passwordHash = passwordHash;
     this.creation = creation;
-    this.admin = admin;
+    this.adminStatus = adminStatus;
   }
 
   /** Returns the ID of this Activity. */
@@ -65,12 +65,12 @@ public class User {
   /** Returns the admin status of this User. */
   public Boolean getAdminStatus() {
     if (getName().equals("admin")) return true;
-    if (admin != null) return admin;
+    if (adminStatus != null) return adminStatus;
     else return false;
   }
 
   /** Gives the User admin status. */
   public void giveUserAdminStatus() {
-    admin = true;
+    adminStatus = true;
   }
 }
