@@ -68,4 +68,9 @@ public class User {
         return true;
     else return admin;
   }
+
+  /** Gives the User admin status. */
+  public void giveAdmin() {
+    admin = true;
+  }
 }

@@ -56,7 +56,15 @@
       <h2>Statistics</h2>
           <a>Number of Conversations: <%= numConversations %></a> </br>
           <a>Number of Users: <%= numUsers %></a> </br>
-          <a>Number of Messages: <%= numMessages %></a> </br>
+          <a>Number of Messages: <%= numMessages %></a> </br> </br>
+
+    <form action="/admin" method="POST">
+      <label for="adminUsername">Give another user admin status:</label>
+        <br/>
+      <input type="text" name="adminUsername" id="adminUsername">
+        <br/>
+        <button type="submit">Submit</button>
+    </form>
   </div>
 </div>
 

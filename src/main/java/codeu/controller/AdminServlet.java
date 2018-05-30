@@ -3,6 +3,7 @@ package codeu.controller;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.ConversationStore;
+import codeu.model.data.User;
 import codeu.model.data.Conversation;
 import java.util.List;
 import java.io.IOException;
@@ -70,5 +71,25 @@ public class AdminServlet extends HttpServlet {
     request.setAttribute("numusers", userStore.numUsers());
     request.setAttribute("numMessages", messageStore.numberOfMessages());
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
+  }
+
+  /**
+   * This function fires when a user submits the form to give another username admin status.. It gets the username from
+   * the submitted form data, checks for validity and if correct, gives admin status to the user.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    String adminUsername = request.getParameter("adminUsername");
+
+    if (!userStore.isUserRegistered(adminUsername)) {
+      request.setAttribute("error", "That username was not found.");
+      request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
+      return;
+    }
+
+    User user = userStore.getUser(adminUsername);
+    user.giveAdmin();
+    response.sendRedirect("/admin");
   }
 }
