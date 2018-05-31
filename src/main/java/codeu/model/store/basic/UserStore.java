@@ -79,6 +79,11 @@ public class UserStore {
     return null;
   }
 
+  /** Returns size of user list. */
+  public int numUsers(){
+    return users.size();
+  }
+
   /**
    * Access the User object with the given UUID.
    *

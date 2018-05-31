@@ -34,7 +34,10 @@
     <% } %>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
-    <a href="/admin">Admin</a>
+    <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
+    <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
+      <a href="/admin">Admin</a>
+    <% }} %>
   </nav>
 
   <div id="container">

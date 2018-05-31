@@ -102,7 +102,10 @@ public class LoginServlet extends HttpServlet {
       return;
     }
 
+    Boolean adminStatus = user.getAdminStatus();
+
     request.getSession().setAttribute("user", username);
+    request.getSession().setAttribute("adminStatus", adminStatus);
     response.sendRedirect("/conversations");
   }
 }

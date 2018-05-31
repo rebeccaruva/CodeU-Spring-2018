@@ -70,6 +70,11 @@ public class ConversationStore {
     return conversations;
   }
 
+  /** Returns the number of conversations stored. */
+  public int numConversations(){
+    return conversations.size();
+  }
+
   /**
    * Access the Conversation object with the given UUID.
    *
