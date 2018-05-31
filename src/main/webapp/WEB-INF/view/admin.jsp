@@ -40,8 +40,8 @@
      numConversations = conversations.size();
   }
   int numUsers = 0;
-  if (request.getAttribute("numusers") != null){
-    numUsers = (int)request.getAttribute("numusers");
+  if (request.getAttribute("numUsers") != null){
+    numUsers = (int)request.getAttribute("numUsers");
   }
   int numMessages = 0;
   if (request.getAttribute("numMessages") != null){

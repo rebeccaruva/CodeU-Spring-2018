@@ -69,7 +69,7 @@ public class AdminServlet extends HttpServlet {
       throws IOException, ServletException {
     List<Conversation> conversations = conversationStore.getAllConversations();
     request.setAttribute("conversations", conversations);
-    request.setAttribute("numusers", userStore.numUsers());
+    request.setAttribute("numUsers", userStore.numUsers());
     request.setAttribute("numMessages", messageStore.numberOfMessages());
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
