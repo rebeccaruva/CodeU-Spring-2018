@@ -36,8 +36,8 @@
 <% List<Conversation> conversations =
   (List<Conversation>) request.getAttribute("conversations");
   int numConversations = 0;
-  if (conversations != null){
-     numConversations = conversations.size();
+  if (request.getAttribute("numConversations") != null){
+     numConversations = (int)request.getAttribute("numConversations");
   }
   int numUsers = 0;
   if (request.getAttribute("numUsers") != null){

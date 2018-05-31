@@ -67,8 +67,7 @@ public class AdminServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    List<Conversation> conversations = conversationStore.getAllConversations();
-    request.setAttribute("conversations", conversations);
+    request.setAttribute("numConversations", conversationStore.numConversations());
     request.setAttribute("numUsers", userStore.numUsers());
     request.setAttribute("numMessages", messageStore.numberOfMessages());
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
