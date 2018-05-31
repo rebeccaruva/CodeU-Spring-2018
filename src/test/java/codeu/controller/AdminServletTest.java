@@ -59,7 +59,6 @@ public class AdminServletTest {
   /** test that doGet calculates statistics from the respective dataStores correctly */
   @Test
   public void testDoGet() throws IOException, ServletException {
-
     Mockito.when(mockConversationStore.numConversations())
         .thenReturn(3);
 
