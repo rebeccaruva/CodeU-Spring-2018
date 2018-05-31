@@ -52,6 +52,12 @@
 <div id="container">
   <div
     style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
+    <% if (request.getSession().getAttribute("user") == null){ %>
+    <p> Please log in to access the administrator page. </p>
+    <% } else if ((request.getSession().getAttribute("adminStatus") == null)
+    || (Boolean)request.getSession().getAttribute("adminStatus").equals(false)){ %>
+    <p> You do not have access to the administrator page. </p>
+    <% } else { %>
     <h1>Administration</h1>
       <h2>Statistics</h2>
           <a>Number of Conversations: <%= numConversations %></a> </br>
@@ -74,6 +80,7 @@
         <p><%= request.getAttribute("success") %></p>
     <% } %>
   </div>
+  <% } %>
 </div>
 
 </body>
