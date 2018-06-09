@@ -203,16 +203,16 @@ public class ChatServletTest {
 
     Mockito.when(mockRequest.getParameter("message"))
         .thenReturn("Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>,"
-        + " <em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, and"
+        + " <em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, :grinning:, and"
         + " <script>JavaScript</script> content.");
     chatServlet.doPost(mockRequest, mockResponse);
 
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    // this insert tag addition tests if whitelist is working
+    // these html tags and emoji addition tests if whitelist and parsing is working
     Assert.assertEquals(
         "Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, <em>italics</em>,"
-        + " <sub>subscript</sub>, <sup>superscript</sup>, and  content.",
+        + " <sub>subscript</sub>, <sup>superscript</sup>, &#128512;, and  content.",
         messageArgumentCaptor.getValue().getContent());
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
