@@ -44,6 +44,9 @@ import com.vladsch.flexmark.util.options.MutableDataSet;
 
 import java.util.Arrays;
 
+// import for emoji parser
+import com.vdurmont.emoji.EmojiParser;
+
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
 
@@ -196,6 +199,10 @@ public class ChatServlet extends HttpServlet {
 
     // this removes any style / script / html (other than allowed tags) from the message content
     String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
+
+    //this parses emojis to unicode and html
+    cleanedMessageContent = EmojiParser.parseToUnicode(cleanedMessageContent);
+    cleanedMessageContent = EmojiParser.parseToHtmlDecimal(cleanedMessageContent);
 
     Message message =
         new Message(
