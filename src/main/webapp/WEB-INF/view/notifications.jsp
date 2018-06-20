@@ -33,11 +33,14 @@
 
     <% if(request.getSession().getAttribute("user") != null){ %>
     <h1>Hi <%= request.getSession().getAttribute("user") %>, you have _ notifications.</h1>
-    <% } %>
+
 
     <h2>Statistics</h2>
 
     <p> Statistics here: 123 </p>
+    <% } else{%>
+        <h2 style="color:red">Error: Please log in to access notifications.</h2>
+    <%}%>
   </div>
 </body>
 </html>
