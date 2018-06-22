@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 public class NotificationServlet extends HttpServlet {
 
   /**
-   * This function fires when a user requests the /notifications URL. It simply forwards the request to
-   * notifications.jsp.
+   * This function fires when a user requests the /notifications URL. It simply forwards the request
+   * to notifications.jsp.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
