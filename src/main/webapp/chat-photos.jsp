@@ -52,8 +52,12 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <div
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
+      <% if (request.getSession().getAttribute("user") == null){ %>
+        <p>Please log in to view shared photos.</p>
+      <% } else { %>
+
       <h1>Shared Photos
-        <a href="/chat/" class="butn" id="arrowb"><i class="fa fa-chevron-left fa-lg"></i></a></h1>
+        <a href="/conversations" class="butn" id="arrowb"><i class="fa fa-chevron-left fa-lg"></i></a></h1>
 
       <hr/>
 
@@ -79,7 +83,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
           <img src="https://images.pexels.com/photos/825947/pexels-photo-825947.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" style="width:100%">
         </div>
       </div>
-
+      <% } %>
     </div>
   </div>
 </body>
