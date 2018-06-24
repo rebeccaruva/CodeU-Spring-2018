@@ -27,6 +27,8 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <head>
   <title><%= conversation.getTitle() %></title>
   <link rel="stylesheet" href="/css/main.css" type="text/css">
+  <!-- Add icon library for buttons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <style>
     #chat {
@@ -41,6 +43,11 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     function scrollChat() {
       var chatDiv = document.getElementById('chat');
       chatDiv.scrollTop = chatDiv.scrollHeight;
+    };
+
+    //alert for photo button when clicked
+    function showAlert() {
+      alert ("Photo button was pressed.");
     };
   </script>
 </head>
@@ -64,7 +71,9 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
   <div id="container">
 
+    <%-- arrow button to view shared photos page --%>
     <h1><%= conversation.getTitle() %>
+    <a href="/chat-photos.jsp" class="butn" id="arrowb"><i class="fa fa-chevron-right fa-lg"></i></a>
       <a href="" style="float: right">&#8635;</a></h1>
 
     <hr/>
@@ -85,15 +94,23 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <hr/>
 
-    <% if (request.getSession().getAttribute("user") != null) { %>
-    <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-        <input type="text" name="message">
-        <br/>
-        <button type="submit">Send</button>
-    </form>
-    <% } else { %>
-      <p><a href="/login">Login</a> to send a message.</p>
-    <% } %>
+    <div id="messageWrapper">
+      <div id="first">
+        <% if (request.getSession().getAttribute("user") != null) { %>
+        <form action="/chat/<%= conversation.getTitle() %>" method="POST">
+            <input type="text" name="message">
+            <br/>
+            <button type="submit">Send</button>
+        </form>
+        </div>
+        <div id="second">
+          <%-- button icon for uploading image --%>
+          <button class="butn" id="camerab" onclick="showAlert()"><i class="fa fa-camera fa-lg"></i></button>
+        </div>
+      </div>
+      <% } else { %>
+        <p><a href="/login">Login</a> to send a message.</p>
+      <% } %>
 
     <hr/>
 

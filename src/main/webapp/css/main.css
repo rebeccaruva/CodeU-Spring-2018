@@ -63,3 +63,72 @@ input {
 button {
   font-size: 18px;
 }
+
+.butn {
+  display: inline-block;
+}
+
+#arrowb {
+  display: inline-block;
+  background-color: inherit;
+  border: none;
+  color: #505ef0;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#camerab {
+  display: inline-block;
+  background-color: inherit;
+  border: none;
+  color: #505ef0;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker icon on mouse hover */
+#arrowb:hover {
+  color: #2637f2;
+}
+
+/* Darker icon on mouse hover */
+#camerab:hover {
+  color: #2637f2;
+}
+
+/* make the message input and camera button appear next to each other */
+#messageWrapper {
+  border: 1px black
+    width: 300px;
+    overflow: hidden;
+}
+#first {
+    width: 200px;
+    float:left;
+}
+#second {
+    float: left;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  box-sizing: border-box;
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+.column img {
+  box-sizing: border-box;
+  margin-top: 12px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  box-sizing: border-box;
+  content: "";
+  display: table;
+  clear: both;
+}
