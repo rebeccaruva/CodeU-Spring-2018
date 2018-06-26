@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.nodes.Document.OutputSettings;
+import java.util.regex.*;
 
 // imports for using markdown with flexmark
 import com.vladsch.flexmark.ast.Node;
@@ -163,6 +164,18 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
+    String messageText = request.getParameter("message");
+    Pattern r = Pattern.compile("\\[(.+?)\\]");
+    Matcher m = r.matcher(messageText);
+    while (m.find()){
+      String uName = m.group(1);
+      User u = userStore.getUser(uName);
+      if (u != null){
+        //if a user was mentioned, place ** around the text so it will be made bold
+        messageText = messageText.replace("["+uName+"]","**"+uName+"**");
+      }
+    }
+
     // this code uses flexmark library to parse markdown to html for conversation chat
     // Jsoup library is used to clean out any script and unwanted html tags
 
@@ -185,7 +198,7 @@ public class ChatServlet extends HttpServlet {
     HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
     // re-use parser and renderer instances
-    Node document  = parser.parse(request.getParameter("message"));
+    Node document  = parser.parse(messageText);
     String markdownContent = renderer.render(document);
     // this deletes new line tag that parse auto creates at end of node
     markdownContent = markdownContent.replaceAll("\n", "");
