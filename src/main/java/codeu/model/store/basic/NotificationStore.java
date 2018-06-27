@@ -2,6 +2,7 @@ package codeu.model.store.basic;
 
 import codeu.model.data.Notification;
 import codeu.model.data.Message;
+import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.UUID;
    private PersistentStorageAgent persistentStorageAgent;
 
    /** The in-memory list of Notifications. */
-   private List<Notification> notificatons;
+   private List<Notification> notifications;
 
    /** This class is a singleton, so its constructor is private. Call getInstance() insead */
    private NotificationStore(PersistentStorageAgent persistentStorageAgent) {

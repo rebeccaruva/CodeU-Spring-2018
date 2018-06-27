@@ -2,6 +2,7 @@ package codeu.model.data;
 
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.MessageStore;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -9,8 +10,8 @@ import java.util.UUID;
 public class Notification {
 
   private final UUID id;
-  private final User notifiedUser;
-  private final Message message;
+  private final UUID notifiedUser_UUID;
+  private final UUID message_UUID;
   private Boolean viewedStatus;
   private final Instant creation;
 
@@ -22,27 +23,29 @@ public class Notification {
    * @param viewedStatus whether or not this Notification has been seen
    * @param creation the creation time of this Notification
    */
-   public Notification(UUID id, User notifiedUser, Message message, Instant creation) {
+   public Notification(UUID id, UUID notifiedUser_UUID, UUID message_UUID, Instant creation) {
      this.id = id;
-     this.notifiedUser = notifiedUser;
-     this.message = message;
+     this.notifiedUser_UUID = notifiedUser_UUID;
+     this.message_UUID = message_UUID;
      this.viewedStatus = false;
      this.creation = creation;
    }
 
    /** Returns the ID of this Notification */
-   public UUID getID() {
+   public UUID getId() {
      return id;
    }
 
    /** Returns the User this Notification is for */
    public User getNotifiedUser() {
-     return notifiedUser;
+     UserStore userStore = UserStore.getInstance();
+     return userStore.getUser(notifiedUser_UUID);
    }
 
    /** Returns the Message this Notification refers to */
    public Message getMessage() {
-     return message;
+     MessageStore messageStore = MessageStore.getInstance();
+     return messageStore.getMessage(message_UUID);
    }
 
    /** Returns whether or not this Notification has been viewed by notifiedUser */
