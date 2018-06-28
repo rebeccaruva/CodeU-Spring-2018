@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "the-java-llamas-imhere",
+  "private_key_id": "5ef7da2d46d1f4f2cb8cb3223528ca1cdd1c8d50",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDf+S3sEPLmYF5x\niHTl5Smu8MN9Ccl9IHhQelN2izwihnHEihqgdsVggDGJc+iN8ByWMZo4ZLvfaV3a\n1GLMbTvBDS+lStWotOGCoqBs5Y8q//PvDTlko99n5c1WMj+UhNNiI+k5EDhmUx1w\n96yEyaJUlrLNpte9tOjnLEC0T0bV2vAIQAk9/4zLlkWmgzGW3DEg/Wiu4AhF/466\n3RfbX6iYxCPzOIF5tHkKzbCItQis9JKJgYvb6eShjRqu9ipx3V99R5jFfLxTrcPz\nokEBwsX5PK+EU7K2yxiZfT3pXO0MNKM/yA9nQNDZ2B16yngvcC1CohYdunvZvEvq\n/Mhka0ZZAgMBAAECggEAAS3QifR2biJV9O7meVre46QyHzzxkHZkuY5zplaqEAfT\ndeSMfAO0w8XMnPSACOfIF9TwgsTkbl6nXm9+/wFYphARxkughsr53Yz4SBPrLYhV\n4ZYZEzhuPtQPJBPmlwFMn3aPP2IUuY7NCUJx88kUM+wasxKRAmLtvhsNGJjK3sbN\n48e7tuxYG0B3KiLy1GG5Rqxbw5nWA2fVeroxCOHclbcAsC2vu/ySxrlpjUDWgR4O\nuiaz4P5zBEi+lxOtDv6/T/iGPtghknQOl5ZtmdWjNpm0nUJ3rdreD962sBDqxutZ\nD2uIiWG3LuQQfPU5adRAYWpLEcYAMVTKwBVDhJWqQQKBgQD/GJ3uNFBFA0xSNhmx\ngzB8XcusfRfgMEmrU2x4SSUrB0PLwGbbGes7s0uRnI89jEblAWGDw1Q8BESzY734\nDnNORz2BUyNYvtXAVDy9cA/2a2OF3ZD6cR7DetVdwtO4kckcOuczREoSUXZAWqwQ\nvYmT9cj6ZBUTTejgNlfUNBvA4QKBgQDgxFUvt31e2bmT3xmiTfxF6kXVqFsSGTsO\n/UwRLCJ/ovn3J8wzGwicOZnUwqxSuZW57LqQW4hpUF5FH0XtC7TbO1JETg/iWLla\nUlLOI3mIunM4fC6nPCS2QcjFWKH6iDDRNqm9/mGSfFNH2Z2UlnXvI7PUjeVR1crC\nRG2pXkSceQKBgGSKaUSHLdPlduE4HWxPTn7V4P581zovDfoOiUPnYFTTKi9WB7P3\nRTVkdzZOxE33ycFch/iMtdhpvkIN38OyvlNt1JnyEI5buJdzG/V2A3SV4sXSC+AJ\nUZyt/wZTUWr/Wopb1N/p3F/X54l5szNt4JmGV84IQB45qL0l7fvfBclBAoGAFGAX\n7NRwbAnGte3yj/EL3nanUAAMCW76GJjDrYbXtcRbbplP/I4F0Muz80KWhoVGWm1o\nWC/EBPABK7jzCNMX2QveoEyHShiK7PIriX5TxR5J1aQEQqrEFTWPcrxfKqvv6PdQ\nmeWWiMX2crv6ef7NwBj3c1xNnoaH8+ZqHoFqLNkCgYEAn6ylsvNEcSZI5ZdOB2Zd\naTNkBvB59xXvGrfbLCG/g3NPaedZAH/ovxambNQ/be9X369plmAGnpaZiXJ7pGou\nos9uv3OUu+JKikjKth0QYMJqfDpbzw7c9ifeaG2JovzTuZEB51bwbDPRAvgoikN0\nlB9o4STYhTElYz9DHkWlbuk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "translateserviceaccount@the-java-llamas-imhere.iam.gserviceaccount.com",
+  "client_id": "102102887775111382375",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/translateserviceaccount%40the-java-llamas-imhere.iam.gserviceaccount.com"
+}
