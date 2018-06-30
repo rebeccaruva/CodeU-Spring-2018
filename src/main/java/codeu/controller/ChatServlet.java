@@ -17,10 +17,12 @@ package codeu.controller;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.NotificationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
@@ -60,6 +62,9 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Activities. */
   private ActivityStore activityStore;
 
+  /** Store class that gives access to Notifications. */
+  private NotificationStore notificationStore;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -68,6 +73,7 @@ public class ChatServlet extends HttpServlet {
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
     setActivityStore(ActivityStore.getInstance());
+    setNotificationStore(NotificationStore.getInstance());
   }
 
   /**
@@ -100,6 +106,14 @@ public class ChatServlet extends HttpServlet {
    */
   void setActivityStore(ActivityStore activityStore) {
     this.activityStore = activityStore;
+  }
+
+  /**
+   * Sets the NotificationStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setNotificationStore(NotificationStore notificationStore) {
+    this.notificationStore = notificationStore;
   }
 
   /**
@@ -167,12 +181,17 @@ public class ChatServlet extends HttpServlet {
     String messageText = request.getParameter("message");
     Pattern r = Pattern.compile("\\[(.+?)\\]");
     Matcher m = r.matcher(messageText);
+
+    // Generate a UUID for the message now, in case Notification needs it
+    UUID messageID = UUID.randomUUID();
+
     while (m.find()){
       String uName = m.group(1);
       User u = userStore.getUser(uName);
       if (u != null){
-        //if a user was mentioned, place ** around the text so it will be made bold
+        // if a user was mentioned, place ** around the text so it will be made bold
         messageText = messageText.replace("["+uName+"]","**"+uName+"**");
+        notificationStore.addNotification(new Notification(UUID.randomUUID(),u.getId(),messageID,Instant.now()));
       }
     }
 

@@ -42,10 +42,22 @@ public class Notification {
      return userStore.getUser(notifiedUser_UUID);
    }
 
+   /** Returns the UUID of the User this Notification is for */
+   public UUID getNotifiedUserUUID() {
+     return notifiedUser_UUID;
+   }
+
    /** Returns the Message this Notification refers to */
    public Message getMessage() {
      MessageStore messageStore = MessageStore.getInstance();
      return messageStore.getMessage(message_UUID);
+   }
+
+   /** Returns the UUID of the Message this Notification refers to. This is necessary
+     * because the Notification is constructed before the Message is.
+     */
+   public UUID getMessageUUID() {
+     return message_UUID;
    }
 
    /** Returns whether or not this Notification has been viewed by notifiedUser */

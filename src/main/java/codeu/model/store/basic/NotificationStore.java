@@ -62,12 +62,17 @@ import java.util.UUID;
    /** Access the current set of Notifications for a specific User */
    public List<Notification> getNotificationsForUser(User user) {
      List<Notification> notificationsForUser = new ArrayList<>();
-
+     UUID userUUID = user.getId();
      for (Notification notification : notifications) {
-       if (notification.getNotifiedUser() == user)
+       if (notification.getNotifiedUserUUID().equals(userUUID))
         notificationsForUser.add(notification);
      }
 
      return notificationsForUser;
+   }
+
+   /** Return the number of notifications a user has. */
+   public int getNumNotificationsForUser(User user) {
+     return getNotificationsForUser(user).size();
    }
  }

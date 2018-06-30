@@ -265,7 +265,7 @@ public class PersistentDataStore {
     Entity notificationEntity = new Entity("notifications", notification.getId().toString());
     notificationEntity.setProperty("uuid", notification.getId().toString());
     notificationEntity.setProperty("notifiedUser_UUID", notification.getNotifiedUser().getId().toString());
-    notificationEntity.setProperty("message_UUID", notification.getMessage().getId().toString());
+    notificationEntity.setProperty("message_UUID", notification.getMessageUUID().toString());
     notificationEntity.setProperty("viewedStatus", notification.getViewedStatus());
     notificationEntity.setProperty("creation_time", notification.getCreationTime().toString());
     datastore.put(notificationEntity);

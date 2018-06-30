@@ -32,7 +32,8 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-    <h1>Hi <%= request.getSession().getAttribute("user") %>, you have _ notifications.</h1>
+    <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
+    <%= request.getSession().getAttribute("numNotifications") %> notifications.</h1>
 
 
     <h2>Statistics</h2>
