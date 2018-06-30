@@ -72,14 +72,10 @@ public class NotificationServlet extends HttpServlet {
 
     if (request.getSession().getAttribute("user") != null) {
       String username = (String) request.getSession().getAttribute("user");
-      System.out.println("PARTONE");
-      //if (userStore.getUser( (String) request.getSession().getAttribute("user")) != null) {
-        //System.out.println("PARTTWO");
       User u = userStore.getUser(username);
       request.getSession().setAttribute("numNotifications", notificationStore.getNumNotificationsForUser(u));
     }
     else {
-      System.out.println("ELSE");
       request.getSession().setAttribute("numNotifications", (int)0);
     }
     request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
