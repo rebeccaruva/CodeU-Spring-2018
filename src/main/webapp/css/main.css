@@ -154,7 +154,7 @@ button {
   overflow: hidden;
 }
 #first {
-    width: 200px;
+    display:inline-block;
     float:left;
 }
 #second {
