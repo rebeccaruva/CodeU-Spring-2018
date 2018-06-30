@@ -13,6 +13,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
+
+<%--
+Resources used to help with styling tooltip and modal!
+  tooltip/hover popup: https://www.w3schools.com/howto/howto_css_tooltip.asp
+  modal: https://www.w3schools.com/howto/howto_css_modals.asp
+--%>
+
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
@@ -45,10 +52,28 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       chatDiv.scrollTop = chatDiv.scrollHeight;
     };
 
-    //alert for photo button when clicked
-    function showAlert() {
-      alert ("Photo button was pressed.");
-    };
+    // When the user clicks the button, open the modal
+    function showModal() {
+      // Get the modal
+      var modal = document.getElementById('myModal');
+      modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    function closeModal() {
+      // Get the modal
+      var modal = document.getElementById('myModal');
+      modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      // Get the modal
+      var modal = document.getElementById('myModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
   </script>
 </head>
 <body onload="scrollChat()">
@@ -72,9 +97,18 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
   <div id="container">
 
     <%-- arrow button to view shared photos page --%>
-    <h1><%= conversation.getTitle() %>
-    <a href="/chat-photos.jsp" class="butn" id="arrowb"><i class="fa fa-chevron-right fa-lg"></i></a>
-      <a href="" style="float: right">&#8635;</a></h1>
+    <div id="chatHead">
+      <div id="chatTitle">
+        <h1><%= conversation.getTitle() %></h1>
+      </div>
+      <div id="chatButton1">
+        <a href="/photos/<%= conversation.getTitle() %>" class="butn" id="arrowb"><i class="fa fa-chevron-right fa-lg"></i></a>
+        <span class="tooltiptext">Shared Photos</span>
+      </div>
+      <div id="chatButton2">
+        <a href="">&#8635;</a>
+      </div>
+    </div>
 
     <hr/>
 
@@ -104,8 +138,18 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         </form>
         </div>
         <div id="second">
-          <%-- button icon for uploading image --%>
-          <button class="butn" id="camerab" onclick="showAlert()"><i class="fa fa-camera fa-lg"></i></button>
+          <%-- button icon for triggering modal to appear --%>
+          <button class="butn" id="camerab" onclick="showModal()"><i class="fa fa-camera fa-lg"></i></button>
+        </div>
+      </div>
+
+      <!-- the modal for photo upload -->
+      <div id="myModal" class="modal">
+
+        <!-- modal content -->
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <p>Upload your photo here.</p>
         </div>
       </div>
       <% } else { %>
