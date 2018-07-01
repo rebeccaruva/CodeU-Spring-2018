@@ -19,6 +19,7 @@ import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -37,12 +38,16 @@ public class PhotosServlet extends HttpServlet {
   /** Store class that gives access to Messages. */
   private MessageStore messageStore;
 
+  /** Store class that gives access to Users. */
+  private UserStore userStore;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
     super.init();
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
+    setUserStore(UserStore.getInstance());
   }
 
   /**
@@ -62,9 +67,17 @@ public class PhotosServlet extends HttpServlet {
   }
 
   /**
-   * This function fires when a user navigates to the photos page. It gets the conversation title from
-   * the URL, finds the corresponding Conversation, and fetches the photos in that Conversation.
-   * It then forwards to photos.jsp for rendering.
+   * Sets the UserStore used by this servlet. This function provides a common setup method for use
+   * by the test framework or the servlet's init() function.
+   */
+  void setUserStore(UserStore userStore) {
+    this.userStore = userStore;
+  }
+
+  /**
+   * This function fires when a user navigates to the photos page. It gets the conversation title
+   * from the URL, finds the corresponding Conversation, and fetches the photos in that
+   * Conversation. It then forwards to photos.jsp for rendering.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -81,10 +94,7 @@ public class PhotosServlet extends HttpServlet {
 
     UUID conversationId = conversation.getId();
 
-    List<Message> messages = messageStore.getMessagesInConversation(conversationId);
-
     request.setAttribute("conversation", conversation);
-    request.setAttribute("messages", messages);
     request.getRequestDispatcher("/WEB-INF/view/photos.jsp").forward(request, response);
   }
 
@@ -95,15 +105,28 @@ public class PhotosServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-     String requestUrl = request.getRequestURI();
-     String conversationTitle = requestUrl.substring("/photos/".length());
+    String username = (String) request.getSession().getAttribute("user");
+    if (username == null) {
+      // user is not logged in, don't let them view photos
+      response.sendRedirect("/login");
+      return;
+    }
 
-     Conversation conversation = conversationStore.getConversationWithTitle(conversationTitle);
-     if (conversation == null) {
-       // couldn't find conversation, redirect to conversation list
-       response.sendRedirect("/conversations");
-       return;
-     }
+    User user = userStore.getUser(username);
+    if (user == null) {
+      // user was not found, don't let them view photos
+      response.sendRedirect("/login");
+      return;
+    }
+    String requestUrl = request.getRequestURI();
+    String conversationTitle = requestUrl.substring("/photos/".length());
+
+    Conversation conversation = conversationStore.getConversationWithTitle(conversationTitle);
+    if (conversation == null) {
+      // couldn't find conversation, redirect to conversation list
+      response.sendRedirect("/conversations");
+      return;
+    }
 
     // redirect to a GET request
     response.sendRedirect("/photos/" + conversationTitle);
