@@ -78,13 +78,13 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
-      <% if (request.getSession().getAttribute("user") != null) { %>
-    <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <% } else { %>
-      <a href="/login">Login</a>
-    <% } %>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+      <a href="/notifications">Notifications</a>
+    <% } else{ %>
+      <a href="/login">Login</a>
+    <% } %>
     <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
     <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
       <a href="/admin">Admin</a>
@@ -127,12 +127,13 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <div id="messageWrapper">
       <div id="first">
-        <% if (request.getSession().getAttribute("user") != null) { %>
-        <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-            <input type="text" name="message">
-            <br/>
-            <button type="submit">Send</button>
-        </form>
+         <% if (request.getSession().getAttribute("user") != null) { %>
+          <form action="/chat/<%= conversation.getTitle() %>" method="POST">
+              <input type="text" name="message">
+              <br/>
+              <button type ="button">Check Sentiment</button>
+              <button type="submit">Send</button>
+          </form>
         </div>
         <div id="second">
           <%-- button icon for triggering modal to appear --%>
