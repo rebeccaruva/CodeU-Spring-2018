@@ -179,7 +179,7 @@ public class ChatServlet extends HttpServlet {
     }
 
     String messageText = request.getParameter("message");
-    Pattern msgMentionPattern = Pattern.compile("\\[(.+?)\\]");
+    Pattern msgMentionPattern = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
     Matcher msgTxtMatcher = msgMentionPattern.matcher(messageText);
 
     // Generate a UUID for the message now, in case Notification needs it
