@@ -72,8 +72,8 @@ public class NotificationServlet extends HttpServlet {
 
     if (request.getSession().getAttribute("user") != null) {
       String username = (String) request.getSession().getAttribute("user");
-      User u = userStore.getUser(username);
-      request.getSession().setAttribute("numNotifications", notificationStore.getNumNotificationsForUser(u));
+      User user = userStore.getUser(username);
+      request.getSession().setAttribute("numNotifications", notificationStore.getNumNotificationsForUser(user));
     }
     else {
       request.getSession().setAttribute("numNotifications", (int)0);

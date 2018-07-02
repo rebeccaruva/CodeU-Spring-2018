@@ -179,19 +179,19 @@ public class ChatServlet extends HttpServlet {
     }
 
     String messageText = request.getParameter("message");
-    Pattern r = Pattern.compile("\\[(.+?)\\]");
-    Matcher m = r.matcher(messageText);
+    Pattern msgMentionPattern = Pattern.compile("\\[(.+?)\\]");
+    Matcher msgTxtMatcher = msgMentionPattern.matcher(messageText);
 
     // Generate a UUID for the message now, in case Notification needs it
     UUID messageID = UUID.randomUUID();
 
-    while (m.find()){
-      String uName = m.group(1);
-      User u = userStore.getUser(uName);
-      if (u != null){
+    while (msgTxtMatcher.find()){
+      String mentionedUsername = msgTxtMatcher.group(1);
+      User mentionedUser = userStore.getUser(mentionedUsername);
+      if (mentionedUser != null){
         // if a user was mentioned, place ** around the text so it will be made bold
-        messageText = messageText.replace("["+uName+"]","**"+uName+"**");
-        notificationStore.addNotification(new Notification(UUID.randomUUID(),u.getId(),messageID,Instant.now()));
+        messageText = messageText.replace("["+mentionedUsername+"]","**"+mentionedUsername+"**");
+        notificationStore.addNotification(new Notification(UUID.randomUUID(),mentionedUser.getId(),messageID,Instant.now()));
       }
     }
 
