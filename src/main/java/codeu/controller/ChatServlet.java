@@ -27,6 +27,7 @@ import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -185,13 +186,15 @@ public class ChatServlet extends HttpServlet {
     // Generate a UUID for the message now, in case Notification needs it
     UUID messageID = UUID.randomUUID();
 
+    List<String> mentionedUserStrings = new ArrayList<String>();
     while (msgTxtMatcher.find()){
       String mentionedUsername = msgTxtMatcher.group(1);
       User mentionedUser = userStore.getUser(mentionedUsername);
-      if (mentionedUser != null){
+      if (mentionedUser != null && !mentionedUserStrings.contains(mentionedUsername)){
         // if a user was mentioned, place ** around the text so it will be made bold
         messageText = messageText.replace("["+mentionedUsername+"]","**"+mentionedUsername+"**");
         notificationStore.addNotification(new Notification(UUID.randomUUID(),mentionedUser.getId(),messageID,Instant.now()));
+        mentionedUserStrings.add(mentionedUsername);
       }
     }
 
