@@ -26,6 +26,7 @@ public class NaturalLanguageProcessingTest {
   private String returnedTranslatedString;
   private ArrayList<String> test_strings;
 
+  /* test configuration for Natural Language API */
   @Test
   public void testConfigurationNaturalLanguage() {
     returnedSentimentValue = new Float(0.0);
@@ -69,6 +70,7 @@ public class NaturalLanguageProcessingTest {
     }
   }
 
+  /* test configuration for Google Cloud Translate API */
   @Test
   public void testConfigurationTranslation() {
     returnedTranslatedString = "";
