@@ -14,44 +14,39 @@
 
 package codeu.natural_language;
 
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.Translate.TranslateOption;
-import com.google.cloud.translate.TranslateOptions;
-import com.google.cloud.translate.Translation;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.Document.Type;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
-import java.lang.Exception;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.Translate.TranslateOption;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
+import java.io.IOException;
 
 /** class processing messages for tone and translation */
 public class NaturalLanguageProcessing {
-  public static float testConfigurationNaturalLanguage() throws Exception{
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-        // Text to analyze
-        String text = "depressed";
-        Document doc = Document.newBuilder()
-            .setContent(text).setType(Type.PLAIN_TEXT).build();
+  public static float configurationNaturalLanguage(String text) throws IOException {
+    LanguageServiceClient language = LanguageServiceClient.create();
+    Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
 
-        // Detects the sentiment of the text
-        Sentiment sentiment = language.analyzeSentiment(doc).getDocumentSentiment();
+    // Detects the sentiment of the text
+    Sentiment sentiment = language.analyzeSentiment(doc).getDocumentSentiment();
 
-        return sentiment.getScore();
-    }
+    return sentiment.getScore();
   }
 
-  public static String testConfigurationTranslation() throws Exception{
+  public static String configurationTranslation(
+      String text, String sourceLanguage, String targetLanguage) throws IOException {
     // Instantiates a client
     Translate translate = TranslateOptions.getDefaultInstance().getService();
-    // Text to translate
-    String text = "Sad";
 
-    // Translates text into Spanish
+    // Translates text into target language
     Translation translation =
         translate.translate(
             text,
-            TranslateOption.sourceLanguage("en"),
-            TranslateOption.targetLanguage("es"));
+            TranslateOption.sourceLanguage(sourceLanguage),
+            TranslateOption.targetLanguage(targetLanguage));
 
     return translation.getTranslatedText().toString();
   }

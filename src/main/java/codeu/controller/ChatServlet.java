@@ -22,8 +22,15 @@ import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.options.MutableDataSet;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletException;
@@ -31,18 +38,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 import org.jsoup.nodes.Document.OutputSettings;
-
-// imports for using markdown with flexmark
-import com.vladsch.flexmark.ast.Node;
-import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import com.vladsch.flexmark.ext.ins.InsExtension;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.options.MutableDataSet;
-
-import java.util.Arrays;
+import org.jsoup.safety.Whitelist;
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -167,7 +164,7 @@ public class ChatServlet extends HttpServlet {
     // Jsoup library is used to clean out any script and unwanted html tags
 
     // use Jsoup to allow certain tags for parsing
-    Whitelist allowedTags = Whitelist.none(); //no tags allowed, empty whitelist
+    Whitelist allowedTags = Whitelist.none(); // no tags allowed, empty whitelist
     // now add tags to empty whitelist
     // ins: underline, del: strikethrough, strong: bold
     // em: italics, sub: subscript, sup: superscript
@@ -177,15 +174,15 @@ public class ChatServlet extends HttpServlet {
     MutableDataSet options = new MutableDataSet();
 
     // set underline(++) and strikethrough(~~) extension for markdown
-    options.set(Parser.EXTENSIONS, Arrays.asList(InsExtension.create(),
-    StrikethroughExtension.create()));
+    options.set(
+        Parser.EXTENSIONS, Arrays.asList(InsExtension.create(), StrikethroughExtension.create()));
 
     // parse markdown to html
     Parser parser = Parser.builder(options).build();
     HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
     // re-use parser and renderer instances
-    Node document  = parser.parse(request.getParameter("message"));
+    Node document = parser.parse(request.getParameter("message"));
     String markdownContent = renderer.render(document);
     // this deletes new line tag that parse auto creates at end of node
     markdownContent = markdownContent.replaceAll("\n", "");

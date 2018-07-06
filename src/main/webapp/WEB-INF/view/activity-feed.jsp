@@ -53,11 +53,6 @@
 
     <h1>Activity Feed</h1>
 
-    <!-- test to see if natural language processing and translation APIs configured properly -->
-    <% NaturalLanguageProcessing nlp = new NaturalLanguageProcessing(); %>
-    <p>depressed has a sentiment value of <%= nlp.testConfigurationNaturalLanguage() %></p>
-    <p>"Sad" translated to Spanish is <%= nlp.testConfigurationTranslation() %></p>
-
     <% if(request.getSession().getAttribute("user") != null){ %>
       <!-- get list of activities -->
       <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");

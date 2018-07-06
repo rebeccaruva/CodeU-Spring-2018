@@ -1,15 +1,11 @@
 package codeu.controller;
 
-import codeu.model.data.Conversation;
-import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class AdminServletTest {
@@ -59,14 +54,11 @@ public class AdminServletTest {
   /** test that doGet calculates statistics from the respective dataStores correctly */
   @Test
   public void testDoGet() throws IOException, ServletException {
-    Mockito.when(mockConversationStore.numConversations())
-        .thenReturn(3);
+    Mockito.when(mockConversationStore.numConversations()).thenReturn(3);
 
-    Mockito.when(mockUserStore.numUsers())
-        .thenReturn(4);
+    Mockito.when(mockUserStore.numUsers()).thenReturn(4);
 
-    Mockito.when(mockMessageStore.numberOfMessages())
-        .thenReturn(43);
+    Mockito.when(mockMessageStore.numberOfMessages()).thenReturn(43);
 
     adminServlet.doGet(mockRequest, mockResponse);
 
@@ -90,5 +82,4 @@ public class AdminServletTest {
     user.giveUserAdminStatus();
     Assert.assertEquals(true, user.getAdminStatus());
   }
-
 }

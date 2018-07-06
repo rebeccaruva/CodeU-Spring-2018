@@ -80,7 +80,7 @@ public class UserStore {
   }
 
   /** Returns size of user list. */
-  public int numUsers(){
+  public int numUsers() {
     return users.size();
   }
 

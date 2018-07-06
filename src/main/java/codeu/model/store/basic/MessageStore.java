@@ -101,7 +101,7 @@ public class MessageStore {
   }
 
   /** Returns the number of messages stored. */
-  public int numberOfMessages(){
+  public int numberOfMessages() {
     return messages.size();
   }
 

@@ -1,11 +1,9 @@
 package codeu.controller;
 
-import codeu.model.store.basic.UserStore;
-import codeu.model.store.basic.MessageStore;
-import codeu.model.store.basic.ConversationStore;
 import codeu.model.data.User;
-import codeu.model.data.Conversation;
-import java.util.List;
+import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
