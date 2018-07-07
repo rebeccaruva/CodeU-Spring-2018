@@ -75,4 +75,9 @@ import java.util.UUID;
    public int getNumNotificationsForUser(User user) {
      return getNotificationsForUser(user).size();
    }
+
+   /** Sets the List of Notifications stored by this MessageStore. */
+   public void setNotifications(List<Notification> notifications) {
+     this.notifications = notifications;
+   }
  }

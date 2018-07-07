@@ -100,6 +100,16 @@ public class PersistentStorageAgent {
     return persistentDataStore.loadActivities();
   }
 
+  /**
+   * Retrieve all Notification objects from the Datastore service. The returned list may be empty.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     DataStore service
+   */
+   public List<Notification> loadNotifications() throws PersistentDataStoreException {
+     return persistentDataStore.loadNotifications();
+   }
+
   /** Write a User object to the Datastore service. */
   public void writeThrough(User user) {
     persistentDataStore.writeThrough(user);
