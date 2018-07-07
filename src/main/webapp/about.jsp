@@ -21,13 +21,22 @@
 </head>
 <body>
 
+  <% int numNotifications = 0; %>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <% numNotifications = (int) request.getSession().getAttribute("numNotifications"); %>
+  <% } %>
+
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a href="/notifications">Notifications</a>
+      <% if (numNotifications != 0) { %>
+        <a href="/notifications">Notifications (<%= numNotifications %>)</a>
+      <% } else { %>
+        <a href="/notifications">Notifications</a>
+      <% } %>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>

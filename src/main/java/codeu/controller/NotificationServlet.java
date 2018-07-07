@@ -68,16 +68,21 @@ public class NotificationServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    NotificationServlet.updateNumNotifications(request);
+    request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
+  }
 
-
+  /**
+   * This function updates request with the current number of unread notifications for the logged in user. 
+   */
+  public static void updateNumNotifications(HttpServletRequest request) {
     if (request.getSession().getAttribute("user") != null) {
       String username = (String) request.getSession().getAttribute("user");
-      User user = userStore.getUser(username);
-      request.getSession().setAttribute("numNotifications", notificationStore.getNumNotificationsForUser(user));
+      User user = UserStore.getInstance().getUser(username);
+      request.getSession().setAttribute("numNotifications", NotificationStore.getInstance().getNumNotificationsForUser(user));
     }
     else {
       request.getSession().setAttribute("numNotifications", (int)0);
     }
-    request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
   }
 }
