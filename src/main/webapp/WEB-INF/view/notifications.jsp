@@ -9,13 +9,18 @@
 </head>
 <body>
 
+  <% int numNotifications = 0; %>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <% numNotifications = (int) request.getSession().getAttribute("numNotifications"); %>
+  <% } %>
+
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a href="/notifications">Notifications</a>
+        <a href="/notifications">Notifications</a>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
@@ -32,9 +37,13 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-    <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
-    <%= request.getSession().getAttribute("numNotifications") %> notifications.</h1>
-
+      <% if(numNotifications==1){ %>
+        <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
+        <%= numNotifications %> notification.</h1>
+      <% } else{ %>
+        <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
+        <%= numNotifications %> notifications.</h1>
+      <% } %>
 
     <h2>Statistics</h2>
 
