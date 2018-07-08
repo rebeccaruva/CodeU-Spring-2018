@@ -10,6 +10,7 @@ import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import codeu.model.store.persistence.PersistentStorageAgent;
+import codeu.configuration.JsonConfiguration;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -35,6 +36,11 @@ public class ServerStartupListener implements ServletContextListener {
 
       List<Activity> activities = PersistentStorageAgent.getInstance().loadActivities();
       ActivityStore.getInstance().setActivities(activities);
+
+      /* only uncomment next line if do not run makeJson test in NaturalLanguageProcessingTest for
+        JsonConfiguration, i.e. run maven with option -DskipTests=true
+      */
+      //(new JsonConfiguration()).createJson();
     } catch (PersistentDataStoreException e) {
       System.err.println("Server didn't start correctly. An error occurred during Datastore load!");
       System.err.println("This is usually caused by loading data that's in an invalid format.");

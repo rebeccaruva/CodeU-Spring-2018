@@ -14,9 +14,11 @@
 
 package codeu.natural_language;
 
+import codeu.configuration.JsonConfiguration;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class NaturalLanguageProcessingTest {
@@ -25,6 +27,12 @@ public class NaturalLanguageProcessingTest {
   private Float returnedSentimentValue;
   private String returnedTranslatedString;
   private ArrayList<String> test_strings;
+
+  /* create Json file with Google credentials for APIs */
+  @Before
+  public void makeJson() {
+    (new JsonConfiguration()).createJson();
+  }
 
   /* test configuration for Natural Language API */
   @Test
