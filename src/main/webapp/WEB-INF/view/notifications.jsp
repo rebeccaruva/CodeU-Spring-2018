@@ -1,5 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.Message" %>
+<%@ page import="codeu.model.data.Notification" %>
 
 <!DOCTYPE html>
 <html>
@@ -30,6 +32,8 @@
     <% }} %>
   </nav>
 
+  <% List<Notification> notifications = (List<Notification>) request.getAttribute("notifications"); %>
+
   <div id="container">
 
     <% if(request.getAttribute("error") != null){ %>
@@ -44,6 +48,21 @@
         <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
         <%= numNotifications %> notifications.</h1>
       <% } %>
+
+     <div id="chat">
+        <ul>
+      <%
+        for (Notification notification : notifications) {
+          Message message = (Message) notification.getMessage();
+          String messageAuthor = message.getUser();
+          String messageConversationLink = "/chat/" + message.getConversation();
+      %>
+        <li><strong><%= messageAuthor %> mentioned you: </strong>"<a href=<%= messageConversationLink %>><%= message.getContent() %>"</a></li>
+      <%
+        }
+      %>
+        </ul>
+      </div>
 
     <h2>Statistics</h2>
 
