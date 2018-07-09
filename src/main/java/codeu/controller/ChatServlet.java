@@ -235,7 +235,7 @@ public class ChatServlet extends HttpServlet {
 
     Message message =
         new Message(
-            UUID.randomUUID(),
+            messageID,
             conversation.getId(),
             user.getId(),
             cleanedMessageContent,
