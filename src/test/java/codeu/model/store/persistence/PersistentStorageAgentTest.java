@@ -99,4 +99,13 @@ public class PersistentStorageAgentTest {
     persistentStorageAgent.writeThrough(notification);
     Mockito.verify(mockPersistentDataStore).writeThrough(notification);
   }
+
+  @Test
+  public void testDeleteEntityNotification() {
+    Notification notification =
+        new Notification(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now());
+    persistentStorageAgent.deleteEntity(notification);
+    Mockito.verify(mockPersistentDataStore).deleteEntity(notification);
+  }
 }
