@@ -77,9 +77,21 @@ import java.util.UUID;
      return notificationsForUser;
    }
 
-   /** Return the number of notifications a user has. */
+   /** Returns the number of notifications a user has. */
    public int getNumNotificationsForUser(User user) {
      return getNotificationsForUser(user).size();
+   }
+
+   /** Returns the number of unread notifications a user has. */
+   public int getNumUnreadNotificationsForUser(User user) {
+     List<Notification> notificationsForUser = getNotificationsForUser(user);
+     int unreadNotifications = 0;
+     for (Notification notification : notificationsForUser) {
+       if (!notification.getViewedStatus()) {
+         unreadNotifications++;
+       }
+     }
+     return unreadNotifications;
    }
 
    /** Sets the List of Notifications stored by this MessageStore. */
