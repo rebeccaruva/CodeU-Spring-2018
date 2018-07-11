@@ -12,6 +12,8 @@ import codeu.model.data.User;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.NotificationStore;
 import codeu.model.store.basic.UserStore;
+import java.util.ArrayList;
+import java.util.List;
 
 /*Servlet class responsible for Notification class functions */
 public class NotificationServlet extends HttpServlet {
@@ -69,11 +71,16 @@ public class NotificationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     NotificationServlet.updateNumNotifications(request);
+    if (request.getSession().getAttribute("user") != null) {
+      String username = (String) request.getSession().getAttribute("user");
+      User user = UserStore.getInstance().getUser(username);
+      request.setAttribute("notifications", notificationStore.getNotificationsForUser(user));
+    }
     request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
   }
 
   /**
-   * This function updates request with the current number of unread notifications for the logged in user. 
+   * This function updates request with the current number of unread notifications for the logged in user.
    */
   public static void updateNumNotifications(HttpServletRequest request) {
     if (request.getSession().getAttribute("user") != null) {
