@@ -23,6 +23,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import java.time.Instant;
@@ -269,5 +271,11 @@ public class PersistentDataStore {
     notificationEntity.setProperty("viewedStatus", notification.getViewedStatus());
     notificationEntity.setProperty("creation_time", notification.getCreationTime().toString());
     datastore.put(notificationEntity);
+  }
+
+  /** Deletes a Notification object from the DataStore service. */
+  public void deleteEntity(Notification notification) {
+    Key k1 = KeyFactory.stringToKey(notification.getId().toString());
+    datastore.delete(k1);
   }
 }

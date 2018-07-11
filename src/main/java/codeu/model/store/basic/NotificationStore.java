@@ -59,6 +59,12 @@ import java.util.UUID;
      persistentStorageAgent.writeThrough(notification);
    }
 
+   /** Deletes a Notification from the current set and the DataStore */
+   public void deleteNotification(Notification notification){
+     notifications.remove(notification);
+     persistentStorageAgent.deleteEntity(notification);
+   }
+
    /** Access the current set of Notifications for a specific User */
    public List<Notification> getNotificationsForUser(User user) {
      List<Notification> notificationsForUser = new ArrayList<>();

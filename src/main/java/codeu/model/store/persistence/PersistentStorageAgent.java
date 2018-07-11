@@ -134,4 +134,9 @@ public class PersistentStorageAgent {
   public void writeThrough(Notification notification) {
     persistentDataStore.writeThrough(notification);
   }
+
+  /** Deletes a Notification object from the Datastore service. */
+  public void deleteEntity(Notification notification) {
+    persistentDataStore.deleteEntity(notification);
+  }
 }
