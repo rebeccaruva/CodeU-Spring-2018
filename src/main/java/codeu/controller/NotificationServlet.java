@@ -87,9 +87,11 @@ public class NotificationServlet extends HttpServlet {
       String username = (String) request.getSession().getAttribute("user");
       User user = UserStore.getInstance().getUser(username);
       request.getSession().setAttribute("numNotifications", NotificationStore.getInstance().getNumNotificationsForUser(user));
+      request.getSession().setAttribute("numUnreadNotifications", NotificationStore.getInstance().getNumUnreadNotificationsForUser(user));
     }
     else {
       request.getSession().setAttribute("numNotifications", (int)0);
+      request.getSession().setAttribute("numUnreadNotifications", (int)0);
     }
   }
 }

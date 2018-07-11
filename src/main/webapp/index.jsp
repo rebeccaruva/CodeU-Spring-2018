@@ -21,9 +21,9 @@
 </head>
 <body>
 
-  <% int numNotifications = 0; %>
+  <% int numUnreadNotifications = 0; %>
   <% if(request.getSession().getAttribute("user") != null){ %>
-    <% numNotifications = (int) request.getSession().getAttribute("numNotifications"); %>
+    <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
   <% } %>
 
   <nav>
@@ -32,8 +32,8 @@
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <% if (numNotifications != 0) { %>
-        <a href="/notifications">Notifications (<%= numNotifications %>)</a>
+      <% if (numUnreadNotifications != 0) { %>
+        <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
       <% } else { %>
         <a href="/notifications">Notifications</a>
       <% } %>
