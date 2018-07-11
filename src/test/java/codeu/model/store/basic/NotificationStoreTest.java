@@ -101,6 +101,20 @@ public class NotificationStoreTest {
   }
 
   @Test
+  public void testGetNumNotificationsForUser() {
+    List<Notification> resultNotifications = notificationStore.getNotificationsForUser(USER_ONE);
+    Assert.assertEquals(2, resultNotifications.size());
+  }
+
+  @Test
+  public void testGetNumUnreadNotificationsForUser() {
+    List<Notification> resultNotifications = notificationStore.getNotificationsForUser(USER_ONE);
+    resultNotifications.get(0).markAsViewed();
+    int numUnreadNotifications = notificationStore.getNumUnreadNotificationsForUser(USER_ONE);
+    Assert.assertEquals(1, numUnreadNotifications);
+  }
+
+  @Test
   public void testDeleteNotification() {
     final List<Notification> notificationList = new ArrayList<>();
     notificationList.add(NOTIFICATION_ONE);
