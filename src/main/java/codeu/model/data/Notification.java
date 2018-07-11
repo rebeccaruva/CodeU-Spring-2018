@@ -12,7 +12,7 @@ public class Notification {
   private final UUID id;
   private final UUID notifiedUser_UUID;
   private final UUID message_UUID;
-  private Boolean viewedStatus;
+  private boolean viewedStatus;
   private final Instant creation;
 
   /** Constructs a new Notification.
@@ -61,8 +61,13 @@ public class Notification {
    }
 
    /** Returns whether or not this Notification has been viewed by notifiedUser */
-   public Boolean getViewedStatus() {
+   public boolean getViewedStatus() {
      return viewedStatus;
+   }
+
+   /** Marks the Notification as viewed. */
+   public void markAsViewed() {
+     viewedStatus = true;
    }
 
    /** Returns the creation time of this Notification */

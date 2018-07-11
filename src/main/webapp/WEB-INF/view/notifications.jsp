@@ -56,6 +56,7 @@
           Message message = (Message) notification.getMessage();
           String messageAuthor = message.getUser();
           String messageConversationLink = "/chat/" + message.getConversation();
+          notification.markAsViewed();
       %>
         <li><strong><%= messageAuthor %> mentioned you: </strong>"<a href=<%= messageConversationLink %>><%= message.getContent() %>"</a></li>
       <%
