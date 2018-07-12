@@ -1,9 +1,11 @@
 package codeu.model.store.basic;
 
-import codeu.model.data.Notification;
+import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
+import codeu.model.store.basic.MessageStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -76,6 +78,24 @@ import java.util.UUID;
 
      return notificationsForUser;
    }
+
+   /**
+   * Finds the current set of Notifications for a specific User in a specific conversation,
+   * and marks them as as read.
+   */
+   public void markNotificationsForUserInConvoAsRead(User user, Conversation conversation) {
+      UUID userUUID = user.getId();
+      for (Notification notification : notifications) {
+        if (notification.getNotifiedUserUUID().equals(userUUID)) {
+          UUID messageUUID = notification.getMessageUUID();
+          Message message = MessageStore.getInstance().getMessage(messageUUID);
+          if (message.getConversationId().equals(conversation.getId())) {
+            notification.markAsViewed();
+          }
+        }
+      }
+    }
+
 
    /** Returns the number of notifications a user has. */
    public int getNumNotificationsForUser(User user) {

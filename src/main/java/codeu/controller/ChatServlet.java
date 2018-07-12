@@ -136,6 +136,12 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
+    String username = (String) request.getSession().getAttribute("user");
+    if (username != null) {
+      User user = userStore.getUser(username);
+      notificationStore.getInstance().markNotificationsForUserInConvoAsRead(user, conversation);
+    } 
+
     UUID conversationId = conversation.getId();
 
     List<Message> messages = messageStore.getMessagesInConversation(conversationId);
