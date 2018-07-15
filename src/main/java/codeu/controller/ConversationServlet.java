@@ -128,6 +128,12 @@ public class ConversationServlet extends HttpServlet {
       return;
     }
 
+    if (conversationTitle.equals("")) {
+      request.setAttribute("error", "Please enter a conversation title.");
+      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+      return;
+    }
+
     Conversation conversation =
         new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
 
