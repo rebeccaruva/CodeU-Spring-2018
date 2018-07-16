@@ -81,6 +81,19 @@ public class NotificationServlet extends HttpServlet {
   }
 
   /**
+   * This function fires when a user clicks the Clear All button. It deletes all of
+   * the user's notifications.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    String username = (String) request.getSession().getAttribute("user");
+    User user = UserStore.getInstance().getUser(username);
+    notificationStore.deleteAllNotificationsForUser(user);
+    response.sendRedirect("/notifications");
+  }
+
+  /**
    * This function updates request with the current number of unread notifications for the logged in user.
    */
   public static void updateNumNotifications(HttpServletRequest request) {

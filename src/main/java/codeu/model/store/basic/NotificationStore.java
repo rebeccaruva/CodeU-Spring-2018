@@ -67,6 +67,13 @@ import java.util.UUID;
      persistentStorageAgent.deleteEntity(notification);
    }
 
+   public void deleteAllNotificationsForUser(User user){
+     List<Notification> notifications = getReadNotificationsForUser(user);
+     for (Notification notification : notifications) {
+       deleteNotification(notification);
+     }
+   }
+
    public void markNotificationAsViewed(Notification notification) {
      notification.markAsViewed();
      persistentStorageAgent.updateEntity(notification);

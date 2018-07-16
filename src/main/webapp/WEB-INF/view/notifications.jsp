@@ -92,6 +92,12 @@
 
       <% } %>
 
+      <% if(numReadNotifications > 0 || numUnreadNotifications > 0) { %>
+      <form action="/notifications" method="POST">
+        <button type="submit">Clear All</button>
+      </form>
+      <% } %>
+
     <h2>Statistics</h2>
 
     <p> Statistics here: 123 </p>
