@@ -74,7 +74,8 @@ public class NotificationServlet extends HttpServlet {
     if (request.getSession().getAttribute("user") != null) {
       String username = (String) request.getSession().getAttribute("user");
       User user = UserStore.getInstance().getUser(username);
-      request.setAttribute("notifications", notificationStore.getNotificationsForUser(user));
+      request.setAttribute("unreadNotifications", notificationStore.getUnreadNotificationsForUser(user));
+      request.setAttribute("readNotifications", notificationStore.getReadNotificationsForUser(user));
     }
     request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
   }
@@ -86,11 +87,11 @@ public class NotificationServlet extends HttpServlet {
     if (request.getSession().getAttribute("user") != null) {
       String username = (String) request.getSession().getAttribute("user");
       User user = UserStore.getInstance().getUser(username);
-      request.getSession().setAttribute("numNotifications", NotificationStore.getInstance().getNumNotificationsForUser(user));
+      request.getSession().setAttribute("numReadNotifications", NotificationStore.getInstance().getNumReadNotificationsForUser(user));
       request.getSession().setAttribute("numUnreadNotifications", NotificationStore.getInstance().getNumUnreadNotificationsForUser(user));
     }
     else {
-      request.getSession().setAttribute("numNotifications", (int)0);
+      request.getSession().setAttribute("numReadNotifications", (int)0);
       request.getSession().setAttribute("numUnreadNotifications", (int)0);
     }
   }

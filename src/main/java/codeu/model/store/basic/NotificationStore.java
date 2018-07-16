@@ -80,7 +80,26 @@ import java.util.UUID;
        if (notification.getNotifiedUserUUID().equals(userUUID))
         notificationsForUser.add(notification);
      }
+     return notificationsForUser;
+   }
 
+   public List<Notification> getUnreadNotificationsForUser(User user) {
+     List<Notification> notificationsForUser = new ArrayList<>();
+     UUID userUUID = user.getId();
+     for (Notification notification : notifications) {
+       if (notification.getNotifiedUserUUID().equals(userUUID) && notification.getViewedStatus() == false)
+        notificationsForUser.add(notification);
+     }
+     return notificationsForUser;
+   }
+
+   public List<Notification> getReadNotificationsForUser(User user) {
+     List<Notification> notificationsForUser = new ArrayList<>();
+     UUID userUUID = user.getId();
+     for (Notification notification : notifications) {
+       if (notification.getNotifiedUserUUID().equals(userUUID) && notification.getViewedStatus() == true)
+        notificationsForUser.add(notification);
+     }
      return notificationsForUser;
    }
 
@@ -103,20 +122,13 @@ import java.util.UUID;
 
 
    /** Returns the number of notifications a user has. */
-   public int getNumNotificationsForUser(User user) {
-     return getNotificationsForUser(user).size();
+   public int getNumReadNotificationsForUser(User user) {
+     return getReadNotificationsForUser(user).size();
    }
 
    /** Returns the number of unread notifications a user has. */
    public int getNumUnreadNotificationsForUser(User user) {
-     List<Notification> notificationsForUser = getNotificationsForUser(user);
-     int unreadNotifications = 0;
-     for (Notification notification : notificationsForUser) {
-       if (notification.getViewedStatus() == false) {
-         unreadNotifications++;
-       }
-     }
-     return unreadNotifications;
+     return getUnreadNotificationsForUser(user).size();
    }
 
    /** Sets the List of Notifications stored by this MessageStore. */

@@ -12,11 +12,6 @@
 </head>
 <body>
 
-  <% int numNotifications = 0; %>
-  <% if(request.getSession().getAttribute("user") != null){ %>
-    <% numNotifications = (int) request.getSession().getAttribute("numNotifications"); %>
-  <% } %>
-
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
@@ -33,7 +28,10 @@
     <% }} %>
   </nav>
 
-  <% List<Notification> notifications = (List<Notification>) request.getAttribute("notifications"); %>
+  <% List<Notification> unreadNotifications = (List<Notification>) request.getAttribute("unreadNotifications"); %>
+  <% List<Notification> readNotifications = (List<Notification>) request.getAttribute("readNotifications"); %>
+  <% int numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
+  <% int numReadNotifications = (int) request.getSession().getAttribute("numReadNotifications"); %>
 
   <div id="container">
 
@@ -42,29 +40,57 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <% if(numNotifications==1){ %>
+      <% if(numUnreadNotifications==0){ %>
         <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
-        <%= numNotifications %> notification.</h1>
+        no new notifications.</h1>
+      <% } else if(numUnreadNotifications==1){%>
+        <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
+        1 new notification.</h1>
       <% } else{ %>
         <h1>Hi <%= request.getSession().getAttribute("user") %>, you have
-        <%= numNotifications %> notifications.</h1>
+        <%= numUnreadNotifications %> new notifications.</h1>
       <% } %>
 
-     <div id="chat">
+      <% if(numUnreadNotifications != 0){ %>
+      <h2>New Notifications</h2>
+      <div id="chat">
         <ul>
       <%
-        for (Notification notification : notifications) {
+        for (Notification notification : unreadNotifications) {
           Message message = (Message) notification.getMessage();
           String messageAuthor = message.getUser();
-          String messageConversationLink = "/chat/" + message.getConversation();
+          String conversationName = message.getConversation();
+          String messageConversationLink = "/chat/" + conversationName;
           NotificationStore.getInstance().markNotificationAsViewed(notification);
       %>
-        <li><strong><%= messageAuthor %> mentioned you: </strong>"<a href=<%= messageConversationLink %>><%= message.getContent() %>"</a></li>
+        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getContent() %>"</li>
       <%
         }
       %>
         </ul>
       </div>
+
+      <% } %>
+
+      <% if(numReadNotifications != 0){ %>
+      <h2>Read Notifications</h2>
+      <div id="chat">
+        <ul>
+      <%
+        for (Notification notification : readNotifications) {
+          Message message = (Message) notification.getMessage();
+          String messageAuthor = message.getUser();
+          String conversationName = message.getConversation();
+          String messageConversationLink = "/chat/" + conversationName;
+      %>
+        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getContent() %>"</li>
+      <%
+        }
+      %>
+        </ul>
+      </div>
+
+      <% } %>
 
     <h2>Statistics</h2>
 
