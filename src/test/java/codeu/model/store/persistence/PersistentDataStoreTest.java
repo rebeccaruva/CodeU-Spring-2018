@@ -210,14 +210,15 @@ public class PersistentDataStoreTest {
     List<Notification> resultNotifications = persistentDataStore.loadNotifications();
 
     // confirm that what we saved matches what we loaded
-    Notification resultNotificationOne = resultNotifications.get(0);
+    // note that notifications are loaded in descending order
+    Notification resultNotificationOne = resultNotifications.get(1);
     Assert.assertEquals(idOne, resultNotificationOne.getId());
     Assert.assertEquals(notifiedUserOne, resultNotificationOne.getNotifiedUserUUID());
     Assert.assertEquals(messageOne, resultNotificationOne.getMessageUUID());
     Assert.assertEquals(creationOne, resultNotificationOne.getCreationTime());
     Assert.assertEquals(false, resultNotificationOne.getViewedStatus());
 
-    Notification resultNotificationTwo = resultNotifications.get(1);
+    Notification resultNotificationTwo = resultNotifications.get(0);
     Assert.assertEquals(idTwo, resultNotificationTwo.getId());
     Assert.assertEquals(notifiedUserTwo, resultNotificationTwo.getNotifiedUserUUID());
     Assert.assertEquals(messageTwo, resultNotificationTwo.getMessageUUID());

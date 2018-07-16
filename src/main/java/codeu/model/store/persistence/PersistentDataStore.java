@@ -198,7 +198,7 @@ public class PersistentDataStore {
      List<Notification> notifications = new ArrayList<>();
 
      // Retrieve all notificatins from the datastore.
-     Query query = new Query("notifications").addSort("creation_time", SortDirection.ASCENDING);
+     Query query = new Query("notifications").addSort("creation_time", SortDirection.DESCENDING);
      PreparedQuery results = datastore.prepare(query);
 
      for (Entity entity : results.asIterable()) {
@@ -206,7 +206,7 @@ public class PersistentDataStore {
          UUID uuid = UUID.fromString((String) entity.getProperty("uuid"));
          UUID notifiedUser_UUID = UUID.fromString((String) entity.getProperty("notifiedUser_UUID"));
          UUID message_UUID = UUID.fromString((String) entity.getProperty("message_UUID"));
-         Boolean viewedStatus = (Boolean) entity.getProperty("viewedStatus");
+         Boolean viewedStatus = (boolean) entity.getProperty("viewedStatus");
          Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
          notifications.add(new Notification(uuid, notifiedUser_UUID, message_UUID, creationTime));
        } catch (Exception e) {
