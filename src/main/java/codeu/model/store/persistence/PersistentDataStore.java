@@ -271,7 +271,7 @@ public class PersistentDataStore {
     datastore.put(activityEntity);
   }
 
-  /** Write a Notification object to the DataStore service. */
+  /** Write a Notification object to the Datastore service. */
   public void writeThrough(Notification notification) {
     Entity notificationEntity = new Entity("notifications", notification.getId().toString());
     notificationEntity.setProperty("uuid", notification.getId().toString());
@@ -282,6 +282,7 @@ public class PersistentDataStore {
     datastore.put(notificationEntity);
   }
 
+  /** Updates a Notification object on the Datastore service. */
   public void updateEntity(Notification notification) {
     try{
       Query query =

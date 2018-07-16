@@ -67,6 +67,7 @@ import java.util.UUID;
      persistentStorageAgent.deleteEntity(notification);
    }
 
+   /** Deletes all Notifications for a specific User */
    public void deleteAllNotificationsForUser(User user){
      List<Notification> notifications = getReadNotificationsForUser(user);
      for (Notification notification : notifications) {
@@ -74,6 +75,7 @@ import java.util.UUID;
      }
    }
 
+   /** Marks a specific Notification as viewed. */
    public void markNotificationAsViewed(Notification notification) {
      notification.markAsViewed();
      persistentStorageAgent.updateEntity(notification);
@@ -90,6 +92,7 @@ import java.util.UUID;
      return notificationsForUser;
    }
 
+   /** Returns a list of the unread Notifications for a specific User. */
    public List<Notification> getUnreadNotificationsForUser(User user) {
      List<Notification> notificationsForUser = new ArrayList<>();
      UUID userUUID = user.getId();
@@ -100,6 +103,7 @@ import java.util.UUID;
      return notificationsForUser;
    }
 
+   /** Returns a list of the read Notifications for a specific User. */
    public List<Notification> getReadNotificationsForUser(User user) {
      List<Notification> notificationsForUser = new ArrayList<>();
      UUID userUUID = user.getId();
@@ -128,12 +132,12 @@ import java.util.UUID;
     }
 
 
-   /** Returns the number of notifications a user has. */
+   /** Returns the number of read Notifications a user has. */
    public int getNumReadNotificationsForUser(User user) {
      return getReadNotificationsForUser(user).size();
    }
 
-   /** Returns the number of unread notifications a user has. */
+   /** Returns the number of unread Notifications a user has. */
    public int getNumUnreadNotificationsForUser(User user) {
      return getUnreadNotificationsForUser(user).size();
    }
