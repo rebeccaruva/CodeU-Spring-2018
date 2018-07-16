@@ -225,4 +225,39 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(creationTwo, resultNotificationTwo.getCreationTime());
     Assert.assertEquals(false, resultNotificationTwo.getViewedStatus());
   }
+
+  @Test
+  public void testUpdateEntity() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID notifiedUserOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    UUID messageOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Notification inputNotificationOne =
+        new Notification(idOne, notifiedUserOne, messageOne, creationOne);
+
+    persistentDataStore.writeThrough(inputNotificationOne);
+    inputNotificationOne.markAsViewed();
+    persistentDataStore.updateEntity(inputNotificationOne);
+    List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+    Notification resultNotificationOne = resultNotifications.get(0);
+    Assert.assertEquals(true, resultNotificationOne.getViewedStatus());
+  }
+
+  @Test
+  public void testDeleteEntity() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID notifiedUserOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    UUID messageOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Notification inputNotificationOne =
+        new Notification(idOne, notifiedUserOne, messageOne, creationOne);
+
+    persistentDataStore.writeThrough(inputNotificationOne);
+    persistentDataStore.deleteEntity(inputNotificationOne);
+    List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+    Assert.assertEquals(0, resultNotifications.size());
+
+  }
 }

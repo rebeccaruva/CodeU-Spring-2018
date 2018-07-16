@@ -101,6 +101,15 @@ public class PersistentStorageAgentTest {
   }
 
   @Test
+  public void testUpdateEntityNotification() {
+    Notification notification =
+        new Notification(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now());
+    persistentStorageAgent.updateEntity(notification);
+    Mockito.verify(mockPersistentDataStore).updateEntity(notification);
+  }
+
+  @Test
   public void testDeleteEntityNotification() {
     Notification notification =
         new Notification(
