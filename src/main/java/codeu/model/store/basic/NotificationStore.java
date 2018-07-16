@@ -67,6 +67,11 @@ import java.util.UUID;
      persistentStorageAgent.deleteEntity(notification);
    }
 
+   public void markNotificationAsViewed(Notification notification) {
+     notification.markAsViewed();
+     persistentStorageAgent.updateEntity(notification);
+   }
+
    /** Access the current set of Notifications for a specific User */
    public List<Notification> getNotificationsForUser(User user) {
      List<Notification> notificationsForUser = new ArrayList<>();
@@ -90,7 +95,7 @@ import java.util.UUID;
           UUID messageUUID = notification.getMessageUUID();
           Message message = MessageStore.getInstance().getMessage(messageUUID);
           if (message.getConversationId().equals(conversation.getId())) {
-            notification.markAsViewed();
+            instance.markNotificationAsViewed(notification);
           }
         }
       }
@@ -107,7 +112,7 @@ import java.util.UUID;
      List<Notification> notificationsForUser = getNotificationsForUser(user);
      int unreadNotifications = 0;
      for (Notification notification : notificationsForUser) {
-       if (!notification.getViewedStatus()) {
+       if (notification.getViewedStatus() == false) {
          unreadNotifications++;
        }
      }

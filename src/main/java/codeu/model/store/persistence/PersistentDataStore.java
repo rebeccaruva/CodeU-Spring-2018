@@ -19,6 +19,7 @@ import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.data.Notification;
+import codeu.model.store.basic.NotificationStore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -27,6 +28,11 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +215,9 @@ public class PersistentDataStore {
          Boolean viewedStatus = (boolean) entity.getProperty("viewedStatus");
          Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
          notifications.add(new Notification(uuid, notifiedUser_UUID, message_UUID, creationTime));
+         if (viewedStatus == true) {
+           NotificationStore.getInstance().markNotificationAsViewed(notifications.get(notifications.size()-1));
+         }
        } catch (Exception e) {
          // In a production environment, errors should be very rare. Errors which may
          // occur include network errors, Datastore service errors, authorization errors,
@@ -273,9 +282,20 @@ public class PersistentDataStore {
     datastore.put(notificationEntity);
   }
 
+  public void updateEntity(Notification notification) {
+    try{
+      Query query =
+        new Query("notifications").setFilter(new FilterPredicate("uuid", FilterOperator.EQUAL, notification.getId().toString()));
+      PreparedQuery pq = datastore.prepare(query);
+      Entity result = pq.asSingleEntity();
+      result.setProperty("viewedStatus", notification.getViewedStatus());
+      datastore.put(result);
+    } catch (Exception e){}
+  }
+
   /** Deletes a Notification object from the DataStore service. */
   public void deleteEntity(Notification notification) {
-    Key k1 = KeyFactory.stringToKey(notification.getId().toString());
+    Key k1 = KeyFactory.createKey("notifications", notification.getId().toString());
     datastore.delete(k1);
   }
 }

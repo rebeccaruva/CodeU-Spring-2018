@@ -2,6 +2,7 @@
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.data.Notification" %>
+<%@ page import="codeu.model.store.basic.NotificationStore" %>
 
 <!DOCTYPE html>
 <html>
@@ -56,7 +57,7 @@
           Message message = (Message) notification.getMessage();
           String messageAuthor = message.getUser();
           String messageConversationLink = "/chat/" + message.getConversation();
-          notification.markAsViewed();
+          NotificationStore.getInstance().markNotificationAsViewed(notification);
       %>
         <li><strong><%= messageAuthor %> mentioned you: </strong>"<a href=<%= messageConversationLink %>><%= message.getContent() %>"</a></li>
       <%
