@@ -97,10 +97,7 @@
         <button type="submit">Clear All</button>
       </form>
       <% } %>
-
-    <h2>Statistics</h2>
-
-    <p> Statistics here: 123 </p>
+      
     <% } else{%>
         <h2 style="color:red">Error: Please log in to access notifications.</h2>
     <%}%>
