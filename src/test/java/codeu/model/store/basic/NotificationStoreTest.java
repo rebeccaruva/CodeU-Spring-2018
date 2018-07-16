@@ -101,6 +101,25 @@ public class NotificationStoreTest {
   }
 
   @Test
+  public void testGetUnreadNotificationsForUser() {
+    notificationStore.markNotificationAsViewed(NOTIFICATION_ONE);
+    List<Notification> resultNotifications = notificationStore.getUnreadNotificationsForUser(USER_ONE);
+    Assert.assertEquals(1, resultNotifications.size());
+    assertEquals(NOTIFICATION_TWO, resultNotifications.get(0));
+
+    resultNotifications = notificationStore.getNotificationsForUser(USER_TWO);
+    assertEquals(NOTIFICATION_THREE, resultNotifications.get(0));
+  }
+
+  @Test
+  public void testGetReadNotificationsForUser() {
+    notificationStore.markNotificationAsViewed(NOTIFICATION_ONE);
+    List<Notification> resultNotifications = notificationStore.getReadNotificationsForUser(USER_ONE);
+    Assert.assertEquals(1, resultNotifications.size());
+    assertEquals(NOTIFICATION_ONE, resultNotifications.get(0));
+  }
+
+  @Test
   public void testGetNumNotificationsForUser() {
     List<Notification> resultNotifications = notificationStore.getNotificationsForUser(USER_ONE);
     Assert.assertEquals(2, resultNotifications.size());
@@ -111,7 +130,14 @@ public class NotificationStoreTest {
     List<Notification> resultNotifications = notificationStore.getNotificationsForUser(USER_ONE);
     resultNotifications.get(0).markAsViewed();
     int numUnreadNotifications = notificationStore.getNumUnreadNotificationsForUser(USER_ONE);
-    Assert.assertEquals(1, numUnreadNotifications);
+    Assert.assertEquals(notificationStore.getNumUnreadNotificationsForUser(USER_ONE), numUnreadNotifications);
+  }
+
+  @Test
+  public void testGetNumReadNotificationsForUser() {
+    notificationStore.markNotificationAsViewed(NOTIFICATION_ONE);
+    List<Notification> resultNotifications = notificationStore.getReadNotificationsForUser(USER_ONE);
+    Assert.assertEquals(notificationStore.getNumReadNotificationsForUser(USER_ONE), resultNotifications.size());
   }
 
   @Test
@@ -125,6 +151,13 @@ public class NotificationStoreTest {
     List<Notification> resultNotifications = notificationStore.getNotificationsForUser(USER_ONE);
     Assert.assertEquals(1, resultNotifications.size());
     assertEquals(NOTIFICATION_TWO, resultNotifications.get(0));
+  }
+
+  @Test
+  public void testDeleteAllNotificationsForUser() {
+    Assert.assertEquals(2, notificationStore.getNotificationsForUser(USER_ONE).size());
+    notificationStore.deleteAllNotificationsForUser(USER_ONE);
+    Assert.assertEquals(0, notificationStore.getNotificationsForUser(USER_ONE).size());
   }
 
   private void assertEquals(Notification expectedNotification, Notification actualNotification) {

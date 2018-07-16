@@ -69,7 +69,7 @@ import java.util.UUID;
 
    /** Deletes all Notifications for a specific User */
    public void deleteAllNotificationsForUser(User user){
-     List<Notification> notifications = getReadNotificationsForUser(user);
+     List<Notification> notifications = getNotificationsForUser(user);
      for (Notification notification : notifications) {
        deleteNotification(notification);
      }
