@@ -71,7 +71,7 @@ public class ConversationStore {
   }
 
   /** Returns the number of conversations stored. */
-  public int numConversations(){
+  public int numConversations() {
     return conversations.size();
   }
 

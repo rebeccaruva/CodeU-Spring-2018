@@ -18,6 +18,7 @@
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.natural_language.NaturalLanguageProcessing" %>
 
 <!DOCTYPE html>
 <html>
