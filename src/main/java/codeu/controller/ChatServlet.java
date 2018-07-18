@@ -22,6 +22,8 @@ import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.natural_language.NaturalLanguageProcessing;
+import com.vdurmont.emoji.EmojiParser; // import for emoji parser
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.ins.InsExtension;
@@ -108,6 +110,7 @@ public class ChatServlet extends HttpServlet {
       throws IOException, ServletException {
     String requestUrl = request.getRequestURI();
     String conversationTitle = requestUrl.substring("/chat/".length());
+    String message = request.getParameter("message");
 
     Conversation conversation = conversationStore.getConversationWithTitle(conversationTitle);
     if (conversation == null) {
@@ -120,7 +123,25 @@ public class ChatServlet extends HttpServlet {
     UUID conversationId = conversation.getId();
 
     List<Message> messages = messageStore.getMessagesInConversation(conversationId);
+    String username = (String) request.getSession().getAttribute("user");
+    if (username == null) {
+      // user is not logged in, don't let them add a message
+      response.sendRedirect("/login");
+      return;
+    }
 
+    User user = userStore.getUser(username);
+    String english_msg = message;
+    NaturalLanguageProcessing nlp = new NaturalLanguageProcessing();
+
+    // translate message into English and check tone
+    if (message != null) {
+      if (user.getLanguagePreference() != "en")
+        english_msg = nlp.translate(message, user.getLanguagePreference(), "en");
+      request.setAttribute("score_result", nlp.checkTone(english_msg));
+    }
+
+    request.setAttribute("message", message);
     request.setAttribute("conversation", conversation);
     request.setAttribute("messages", messages);
     request.getRequestDispatcher("/WEB-INF/view/chat.jsp").forward(request, response);
@@ -135,7 +156,6 @@ public class ChatServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
     String username = (String) request.getSession().getAttribute("user");
     if (username == null) {
       // user is not logged in, don't let them add a message
@@ -193,6 +213,10 @@ public class ChatServlet extends HttpServlet {
 
     // this removes any style / script / html (other than allowed tags) from the message content
     String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
+
+    // this parses emojis to unicode and html
+    cleanedMessageContent = EmojiParser.parseToUnicode(cleanedMessageContent);
+    cleanedMessageContent = EmojiParser.parseToHtmlDecimal(cleanedMessageContent);
 
     Message message =
         new Message(

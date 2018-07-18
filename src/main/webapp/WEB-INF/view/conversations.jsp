@@ -15,6 +15,17 @@
 --%>
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.LanguageDictionary" %>
+<%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+<%@ page import="codeu.LanguageDictionary" %>
+<%@ page import="java.util.HashMap" %>
+
+<%
+  UserStore userStore = UserStore.getInstance();
+  User user = userStore.getUser((String)(request.getSession().getAttribute("user")));
+  HashMap<String,String> languageDict = (new LanguageDictionary()).getDict();
+%>
 
 <!DOCTYPE html>
 <html>
@@ -27,13 +38,24 @@
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
+    <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+      <a href="/notifications">Notifications</a>
+      <div class="languages" style="float:right">
+        <!-- dropdown list of languages -->
+        <form action="/conversations" method="GET">
+            <select name="language" onmousedown="if(this.options.length>8){this.size=6;}"  onchange="this.form.submit()" onblur="this.size=0;">
+              <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
+              <% for(String key : languageDict.keySet()){ %>
+                <option value="<%=key%>"><%=languageDict.get(key)%></option>
+              <% } %>
+            </select>
+        </form>
+      </div>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
-    <a href="/about.jsp">About</a>
-    <a href="/activity-feed">Activity Feed</a>
     <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
     <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
       <a href="/admin">Admin</a>
@@ -41,13 +63,13 @@
   </nav>
 
   <div id="container">
-
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <h1>New Conversation</h1>
+    <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
+      <h2>New Conversation</h2>
       <form action="/conversations" method="POST">
           <div class="form-group">
             <label class="form-control-label">Title:</label>
@@ -60,7 +82,7 @@
       <hr/>
     <% } %>
 
-    <h1>Conversations</h1>
+    <h2>Conversations</h2>
 
     <%
     List<Conversation> conversations =

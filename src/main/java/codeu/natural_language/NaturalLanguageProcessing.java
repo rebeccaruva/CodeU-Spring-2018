@@ -26,18 +26,26 @@ import java.io.IOException;
 
 /** class processing messages for tone and translation */
 public class NaturalLanguageProcessing {
-  public static float configurationNaturalLanguage(String text) throws IOException {
+  /** check tone of text */
+  public static String checkTone(String text) throws IOException {
     LanguageServiceClient language = LanguageServiceClient.create();
     Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
 
     // Detects the sentiment of the text
     Sentiment sentiment = language.analyzeSentiment(doc).getDocumentSentiment();
+    float score = sentiment.getScore();
 
-    return sentiment.getScore();
+    // Returns whether professional (score > -0.4) or not
+    if (score > -0.4) return "Sounds professional!";
+    else {
+      return "Please consider re-phrasing. This may not come across as professional.";
+    }
   }
 
-  public static String configurationTranslation(
-      String text, String sourceLanguage, String targetLanguage) throws IOException {
+  /** translate text from sourceLanguage to targetLanguage */
+  public static String translate(String text, String sourceLanguage, String targetLanguage)
+      throws IOException {
+    if (sourceLanguage.equals(targetLanguage)) return text;
     // Instantiates a client
     Translate translate = TranslateOptions.getDefaultInstance().getService();
 

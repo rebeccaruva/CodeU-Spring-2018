@@ -24,6 +24,7 @@ public class User {
   private final UUID id;
   private final Instant creation;
   private Boolean adminStatus;
+  private String preferredLang;
 
   /**
    * Constructs a new User.
@@ -40,6 +41,7 @@ public class User {
     this.passwordHash = passwordHash;
     this.creation = creation;
     this.adminStatus = adminStatus;
+    this.preferredLang = "en";
   }
 
   /** Returns the ID of this Activity. */
@@ -72,5 +74,13 @@ public class User {
   /** Gives the User admin status. */
   public void giveUserAdminStatus() {
     adminStatus = true;
+  }
+
+  public void setLanguage(String lang) {
+    preferredLang = lang;
+  }
+
+  public String getLanguagePreference() {
+    return preferredLang;
   }
 }

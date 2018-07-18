@@ -19,6 +19,9 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.data.User" %>
 <%@ page import="codeu.natural_language.NaturalLanguageProcessing" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+
+<% User user = (UserStore.getInstance()).getUser(request.getSession().getAttribute("user").toString()); %>
 
 <!DOCTYPE html>
 <html>
@@ -32,13 +35,13 @@
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
+    <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+      <a href="/notifications">Notifications</a>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
-    <a href="/about.jsp">About</a>
-    <a href="/activity-feed">Activity Feed</a>
     <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
     <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
       <a href="/admin">Admin</a>
@@ -74,7 +77,7 @@
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
             <% } else if(type == Activity.Type.NEW_MESSAGE){%>
                 <!-- new message sent -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation() %></a>: <em><%= ((Message)(activity.getMessage())).getContent() %></em></li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation()%></a>: <em><%=((Message)(activity.getMessage())).getTranslationAndAdd(user.getLanguagePreference())%></em></li>
             <% } %>
           <% } %>
         </ul>

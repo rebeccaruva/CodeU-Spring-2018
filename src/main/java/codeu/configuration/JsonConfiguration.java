@@ -28,7 +28,7 @@ public class JsonConfiguration {
             + "\", \"client_email\": \"cloudkms@the-java-llamas-imhere.iam.gserviceaccount.com\", \n\"client_id\": \"115664706384991036873\", \n\"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\", \n\"token_uri\": \"https://accounts.google.com/o/oauth2/token\", \n\"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\", \n\"client_x509_cert_url\": \"https://www.googleapis.com/robot/v1/metadata/x509/cloudkms%40the-java-llamas-imhere.iam.gserviceaccount.com\"\n}";
 
     try {
-      // write credentials to file
+      // write credentials to file - set path to whatever you set GOOGLE_APPLICATION_CREDENTIALS to
       BufferedWriter writer =
           new BufferedWriter(
               new FileWriter("C:\\Users\\alish\\OneDrive\\CodeU-Spring-2018\\IMhere.json"));
