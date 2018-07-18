@@ -24,16 +24,25 @@
 </head>
 <body>
 
+  <% int numUnreadNotifications = 0; %>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
+  <% } %>
+
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
+    <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+      <% if (numUnreadNotifications != 0) { %>
+        <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
+      <% } else { %>
+        <a href="/notifications">Notifications</a>
+      <% } %>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
-    <a href="/about.jsp">About</a>
-    <a href="/activity-feed">Activity Feed</a>
     <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
     <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
       <a href="/admin">Admin</a>
@@ -47,7 +56,8 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <h1>New Conversation</h1>
+    <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
+      <h2>New Conversation</h2>
       <form action="/conversations" method="POST">
           <div class="form-group">
             <label class="form-control-label">Title:</label>
@@ -60,7 +70,7 @@
       <hr/>
     <% } %>
 
-    <h1>Conversations</h1>
+    <h2>Conversations</h2>
 
     <%
     List<Conversation> conversations =

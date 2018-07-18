@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import codeu.controller.NotificationServlet;
+
 /** servlet responsible for activity feed */
 public class ActivityFeedServlet extends HttpServlet {
 
@@ -53,6 +55,7 @@ public class ActivityFeedServlet extends HttpServlet {
       throws IOException, ServletException {
     List<Activity> activities = activityStore.getAllActivities();
     request.setAttribute("all_activities", activities);
+    NotificationServlet.updateNumNotifications(request);
     request.getRequestDispatcher("/WEB-INF/view/activity-feed.jsp").forward(request, response);
   }
 

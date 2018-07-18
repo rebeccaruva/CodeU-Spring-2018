@@ -17,7 +17,6 @@ package codeu.controller;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
-import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
@@ -37,9 +36,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-public class ChatServletTest {
+public class PhotosServletTest {
 
-  private ChatServlet chatServlet;
+  private PhotosServlet photosServlet;
   private HttpServletRequest mockRequest;
   private HttpSession mockSession;
   private HttpServletResponse mockResponse;
@@ -47,11 +46,10 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
-  private ActivityStore mockActivityStore;
 
   @Before
   public void setup() {
-    chatServlet = new ChatServlet();
+    photosServlet = new PhotosServlet();
 
     mockRequest = Mockito.mock(HttpServletRequest.class);
     mockSession = Mockito.mock(HttpSession.class);
@@ -59,25 +57,23 @@ public class ChatServletTest {
 
     mockResponse = Mockito.mock(HttpServletResponse.class);
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
-    Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/chat.jsp"))
+    Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/photos.jsp"))
         .thenReturn(mockRequestDispatcher);
 
     mockConversationStore = Mockito.mock(ConversationStore.class);
-    chatServlet.setConversationStore(mockConversationStore);
+    photosServlet.setConversationStore(mockConversationStore);
 
     mockMessageStore = Mockito.mock(MessageStore.class);
-    chatServlet.setMessageStore(mockMessageStore);
+    photosServlet.setMessageStore(mockMessageStore);
 
     mockUserStore = Mockito.mock(UserStore.class);
-    chatServlet.setUserStore(mockUserStore);
-
-    mockActivityStore = Mockito.mock(ActivityStore.class);
-    chatServlet.setActivityStore(mockActivityStore);
+    photosServlet.setUserStore(mockUserStore);
   }
 
+  /** tests PhotosServlet doGet method by creating mock converation */
   @Test
   public void testDoGet() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/photos/test_conversation");
 
     UUID fakeConversationId = UUID.randomUUID();
     Conversation fakeConversation =
@@ -85,59 +81,48 @@ public class ChatServletTest {
     Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
         .thenReturn(fakeConversation);
 
-    List<Message> fakeMessageList = new ArrayList<>();
-    fakeMessageList.add(
-        new Message(
-            UUID.randomUUID(),
-            fakeConversationId,
-            UUID.randomUUID(),
-            "test message",
-            Instant.now()));
-    Mockito.when(mockMessageStore.getMessagesInConversation(fakeConversationId))
-        .thenReturn(fakeMessageList);
-
-    chatServlet.doGet(mockRequest, mockResponse);
+    photosServlet.doGet(mockRequest, mockResponse);
 
     Mockito.verify(mockRequest).setAttribute("conversation", fakeConversation);
-    Mockito.verify(mockRequest).setAttribute("messages", fakeMessageList);
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
 
   @Test
   public void testDoGet_badConversation() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/bad_conversation");
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/photos/bad_conversation");
     Mockito.when(mockConversationStore.getConversationWithTitle("bad_conversation"))
         .thenReturn(null);
 
-    chatServlet.doGet(mockRequest, mockResponse);
+    photosServlet.doGet(mockRequest, mockResponse);
 
     Mockito.verify(mockResponse).sendRedirect("/conversations");
   }
 
+  /** tests PhotosServlet doPost method by redirecting when user not logged in */
   @Test
   public void testDoPost_UserNotLoggedIn() throws IOException, ServletException {
     Mockito.when(mockSession.getAttribute("user")).thenReturn(null);
 
-    chatServlet.doPost(mockRequest, mockResponse);
+    photosServlet.doPost(mockRequest, mockResponse);
 
-    Mockito.verify(mockMessageStore, Mockito.never()).addMessage(Mockito.any(Message.class));
     Mockito.verify(mockResponse).sendRedirect("/login");
   }
 
+  /** tests PhotosServlet doPost method by redirecting when invalid user */
   @Test
   public void testDoPost_InvalidUser() throws IOException, ServletException {
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(null);
 
-    chatServlet.doPost(mockRequest, mockResponse);
+    photosServlet.doPost(mockRequest, mockResponse);
 
-    Mockito.verify(mockMessageStore, Mockito.never()).addMessage(Mockito.any(Message.class));
     Mockito.verify(mockResponse).sendRedirect("/login");
   }
 
+  /** tests PhotosServlet doPost method by redirecting user when conversation name is invalid */
   @Test
   public void testDoPost_ConversationNotFound() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/photos/test_conversation");
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
     User fakeUser =
@@ -152,70 +137,27 @@ public class ChatServletTest {
     Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
         .thenReturn(null);
 
-    chatServlet.doPost(mockRequest, mockResponse);
+    photosServlet.doPost(mockRequest, mockResponse);
 
-    Mockito.verify(mockMessageStore, Mockito.never()).addMessage(Mockito.any(Message.class));
     Mockito.verify(mockResponse).sendRedirect("/conversations");
   }
 
+  /** tests PhotosServlet doPost method by checking doGet redirect */
   @Test
-  public void testDoPost_StoresMessage() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+  public void testDoPost_RedirectDoGet() throws IOException, ServletException {
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/photos/test_conversation");
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
-    User fakeUser =
-        new User(
-            UUID.randomUUID(),
-            "test_username",
-            "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
-            Instant.now(),
-            false);
+    User fakeUser = new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
 
     Conversation fakeConversation =
         new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
     Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
         .thenReturn(fakeConversation);
+        
+    photosServlet.doPost(mockRequest, mockResponse);
 
-    Mockito.when(mockRequest.getParameter("message")).thenReturn("Test message.");
-
-    chatServlet.doPost(mockRequest, mockResponse);
-
-    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    Assert.assertEquals("Test message.", messageArgumentCaptor.getValue().getContent());
-
-    Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
-  }
-
-  @Test
-  public void testDoPost_CleansHtmlContent() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
-    Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
-
-    User fakeUser =
-        new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
-    Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
-
-    Conversation fakeConversation =
-        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
-    Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
-        .thenReturn(fakeConversation);
-
-    Mockito.when(mockRequest.getParameter("message"))
-        .thenReturn("Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, "
-        + "<em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, :grinning:, and "
-        + "<script>JavaScript</script> content. <strong>bold</strong>");
-    chatServlet.doPost(mockRequest, mockResponse);
-
-    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    // these html tags and emoji addition tests if whitelist and parsing is working
-    Assert.assertEquals(
-        "Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, "
-        + "<em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, &#128512;, and "
-        + " content. <strong>bold</strong>",
-        messageArgumentCaptor.getValue().getContent());
-    Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
+    Mockito.verify(mockResponse).sendRedirect("/photos/test_conversation");
   }
 }

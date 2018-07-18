@@ -13,30 +13,45 @@
  * limitations under the License.
  */
 
+@import url('https://fonts.googleapis.com/css?family=Cabin');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
   line-height: 1.6;
   font-size: 18px;
   line-height: 1.6;
   color: #444;
-  background-color: #eeeeee;
+  background-color: #fbfbfb;
+}
+
+strong {
+  font-weight:bold;
 }
 
 nav {
-  background-color: #283593;
+  background-color: #505ef0;
 }
 
 nav a {
   color: white;
+  font-family: 'Roboto', sans-serif;
   display: inline-block;
-  font-size: 24px;
-  margin: 15px;
+  font-size: 20px;
+  margin: 10px;
   text-decoration: none;
+  line-height:28px;
 }
 
 #navTitle {
-  font-size: 36px;
+  font-family: 'Cabin', sans-serif;
+  font-size: 28px;
+  text-decoration: bold;
 }
 
 #container {
@@ -47,6 +62,7 @@ nav a {
 
 h1 {
   color: #757575;
+  overflow-wrap: break-word;
 }
 
 input {
@@ -55,4 +71,198 @@ input {
 
 button {
   font-size: 18px;
+}
+
+.butn {
+  display: inline-block;
+}
+
+/* chat css */
+
+/* arrow and camera buttons properties */
+#arrowb {
+  display: inline-block;
+  background-color: inherit;
+  border: none;
+  color: #505ef0;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#camerab {
+  display: inline-block;
+  background-color: inherit;
+  border: none;
+  color: #505ef0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* darker icon on mouse hover */
+#arrowb:hover {
+  color: #2637f2;
+}
+
+/* darker icon on mouse hover */
+#camerab:hover {
+  color: #2637f2;
+}
+
+/* the modal and background */
+#myModal {
+    display: none;
+    position: fixed;
+    z-index: 1; /* sit on top of other elements on page */
+    padding-top: 15%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(38, 55, 242);
+    background-color: rgba(38, 55, 242, 0.3);
+}
+
+/* modal content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #2637f2;
+    width: 80%;
+}
+
+/* modal close button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* make the message input and camera button appear next to each other */
+#messageWrapper {
+  width: 300px;
+  overflow: hidden;
+}
+#first {
+    display:inline-block;
+    float:left;
+}
+#second {
+    float: left;
+}
+
+/* put chat header text and buttons into divs */
+#chatHead {
+  width: 800px;
+  display:flex;
+  overflow: hidden;
+  align-items:center;
+}
+
+#chatTitle {
+  overflow-wrap: break-word;
+  max-width: 650px;
+  float:left;
+}
+
+/* also is popup container */
+#chatButton1 {
+  max-width:50px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+#chatButton2 {
+  max-width:50px;
+  float: right;
+  font-size: 2em;
+  margin-left: auto;
+  order: 2;
+}
+
+/* popup (tooltip) for shared photos button */
+#chatButton1 .tooltiptext {
+    visibility: hidden;
+    width: 125px;
+    background-color: #fefefe;
+    color: #2637f2;
+    text-align: center;
+    border-radius: 6px;
+    padding: 1px 2px;
+    border: 1px solid #2637f2;
+    position: absolute;
+    z-index: 1;
+    bottom: 16%;
+    left: 45%;
+    margin-left: 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#chatButton1 .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 30%;
+    left: 0;
+    margin-left: -10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #2637f2 transparent transparent;
+}
+
+#chatButton1:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* shared photos css */
+
+/* put photos header text and button into divs */
+#photoHead {
+  width: 600px;
+  overflow: hidden;
+  display:flex;
+  align-items:center;
+}
+
+#photoTitle {
+  overflow-wrap: break-word;
+  max-width: 530px;
+  float:left;
+}
+#photoBackArrow {
+  max-width: 70px;
+  float: left;
+}
+
+/* create two equal columns that float next to each other */
+.column {
+  box-sizing: border-box;
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+.column img {
+  box-sizing: border-box;
+  margin-top: 12px;
+}
+
+/* clear the floats after the columns */
+.row:after {
+  box-sizing: border-box;
+  content: "";
+  display: table;
+  clear: both;
 }

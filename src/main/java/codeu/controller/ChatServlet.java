@@ -17,10 +17,12 @@ package codeu.controller;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.NotificationStore;
 import codeu.model.store.basic.UserStore;
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,6 +43,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.safety.Whitelist;
+import java.util.regex.*;
+import com.vladsch.flexmark.ast.Node; // imports for using markdown with flexmark
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.options.MutableDataSet;
+import java.util.Arrays;
+import com.vdurmont.emoji.EmojiParser; // import for emoji parser
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -56,6 +68,9 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Activities. */
   private ActivityStore activityStore;
 
+  /** Store class that gives access to Notifications. */
+  private NotificationStore notificationStore;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -64,6 +79,7 @@ public class ChatServlet extends HttpServlet {
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
     setActivityStore(ActivityStore.getInstance());
+    setNotificationStore(NotificationStore.getInstance());
   }
 
   /**
@@ -99,6 +115,14 @@ public class ChatServlet extends HttpServlet {
   }
 
   /**
+   * Sets the NotificationStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setNotificationStore(NotificationStore notificationStore) {
+    this.notificationStore = notificationStore;
+  }
+
+  /**
    * This function fires when a user navigates to the chat page. It gets the conversation title from
    * the URL, finds the corresponding Conversation, and fetches the messages in that Conversation.
    * It then forwards to chat.jsp for rendering.
@@ -117,12 +141,19 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
+    String username = (String) request.getSession().getAttribute("user");
+    if (username != null) {
+      User user = userStore.getUser(username);
+      notificationStore.getInstance().markNotificationsForUserInConvoAsRead(user, conversation);
+    }
+
     UUID conversationId = conversation.getId();
 
     List<Message> messages = messageStore.getMessagesInConversation(conversationId);
 
     request.setAttribute("conversation", conversation);
     request.setAttribute("messages", messages);
+    NotificationServlet.updateNumNotifications(request);
     request.getRequestDispatcher("/WEB-INF/view/chat.jsp").forward(request, response);
   }
 
@@ -160,6 +191,28 @@ public class ChatServlet extends HttpServlet {
       return;
     }
 
+    String messageText = request.getParameter("message");
+    Pattern msgMentionPattern = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
+    Matcher msgTxtMatcher = msgMentionPattern.matcher(messageText);
+
+    // Generate a UUID for the message now, in case Notification needs it
+    UUID messageID = UUID.randomUUID();
+
+    List<String> mentionedUserStrings = new ArrayList<String>();
+    while (msgTxtMatcher.find()){
+      String mentionedUsername = msgTxtMatcher.group(1);
+      User mentionedUser = userStore.getUser(mentionedUsername);
+      if (mentionedUser != null && !mentionedUserStrings.contains(mentionedUsername)){
+        // if a user was mentioned, place ** around the text so it will be made bold
+        messageText = messageText.replace("["+mentionedUsername+"]","**"+mentionedUsername+"**");
+        // if a user isn't mentioning themselves, create a Notification for this mention
+        if (mentionedUser.getId() != user.getId()){
+          notificationStore.addNotification(new Notification(UUID.randomUUID(),mentionedUser.getId(),messageID,Instant.now()));
+          mentionedUserStrings.add(mentionedUsername);
+        }
+      }
+    }
+
     // this code uses flexmark library to parse markdown to html for conversation chat
     // Jsoup library is used to clean out any script and unwanted html tags
 
@@ -183,6 +236,7 @@ public class ChatServlet extends HttpServlet {
 
     // re-use parser and renderer instances
     Node document = parser.parse(request.getParameter("message"));
+
     String markdownContent = renderer.render(document);
     // this deletes new line tag that parse auto creates at end of node
     markdownContent = markdownContent.replaceAll("\n", "");
@@ -194,9 +248,13 @@ public class ChatServlet extends HttpServlet {
     // this removes any style / script / html (other than allowed tags) from the message content
     String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
 
+    //this parses emojis to unicode and html
+    cleanedMessageContent = EmojiParser.parseToUnicode(cleanedMessageContent);
+    cleanedMessageContent = EmojiParser.parseToHtmlDecimal(cleanedMessageContent);
+
     Message message =
         new Message(
-            UUID.randomUUID(),
+            messageID,
             conversation.getId(),
             user.getId(),
             cleanedMessageContent,

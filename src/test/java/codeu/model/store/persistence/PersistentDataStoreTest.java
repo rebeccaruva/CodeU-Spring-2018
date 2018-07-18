@@ -3,6 +3,7 @@ package codeu.model.store.persistence;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -183,5 +184,80 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(idTwo, resultActivityTwo.getId());
     Assert.assertEquals(objectIdTwo, resultActivityTwo.getObjectId());
     Assert.assertEquals(creationTwo, resultActivityTwo.getCreationTime());
+  }
+
+  @Test
+  public void testSaveAndLoadNotification() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID notifiedUserOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    UUID messageOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Notification inputNotificationOne =
+        new Notification(idOne, notifiedUserOne, messageOne, creationOne);
+
+    UUID idTwo = UUID.fromString("10000003-2222-3333-4444-555555555555");
+    UUID notifiedUserTwo = UUID.fromString("10000004-2222-3333-4444-555555555555");
+    UUID messageTwo = UUID.fromString("10000005-2222-3333-4444-555555555555");
+    Instant creationTwo = Instant.ofEpochMilli(2000);
+    Notification inputNotificationTwo =
+        new Notification(idTwo, notifiedUserTwo, messageTwo, creationTwo);
+
+    // save
+    persistentDataStore.writeThrough(inputNotificationOne);
+    persistentDataStore.writeThrough(inputNotificationTwo);
+
+    // load
+    List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+    // confirm that what we saved matches what we loaded
+    // note that notifications are loaded in descending order
+    Notification resultNotificationOne = resultNotifications.get(1);
+    Assert.assertEquals(idOne, resultNotificationOne.getId());
+    Assert.assertEquals(notifiedUserOne, resultNotificationOne.getNotifiedUserUUID());
+    Assert.assertEquals(messageOne, resultNotificationOne.getMessageUUID());
+    Assert.assertEquals(creationOne, resultNotificationOne.getCreationTime());
+    Assert.assertEquals(false, resultNotificationOne.getViewedStatus());
+
+    Notification resultNotificationTwo = resultNotifications.get(0);
+    Assert.assertEquals(idTwo, resultNotificationTwo.getId());
+    Assert.assertEquals(notifiedUserTwo, resultNotificationTwo.getNotifiedUserUUID());
+    Assert.assertEquals(messageTwo, resultNotificationTwo.getMessageUUID());
+    Assert.assertEquals(creationTwo, resultNotificationTwo.getCreationTime());
+    Assert.assertEquals(false, resultNotificationTwo.getViewedStatus());
+  }
+
+  @Test
+  public void testUpdateEntity() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID notifiedUserOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    UUID messageOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Notification inputNotificationOne =
+        new Notification(idOne, notifiedUserOne, messageOne, creationOne);
+
+    persistentDataStore.writeThrough(inputNotificationOne);
+    inputNotificationOne.markAsViewed();
+    persistentDataStore.updateEntity(inputNotificationOne);
+    List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+    Notification resultNotificationOne = resultNotifications.get(0);
+    Assert.assertEquals(true, resultNotificationOne.getViewedStatus());
+  }
+
+  @Test
+  public void testDeleteEntity() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    UUID notifiedUserOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    UUID messageOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+    Instant creationOne = Instant.ofEpochMilli(1000);
+    Notification inputNotificationOne =
+        new Notification(idOne, notifiedUserOne, messageOne, creationOne);
+
+    persistentDataStore.writeThrough(inputNotificationOne);
+    persistentDataStore.deleteEntity(inputNotificationOne);
+    List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+    Assert.assertEquals(0, resultNotifications.size());
+
   }
 }
