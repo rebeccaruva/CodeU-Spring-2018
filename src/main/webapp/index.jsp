@@ -22,7 +22,7 @@
 <body>
 
   <% int numUnreadNotifications = 0; %>
-  <% if(request.getSession().getAttribute("user") != null){ %>
+  <% if(request.getSession().getAttribute("user") != null && request.getSession().getAttribute("numUnreadNotifications") != null){ %>
     <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
   <% } %>
 
