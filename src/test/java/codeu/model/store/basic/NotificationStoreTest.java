@@ -163,7 +163,7 @@ public class NotificationStoreTest {
   private void assertEquals(Notification expectedNotification, Notification actualNotification) {
     Assert.assertEquals(expectedNotification.getId(), actualNotification.getId());
     Assert.assertEquals(expectedNotification.getNotifiedUserUUID(), actualNotification.getNotifiedUserUUID());
-    Assert.assertEquals(expectedNotification.getMessageUUID(), actualNotification.getMessageUUID());;
+    Assert.assertEquals(expectedNotification.getMessageUUID(), actualNotification.getMessageUUID());
     Assert.assertEquals(expectedNotification.getCreationTime(), actualNotification.getCreationTime());
   }
 }
