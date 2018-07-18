@@ -97,9 +97,9 @@
         <button type="submit">Clear All</button>
       </form>
       <% } %>
-      
+
     <% } else{%>
-        <h2 style="color:red">Error: Please log in to access notifications.</h2>
+        <h2 style="color:red">Error: Please <a href="/login">login</a> to access notifications.</h2>
     <%}%>
   </div>
 </body>
