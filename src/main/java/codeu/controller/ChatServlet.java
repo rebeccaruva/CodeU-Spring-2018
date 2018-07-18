@@ -140,7 +140,7 @@ public class ChatServlet extends HttpServlet {
     if (username != null) {
       User user = userStore.getUser(username);
       notificationStore.getInstance().markNotificationsForUserInConvoAsRead(user, conversation);
-    } 
+    }
 
     UUID conversationId = conversation.getId();
 
@@ -200,8 +200,11 @@ public class ChatServlet extends HttpServlet {
       if (mentionedUser != null && !mentionedUserStrings.contains(mentionedUsername)){
         // if a user was mentioned, place ** around the text so it will be made bold
         messageText = messageText.replace("["+mentionedUsername+"]","**"+mentionedUsername+"**");
-        notificationStore.addNotification(new Notification(UUID.randomUUID(),mentionedUser.getId(),messageID,Instant.now()));
-        mentionedUserStrings.add(mentionedUsername);
+        // if a user isn't mentioning themselves, create a Notification for this mention
+        if (mentionedUser.getId() != user.getId()){
+          notificationStore.addNotification(new Notification(UUID.randomUUID(),mentionedUser.getId(),messageID,Instant.now()));
+          mentionedUserStrings.add(mentionedUsername);
+        }
       }
     }
 
