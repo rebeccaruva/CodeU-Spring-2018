@@ -19,13 +19,20 @@ import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Notification;
+import codeu.model.store.basic.NotificationStore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import java.io.*;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,6 +206,43 @@ public class PersistentDataStore {
     return activities;
   }
 
+  /**
+   * Loads all Notification objects from the Datastore service and returns them in a List, sorted in
+   * descending order by creation time.
+   *
+   * @throws codeu.model.store.persistence.PersistentDataStoreException if an error was detected
+   *     during the load from the Datastore service
+   */
+   public List<Notification> loadNotifications() throws PersistentDataStoreException {
+
+     List<Notification> notifications = new ArrayList<>();
+
+     // Retrieve all notificatins from the datastore.
+     Query query = new Query("notifications").addSort("creation_time", SortDirection.DESCENDING);
+     PreparedQuery results = datastore.prepare(query);
+
+     for (Entity entity : results.asIterable()) {
+       try {
+         UUID uuid = UUID.fromString((String) entity.getProperty("uuid"));
+         UUID notifiedUser_UUID = UUID.fromString((String) entity.getProperty("notifiedUser_UUID"));
+         UUID message_UUID = UUID.fromString((String) entity.getProperty("message_UUID"));
+         Boolean viewedStatus = (boolean) entity.getProperty("viewedStatus");
+         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
+         notifications.add(new Notification(uuid, notifiedUser_UUID, message_UUID, creationTime));
+         if (viewedStatus == true) {
+           NotificationStore.getInstance().markNotificationAsViewed(notifications.get(notifications.size()-1));
+         }
+       } catch (Exception e) {
+         // In a production environment, errors should be very rare. Errors which may
+         // occur include network errors, Datastore service errors, authorization errors,
+         // database entity definition mismatches, or service mismatches.
+         throw new PersistentDataStoreException(e);
+       }
+     }
+
+     return notifications;
+   }
+
   /** Write a User object to the Datastore service. */
   public void writeThrough(User user) {
     Entity userEntity = new Entity("chat-users", user.getId().toString());
@@ -251,5 +295,34 @@ public class PersistentDataStore {
     activityEntity.setProperty("type", activity.getType().toString());
     activityEntity.setProperty("creation_time", activity.getCreationTime().toString());
     datastore.put(activityEntity);
+  }
+
+  /** Write a Notification object to the Datastore service. */
+  public void writeThrough(Notification notification) {
+    Entity notificationEntity = new Entity("notifications", notification.getId().toString());
+    notificationEntity.setProperty("uuid", notification.getId().toString());
+    notificationEntity.setProperty("notifiedUser_UUID", notification.getNotifiedUserUUID().toString());
+    notificationEntity.setProperty("message_UUID", notification.getMessageUUID().toString());
+    notificationEntity.setProperty("viewedStatus", notification.getViewedStatus());
+    notificationEntity.setProperty("creation_time", notification.getCreationTime().toString());
+    datastore.put(notificationEntity);
+  }
+
+  /** Updates a Notification object on the Datastore service. */
+  public void updateEntity(Notification notification) {
+    try{
+      Query query =
+        new Query("notifications").setFilter(new FilterPredicate("uuid", FilterOperator.EQUAL, notification.getId().toString()));
+      PreparedQuery pq = datastore.prepare(query);
+      Entity result = pq.asSingleEntity();
+      result.setProperty("viewedStatus", notification.getViewedStatus());
+      datastore.put(result);
+    } catch (Exception e){}
+  }
+
+  /** Deletes a Notification object from the DataStore service. */
+  public void deleteEntity(Notification notification) {
+    Key k1 = KeyFactory.createKey("notifications", notification.getId().toString());
+    datastore.delete(k1);
   }
 }

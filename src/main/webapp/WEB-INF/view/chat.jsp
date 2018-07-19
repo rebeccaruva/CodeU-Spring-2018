@@ -82,13 +82,22 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
 </head>
 <body onload="scrollChat()">
 
+  <% int numUnreadNotifications = 0; %>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
+  <% } %>
+
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a href="/notifications">Notifications</a>
+      <% if (numUnreadNotifications != 0) { %>
+        <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
+      <% } else { %>
+        <a href="/notifications">Notifications</a>
+      <% } %>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
@@ -139,25 +148,15 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
         <form action="/chat/<%= conversation.getTitle() %>" method="GET">
           <div>
              <% if(current_message != null){ %>
-                <input type="text" name="message" value="<%= current_message %>" style="float: left" required>
+                <input type="text" name="message" value="<%= current_message %>" required>
              <% } else{ %>
-                <input type="text" name="message" style="float: left" required>
+                <input type="text" name="message" required>
              <% } %>
              <br/>
-             <button type="submit" style="float: left; margin-right: 5px">Check Sentiment</button>
+             <button type="submit">Check</button>
+             <button type="submit" formmethod="POST">Send</button>
           </div>
         </form>
-
-        <!-- if no text submitted yet -->
-        <% if(current_message != null){ %>
-          <!-- form to send message -->
-          <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-            <% if(current_message != null){ %>
-              <input type="hidden" name="message" value="<%= current_message %>">
-            <% } %>
-            <button type="submit">Send</button>
-          </form>
-        <% } %>
       </div>
       <div id="second">
         <%-- button icon for triggering modal to appear --%>
@@ -183,7 +182,6 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>
-
     <hr/>
 
   </div>

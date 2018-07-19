@@ -68,6 +68,7 @@ public class AdminServlet extends HttpServlet {
     request.setAttribute("numConversations", conversationStore.numConversations());
     request.setAttribute("numUsers", userStore.numUsers());
     request.setAttribute("numMessages", messageStore.numberOfMessages());
+    NotificationServlet.updateNumNotifications(request);
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
 

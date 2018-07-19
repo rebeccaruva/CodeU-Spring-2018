@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.regex.*;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
@@ -74,6 +76,7 @@ public class Message {
       String content,
       HashMap<String, String> translations,
       Instant creation) {
+    userStore = UserStore.getInstance();
     this.id = id;
     this.conversation = conversation;
     this.author = author;
@@ -86,8 +89,39 @@ public class Message {
   /** Adds translation to message in targetLanguage */
   public String addTranslation(String targetLanguage) {
     try {
+      ArrayList<String> usernames = new ArrayList<String>();
+
+      // find all usernames
+      Pattern msgMentionPattern = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
+      Matcher msgTxtMatcher = msgMentionPattern.matcher(content);
+
+      // add all usernames to list
+      while (msgTxtMatcher.find()){
+        String mentionedUsername = msgTxtMatcher.group(1);
+        if(userStore.getUser(mentionedUsername) != null){
+          usernames.add(mentionedUsername);
+        } else{
+          usernames.add(null);
+        }
+      }
+
       String translatedText =
           (new NaturalLanguageProcessing()).translate(content, "en", targetLanguage);
+
+      int curr_index = 0;
+      Pattern msgMentionPattern_translate = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
+      Matcher msgTxtMatcher_translate = msgMentionPattern_translate.matcher(translatedText);
+      String username = "";
+
+      // replace usernames in translated text for notifications
+      while(msgTxtMatcher_translate.find()){
+        username = msgTxtMatcher_translate.group(1);
+        if(usernames.get(curr_index) != null){
+          translatedText = translatedText.replace("[" + username + "]", "[" + usernames.get(curr_index) + "]");
+        }
+        curr_index++;
+      }
+
       translations.put(targetLanguage, translatedText); // put translated text into map
       return translatedText;
     } catch (IOException e) {

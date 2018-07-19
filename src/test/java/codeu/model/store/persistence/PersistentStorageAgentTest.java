@@ -3,6 +3,7 @@ package codeu.model.store.persistence;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import java.time.Instant;
 import java.util.UUID;
@@ -88,5 +89,32 @@ public class PersistentStorageAgentTest {
 
     persistentStorageAgent.writeThrough(activity);
     Mockito.verify(mockPersistentDataStore).writeThrough(activity);
+  }
+
+  @Test
+  public void testWriteThroughNotification() {
+    Notification notification =
+        new Notification(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now());
+    persistentStorageAgent.writeThrough(notification);
+    Mockito.verify(mockPersistentDataStore).writeThrough(notification);
+  }
+
+  @Test
+  public void testUpdateEntityNotification() {
+    Notification notification =
+        new Notification(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now());
+    persistentStorageAgent.updateEntity(notification);
+    Mockito.verify(mockPersistentDataStore).updateEntity(notification);
+  }
+
+  @Test
+  public void testDeleteEntityNotification() {
+    Notification notification =
+        new Notification(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now());
+    persistentStorageAgent.deleteEntity(notification);
+    Mockito.verify(mockPersistentDataStore).deleteEntity(notification);
   }
 }

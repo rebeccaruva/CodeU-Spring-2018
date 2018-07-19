@@ -95,6 +95,7 @@ public class ConversationServlet extends HttpServlet {
     } else {
       List<Conversation> conversations = conversationStore.getAllConversations();
       request.setAttribute("conversations", conversations);
+      NotificationServlet.updateNumNotifications(request);
       request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
     }
   }
@@ -133,6 +134,12 @@ public class ConversationServlet extends HttpServlet {
       // conversation title is already taken, just go into that conversation instead of creating a
       // new one
       response.sendRedirect("/chat/" + conversationTitle);
+      return;
+    }
+
+    if (conversationTitle.equals("")) {
+      request.setAttribute("error", "Please enter a conversation title.");
+      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
       return;
     }
 

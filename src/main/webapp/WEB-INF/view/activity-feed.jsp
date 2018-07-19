@@ -26,10 +26,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Activity Feed</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
+
+  <% int numUnreadNotifications = 0; %>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
+  <% } %>
 
   <!-- headings and links -->
   <nav>
@@ -38,7 +44,11 @@
     <a href="/about.jsp">About</a>
     <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a href="/notifications">Notifications</a>
+      <% if (numUnreadNotifications != 0) { %>
+        <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
+      <% } else { %>
+        <a href="/notifications">Notifications</a>
+      <% } %>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
