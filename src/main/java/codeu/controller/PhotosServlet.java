@@ -93,7 +93,7 @@ public class PhotosServlet extends HttpServlet {
     }
 
     UUID conversationId = conversation.getId();
-
+    NotificationServlet.updateNumNotifications(request);
     request.setAttribute("conversation", conversation);
     request.getRequestDispatcher("/WEB-INF/view/photos.jsp").forward(request, response);
   }
