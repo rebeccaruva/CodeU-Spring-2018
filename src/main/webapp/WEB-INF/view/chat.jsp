@@ -153,7 +153,7 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
                 <input type="text" name="message" required>
              <% } %>
              <br/>
-             <button type="submit">Check</button>
+             <button type="submit">Check Tone</button>
              <button type="submit" formmethod="POST">Send</button>
           </div>
         </form>

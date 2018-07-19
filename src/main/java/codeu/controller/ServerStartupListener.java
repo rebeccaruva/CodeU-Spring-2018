@@ -15,6 +15,7 @@ import codeu.model.store.persistence.PersistentStorageAgent;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import codeu.configuration.JsonConfiguration;
 
 /**
  * Listener class that fires when the server first starts up, before any servlet classes are
@@ -41,7 +42,7 @@ public class ServerStartupListener implements ServletContextListener {
       /* only uncomment next line if do not run makeJson test in NaturalLanguageProcessingTest for
         JsonConfiguration, i.e. run maven with option -DskipTests=true
       */
-      // (new JsonConfiguration()).createJson();
+      //(new JsonConfiguration()).createJson();
 
       List<Notification> notifications = PersistentStorageAgent.getInstance().loadNotifications();
       NotificationStore.getInstance().setNotifications(notifications);
