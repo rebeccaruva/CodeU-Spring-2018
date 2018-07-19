@@ -266,3 +266,15 @@ button {
   display: table;
   clear: both;
 }
+
+/* for drop-down list of languages */
+.languages {
+    overflow: hidden;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 12px;
+  }

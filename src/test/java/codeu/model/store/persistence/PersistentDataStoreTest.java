@@ -8,6 +8,7 @@ import codeu.model.data.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.junit.After;
@@ -119,16 +120,22 @@ public class PersistentDataStoreTest {
     UUID authorOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
     String contentOne = "test content one";
     Instant creationOne = Instant.ofEpochMilli(1000);
+    HashMap<String, String> mapOne = new HashMap<String, String>();
+    mapOne.put("en", "Hello");
+    mapOne.put("es", "Hola");
     Message inputMessageOne =
-        new Message(idOne, conversationOne, authorOne, contentOne, creationOne);
+        new Message(idOne, conversationOne, authorOne, contentOne, mapOne, creationOne);
 
     UUID idTwo = UUID.fromString("10000003-2222-3333-4444-555555555555");
     UUID conversationTwo = UUID.fromString("10000004-2222-3333-4444-555555555555");
     UUID authorTwo = UUID.fromString("10000005-2222-3333-4444-555555555555");
     String contentTwo = "test content one";
+    HashMap<String, String> mapTwo = new HashMap<String, String>();
+    mapTwo.put("en", "How are you?");
+    mapTwo.put("es", "Como estas?");
     Instant creationTwo = Instant.ofEpochMilli(2000);
     Message inputMessageTwo =
-        new Message(idTwo, conversationTwo, authorTwo, contentTwo, creationTwo);
+        new Message(idTwo, conversationTwo, authorTwo, contentTwo, mapTwo, creationTwo);
 
     // save
     persistentDataStore.writeThrough(inputMessageOne);
@@ -143,6 +150,8 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(conversationOne, resultMessageOne.getConversationId());
     Assert.assertEquals(authorOne, resultMessageOne.getAuthorId());
     Assert.assertEquals(contentOne, resultMessageOne.getContent());
+    Assert.assertEquals("Hello", resultMessageOne.getTranslation("en"));
+    Assert.assertEquals("Hola", resultMessageOne.getTranslation("es"));
     Assert.assertEquals(creationOne, resultMessageOne.getCreationTime());
 
     Message resultMessageTwo = resultMessages.get(1);
@@ -150,6 +159,8 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(conversationTwo, resultMessageTwo.getConversationId());
     Assert.assertEquals(authorTwo, resultMessageTwo.getAuthorId());
     Assert.assertEquals(contentTwo, resultMessageTwo.getContent());
+    Assert.assertEquals("How are you?", resultMessageTwo.getTranslation("en"));
+    Assert.assertEquals("Como estas?", resultMessageTwo.getTranslation("es"));
     Assert.assertEquals(creationTwo, resultMessageTwo.getCreationTime());
   }
 

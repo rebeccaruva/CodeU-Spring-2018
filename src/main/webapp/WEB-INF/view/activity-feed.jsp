@@ -19,10 +19,14 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.data.User" %>
 <%@ page import="codeu.natural_language.NaturalLanguageProcessing" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+
+<% User user = (UserStore.getInstance()).getUser(request.getSession().getAttribute("user").toString()); %>
 
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Activity Feed</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -83,7 +87,7 @@
                 <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
             <% } else if(type == Activity.Type.NEW_MESSAGE){%>
                 <!-- new message sent -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation() %></a>: <em><%= ((Message)(activity.getMessage())).getContent() %></em></li>
+                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation()%></a>: <em><%=((Message)(activity.getMessage())).getTranslationAndAdd(user.getLanguagePreference())%></em></li>
             <% } %>
           <% } %>
         </ul>

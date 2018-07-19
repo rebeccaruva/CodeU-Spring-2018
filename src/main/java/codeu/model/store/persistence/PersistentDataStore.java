@@ -14,6 +14,7 @@
 
 package codeu.model.store.persistence;
 
+import codeu.LanguageDictionary;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
@@ -31,10 +32,10 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,8 +77,10 @@ public class PersistentDataStore {
         String userName = (String) entity.getProperty("username");
         String password = (String) entity.getProperty("password_hash");
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
+        String preferred_language = (String) entity.getProperty("preferred_language");
         Boolean adminStatus = (Boolean) entity.getProperty("adminStatus");
         User user = new User(uuid, userName, password, creationTime, adminStatus);
+        user.setLanguage(preferred_language);
         users.add(user);
       } catch (Exception e) {
         // In a production environment, errors should be very rare. Errors which may
@@ -140,13 +143,24 @@ public class PersistentDataStore {
     PreparedQuery results = datastore.prepare(query);
 
     for (Entity entity : results.asIterable()) {
+      HashMap<String, String> translations = new HashMap<String, String>();
       try {
         UUID uuid = UUID.fromString((String) entity.getProperty("uuid"));
         UUID conversationUuid = UUID.fromString((String) entity.getProperty("conv_uuid"));
         UUID authorUuid = UUID.fromString((String) entity.getProperty("author_uuid"));
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         String content = (String) entity.getProperty("content");
-        Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime);
+        String property = "";
+        String translatedText = "";
+        // adds all languages for which values exist into translations
+        HashMap<String, String> languageDict = (new LanguageDictionary()).getDict();
+        for (String key : languageDict.keySet()) {
+          property = "message-" + key;
+          translatedText = (String) entity.getProperty(property);
+          if (translatedText != null) translations.put(key, translatedText);
+        }
+        Message message =
+            new Message(uuid, conversationUuid, authorUuid, content, translations, creationTime);
         messages.add(message);
       } catch (Exception e) {
         // In a production environment, errors should be very rare. Errors which may
@@ -236,6 +250,7 @@ public class PersistentDataStore {
     userEntity.setProperty("username", user.getName());
     userEntity.setProperty("password_hash", user.getPasswordHash());
     userEntity.setProperty("creation_time", user.getCreationTime().toString());
+    userEntity.setProperty("preferred_language", user.getLanguagePreference().toString());
     userEntity.setProperty("adminStatus", user.getAdminStatus());
     datastore.put(userEntity);
   }
@@ -248,6 +263,17 @@ public class PersistentDataStore {
     messageEntity.setProperty("author_uuid", message.getAuthorId().toString());
     messageEntity.setProperty("content", message.getContent());
     messageEntity.setProperty("creation_time", message.getCreationTime().toString());
+    HashMap<String, String> translations = (new LanguageDictionary()).getDict();
+    String property = "";
+    // adds columns for each language and puts values from map into columns where exist
+    for (String key : translations.keySet()) {
+      property = "message-" + key;
+      if (message.getTranslation(key) != null)
+        messageEntity.setProperty(property, message.getTranslation(key));
+      else {
+        messageEntity.setProperty(property, null);
+      }
+    }
     datastore.put(messageEntity);
   }
 

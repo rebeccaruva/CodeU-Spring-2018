@@ -51,6 +51,8 @@
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
       <h1>About IMhere!</h1>
+      <p>A chat app for professionals.</p>
+      </br>
       <p>
         Members of The Java Llamas:
       </p>

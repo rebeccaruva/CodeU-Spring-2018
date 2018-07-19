@@ -12,10 +12,10 @@ import codeu.model.store.basic.NotificationStore;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import codeu.model.store.persistence.PersistentStorageAgent;
-import codeu.configuration.JsonConfiguration;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import codeu.configuration.JsonConfiguration;
 
 /**
  * Listener class that fires when the server first starts up, before any servlet classes are

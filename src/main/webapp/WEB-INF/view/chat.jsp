@@ -24,14 +24,21 @@ Resources used to help with styling tooltip and modal!
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
+<%@ page import="codeu.natural_language.NaturalLanguageProcessing" %>
+<%@ page import="codeu.LanguageDictionary" %>
+<%@ page import="codeu.model.data.User" %>
+
 <%
 Conversation conversation = (Conversation) request.getAttribute("conversation");
 List<Message> messages = (List<Message>) request.getAttribute("messages");
+String current_message = (String) request.getAttribute("message");
+User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString());
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title><%= conversation.getTitle() %></title>
   <link rel="stylesheet" href="/css/main.css" type="text/css">
   <!-- Add icon library for buttons -->
@@ -125,7 +132,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         String author = UserStore.getInstance()
           .getUser(message.getAuthorId()).getName();
     %>
-      <li><strong><%= author %>:</strong> <%= message.getContent() %></li>
+      <li><strong><%= author %>:</strong> <%= message.getTranslationAndAdd(user.getLanguagePreference()) %></li>
     <%
       }
     %>
@@ -136,33 +143,45 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <div id="messageWrapper">
       <div id="first">
-         <% if (request.getSession().getAttribute("user") != null) { %>
-          <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-              <input type="text" name="message">
-              <br/>
-              <button type ="button">Check Sentiment</button>
-              <button type="submit">Send</button>
-          </form>
-        </div>
-        <div id="second">
-          <%-- button icon for triggering modal to appear --%>
-          <button class="butn" id="camerab" onclick="showModal()"><i class="fa fa-camera fa-lg"></i></button>
-        </div>
+        <% if (request.getSession().getAttribute("user") != null) { %>
+        <!-- form to check sentiment -->
+        <form action="/chat/<%= conversation.getTitle() %>" method="GET">
+          <div>
+             <% if(current_message != null){ %>
+                <input type="text" name="message" value="<%= current_message %>" required>
+             <% } else{ %>
+                <input type="text" name="message" required>
+             <% } %>
+             <br/>
+             <button type="submit">Check Tone</button>
+             <button type="submit" formmethod="POST">Send</button>
+          </div>
+        </form>
       </div>
-
-      <!-- the modal for photo upload -->
-      <div id="myModal" class="modal">
-
-        <!-- modal content -->
-        <div class="modal-content">
-          <span class="close" onclick="closeModal()">&times;</span>
-          <p>Upload your photo here.</p>
-        </div>
+      <div id="second">
+        <%-- button icon for triggering modal to appear --%>
+        <button class="butn" id="camerab" onclick="showModal()"><i class="fa fa-camera fa-lg"></i></button>
       </div>
-      <% } else { %>
-        <p><a href="/login">Login</a> to send a message.</p>
+    </div>
+
+    <% if(current_message != null) { %>
+      <!-- display professional/unprofessional message if clicked check sentiment button -->
+      <% if(request.getAttribute("score_result") != null) { %>
+         <p><%= (new NaturalLanguageProcessing()).translate(request.getAttribute("score_result").toString(), "en", user.getLanguagePreference()) %></p>
       <% } %>
+    <% } %>
 
+    <!-- the modal for photo upload -->
+    <div id="myModal" class="modal">
+      <!-- modal content -->
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>Upload your photo here.</p>
+      </div>
+    </div>
+    <% } else { %>
+      <p><a href="/login">Login</a> to send a message.</p>
+    <% } %>
     <hr/>
 
   </div>

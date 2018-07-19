@@ -3,10 +3,13 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.data.Notification" %>
 <%@ page import="codeu.model.store.basic.NotificationStore" %>
+<%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
 
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Notifications</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -51,6 +54,8 @@
         <%= numUnreadNotifications %> new notifications.</h1>
       <% } %>
 
+      <% User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString()); %>
+
       <% if(numUnreadNotifications != 0){ %>
       <h2>New Notifications</h2>
       <div id="chat">
@@ -63,7 +68,7 @@
           String messageConversationLink = "/chat/" + conversationName;
           NotificationStore.getInstance().markNotificationAsViewed(notification);
       %>
-        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getContent() %>"</li>
+        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getTranslationAndAdd(user.getLanguagePreference()) %>"</li>
       <%
         }
       %>
@@ -83,7 +88,7 @@
           String conversationName = message.getConversation();
           String messageConversationLink = "/chat/" + conversationName;
       %>
-        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getContent() %>"</li>
+        <li><strong><%= messageAuthor %></strong> mentioned you in <a href=<%= messageConversationLink %>><%= conversationName %></a>: "<%= message.getTranslationAndAdd(user.getLanguagePreference()) %>"</li>
       <%
         }
       %>

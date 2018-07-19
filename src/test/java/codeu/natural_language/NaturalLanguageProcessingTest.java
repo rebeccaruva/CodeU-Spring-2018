@@ -24,7 +24,7 @@ import org.junit.Test;
 public class NaturalLanguageProcessingTest {
 
   private NaturalLanguageProcessing nlp = new NaturalLanguageProcessing();
-  private Float returnedSentimentValue;
+  private String returnedSentiment;
   private String returnedTranslatedString;
   private ArrayList<String> test_strings;
 
@@ -37,7 +37,7 @@ public class NaturalLanguageProcessingTest {
   /* test configuration for Natural Language API */
   @Test
   public void testConfigurationNaturalLanguage() {
-    returnedSentimentValue = new Float(0.0);
+    returnedSentiment = "";
     test_strings = new ArrayList<String>();
     test_strings.add("");
     test_strings.add("a");
@@ -53,25 +53,25 @@ public class NaturalLanguageProcessingTest {
     test_strings.add("I hate this so much.");
     test_strings.add("I dislike this.");
 
-    ArrayList<Float> expectedValues = new ArrayList<Float>();
-    expectedValues.add(new Float(0.0));
-    expectedValues.add(new Float(0.0));
-    expectedValues.add(new Float(-0.3));
-    expectedValues.add(new Float(0.4));
-    expectedValues.add(new Float(-0.4));
-    expectedValues.add(new Float(0.0));
-    expectedValues.add(new Float(0.1));
-    expectedValues.add(new Float(-0.5));
-    expectedValues.add(new Float(-0.6));
-    expectedValues.add(new Float(-0.8));
-    expectedValues.add(new Float(-0.6));
-    expectedValues.add(new Float(-0.7));
-    expectedValues.add(new Float(-0.7));
+    ArrayList<String> expectedValues = new ArrayList<String>();
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Sounds professional!");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
+    expectedValues.add("Please consider re-phrasing. This may not come across as professional.");
 
     try {
       for (int i = 0; i < test_strings.size(); i++) {
-        returnedSentimentValue = new Float(nlp.configurationNaturalLanguage(test_strings.get(i)));
-        Assert.assertEquals(expectedValues.get(i), returnedSentimentValue);
+        returnedSentiment = nlp.checkTone(test_strings.get(i));
+        Assert.assertEquals(expectedValues.get(i), returnedSentiment);
       }
     } catch (IOException e) {
       System.err.println(e.getMessage());
@@ -87,17 +87,17 @@ public class NaturalLanguageProcessingTest {
 
     try {
       ArrayList<String> test_strings = new ArrayList<String>();
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "ru"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "hi"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "es"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "ar"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "el"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "bg"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "zh"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "nl"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "fr"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "la"));
-      test_strings.add(nlp.configurationTranslation(originalString, "en", "th"));
+      test_strings.add(nlp.translate(originalString, "en", "ru"));
+      test_strings.add(nlp.translate(originalString, "en", "hi"));
+      test_strings.add(nlp.translate(originalString, "en", "es"));
+      test_strings.add(nlp.translate(originalString, "en", "ar"));
+      test_strings.add(nlp.translate(originalString, "en", "el"));
+      test_strings.add(nlp.translate(originalString, "en", "bg"));
+      test_strings.add(nlp.translate(originalString, "en", "zh"));
+      test_strings.add(nlp.translate(originalString, "en", "nl"));
+      test_strings.add(nlp.translate(originalString, "en", "fr"));
+      test_strings.add(nlp.translate(originalString, "en", "la"));
+      test_strings.add(nlp.translate(originalString, "en", "th"));
     } catch (IOException e) {
       System.err.println(e.getMessage());
     }

@@ -16,33 +16,132 @@ package codeu.model.data;
 
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
+import codeu.natural_language.NaturalLanguageProcessing;
+import java.io.*;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.regex.*;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
 
   private final UUID conversation;
   private final UUID author;
-  private final String content;
   private final UUID id;
   private final Instant creation;
+  private String content;
+  private HashMap<String, String> translations;
+  private UserStore userStore;
 
   /**
-   * Constructs a new Message.
+   * Constructs a new Message (2 constructors).
    *
    * @param id the ID of this Message
    * @param conversation the ID of the Conversation this Message belongs to
    * @param author the ID of the User who sent this Message
    * @param content the text content of this Message
    * @param creation the creation time of this Message
+   * @param translations the map that stores used translations of message
    */
   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation) {
+    userStore = UserStore.getInstance();
+    this.id = id;
+    this.conversation = conversation;
+    this.author = author;
+    this.creation = creation;
+    this.content = content;
+    // translate content to English if different language
+    if ((userStore.getUser(author) != null)
+        && (userStore.getUser(author)).getLanguagePreference() != "en") {
+      try {
+        content =
+            (new NaturalLanguageProcessing())
+                .translate(content, (userStore.getUser(author)).getLanguagePreference(), "en");
+      } catch (IOException e) {
+        System.err.println(e.getMessage());
+      }
+    }
+    this.content = content;
+    translations = new HashMap<String, String>();
+    translations.put("en", content); // put English message into map
+  }
+
+  public Message(
+      UUID id,
+      UUID conversation,
+      UUID author,
+      String content,
+      HashMap<String, String> translations,
+      Instant creation) {
+    userStore = UserStore.getInstance();
     this.id = id;
     this.conversation = conversation;
     this.author = author;
     this.content = content;
     this.creation = creation;
+    this.translations = new HashMap<String, String>();
+    (this.translations).putAll(translations); // transfer data to map
+  }
+
+  /** Adds translation to message in targetLanguage */
+  public String addTranslation(String targetLanguage) {
+    try {
+      ArrayList<String> usernames = new ArrayList<String>();
+
+      // find all usernames
+      Pattern msgMentionPattern = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
+      Matcher msgTxtMatcher = msgMentionPattern.matcher(content);
+
+      // add all usernames to list
+      while (msgTxtMatcher.find()){
+        String mentionedUsername = msgTxtMatcher.group(1);
+        if(userStore.getUser(mentionedUsername) != null){
+          usernames.add(mentionedUsername);
+        } else{
+          usernames.add(null);
+        }
+      }
+
+      String translatedText =
+          (new NaturalLanguageProcessing()).translate(content, "en", targetLanguage);
+
+      int curr_index = 0;
+      Pattern msgMentionPattern_translate = Pattern.compile("\\[([a-zA-Z 0-9]+?)\\]");
+      Matcher msgTxtMatcher_translate = msgMentionPattern_translate.matcher(translatedText);
+      String username = "";
+
+      // replace usernames in translated text for notifications
+      while(msgTxtMatcher_translate.find()){
+        username = msgTxtMatcher_translate.group(1);
+        if(usernames.get(curr_index) != null){
+          translatedText = translatedText.replace("[" + username + "]", "[" + usernames.get(curr_index) + "]");
+        }
+        curr_index++;
+      }
+
+      translations.put(targetLanguage, translatedText); // put translated text into map
+      return translatedText;
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+    }
+    return null;
+  }
+
+  /** Gets translation of specific language */
+  public String getTranslation(String language) {
+    return translations.get(language);
+  }
+
+  /** Gets translation in language if in map or adds if not */
+  public String getTranslationAndAdd(String language) {
+    String translatedText = translations.get(language);
+    if (translatedText != null) {
+      return translatedText;
+    }
+    return addTranslation(language);
   }
 
   /** Returns the ID of the Conversation this Message belongs to. */

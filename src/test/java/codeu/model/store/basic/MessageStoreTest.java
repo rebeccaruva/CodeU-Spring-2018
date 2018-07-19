@@ -4,6 +4,7 @@ import codeu.model.data.Message;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
@@ -90,6 +91,44 @@ public class MessageStoreTest {
 
     assertEquals(inputMessage, resultMessage);
     Mockito.verify(mockPersistentStorageAgent).writeThrough(inputMessage);
+  }
+
+  @Test
+  public void testGetTranslation() {
+    HashMap<String, String> fake_map = new HashMap<String, String>();
+    fake_map.put("en", "Hello");
+    fake_map.put("es", "Hola ");
+    // initialize message with map
+    Message inputMessage =
+        new Message(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            "Hello",
+            fake_map,
+            Instant.now());
+
+    inputMessage.getTranslation("en").equals("Hello");
+    inputMessage.getTranslation("es").equals("Hola");
+  }
+
+  @Test
+  public void testAddTranslation() {
+    HashMap<String, String> fake_map = new HashMap<String, String>();
+    fake_map.put("en", "Hello");
+    // initialize message with map and add new translation
+    Message inputMessage =
+        new Message(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            "Hello",
+            fake_map,
+            Instant.now());
+    inputMessage.addTranslation("es");
+
+    inputMessage.getTranslation("en").equals("Hello");
+    inputMessage.getTranslation("es").equals("Hola");
   }
 
   private void assertEquals(Message expectedMessage, Message actualMessage) {

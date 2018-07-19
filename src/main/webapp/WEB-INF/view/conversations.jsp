@@ -15,6 +15,17 @@
 --%>
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.LanguageDictionary" %>
+<%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+<%@ page import="codeu.LanguageDictionary" %>
+<%@ page import="java.util.HashMap" %>
+
+<%
+  UserStore userStore = UserStore.getInstance();
+  User user = userStore.getUser((String)(request.getSession().getAttribute("user")));
+  HashMap<String,String> languageDict = (new LanguageDictionary()).getDict();
+%>
 
 <!DOCTYPE html>
 <html>
@@ -40,6 +51,17 @@
       <% } else { %>
         <a href="/notifications">Notifications</a>
       <% } %>
+      <div class="languages" style="float:right">
+        <!-- dropdown list of languages -->
+        <form action="/conversations" method="GET">
+            <select name="language" onmousedown="if(this.options.length>8){this.size=6;}"  onchange="this.form.submit()" onblur="this.size=0;">
+              <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
+              <% for(String key : languageDict.keySet()){ %>
+                <option value="<%=key%>"><%=languageDict.get(key)%></option>
+              <% } %>
+            </select>
+        </form>
+      </div>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
@@ -50,7 +72,6 @@
   </nav>
 
   <div id="container">
-
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>

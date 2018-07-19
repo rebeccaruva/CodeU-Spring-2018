@@ -20,6 +20,7 @@ import codeu.model.data.User;
 import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
+import java.io.*;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -84,10 +85,19 @@ public class ConversationServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    List<Conversation> conversations = conversationStore.getAllConversations();
-    request.setAttribute("conversations", conversations);
-    NotificationServlet.updateNumNotifications(request);
-    request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+    String language = request.getParameter("language");
+
+    if (language != null) { // set user language if changes
+      String username = (String) request.getSession().getAttribute("user");
+      User user = userStore.getUser(username);
+      user.setLanguage(language);
+      response.sendRedirect("/conversations");
+    } else {
+      List<Conversation> conversations = conversationStore.getAllConversations();
+      request.setAttribute("conversations", conversations);
+      NotificationServlet.updateNumNotifications(request);
+      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+    }
   }
 
   /**
@@ -98,7 +108,6 @@ public class ConversationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
     String username = (String) request.getSession().getAttribute("user");
     if (username == null) {
       // user is not logged in, don't let them create a conversation

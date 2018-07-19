@@ -148,14 +148,15 @@ public class PhotosServletTest {
     Mockito.when(mockRequest.getRequestURI()).thenReturn("/photos/test_conversation");
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
-    User fakeUser = new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
+    User fakeUser =
+        new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
 
     Conversation fakeConversation =
         new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
     Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
         .thenReturn(fakeConversation);
-        
+
     photosServlet.doPost(mockRequest, mockResponse);
 
     Mockito.verify(mockResponse).sendRedirect("/photos/test_conversation");
