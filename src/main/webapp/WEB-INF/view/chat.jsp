@@ -32,7 +32,6 @@ Resources used to help with styling tooltip and modal!
 Conversation conversation = (Conversation) request.getAttribute("conversation");
 List<Message> messages = (List<Message>) request.getAttribute("messages");
 String current_message = (String) request.getAttribute("message");
-User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString());
 %>
 
 <!DOCTYPE html>
@@ -132,7 +131,13 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
         String author = UserStore.getInstance()
           .getUser(message.getAuthorId()).getName();
     %>
-      <li><strong><%= author %>:</strong> <%= message.getTranslationAndAdd(user.getLanguagePreference()) %></li>
+      <% if(request.getSession().getAttribute("user") != null) {
+          User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString());
+      %>
+        <li><strong><%= author %>:</strong> <%= message.getTranslationAndAdd(user.getLanguagePreference()) %></li>
+      <% } else{ %>
+        <li><strong><%= author %>:</strong> <%= message.getTranslation("en") %></li>
+      <% } %>
     <%
       }
     %>
@@ -166,7 +171,9 @@ User user = UserStore.getInstance().getUser(request.getSession().getAttribute("u
 
     <% if(current_message != null) { %>
       <!-- display professional/unprofessional message if clicked check sentiment button -->
-      <% if(request.getAttribute("score_result") != null) { %>
+      <% if(request.getAttribute("score_result") != null && request.getSession().getAttribute("user") != null) {
+          User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString());
+      %>
          <p><%= (new NaturalLanguageProcessing()).translate(request.getAttribute("score_result").toString(), "en", user.getLanguagePreference()) %></p>
       <% } %>
     <% } %>

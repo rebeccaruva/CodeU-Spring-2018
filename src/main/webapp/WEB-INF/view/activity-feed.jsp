@@ -21,8 +21,6 @@
 <%@ page import="codeu.natural_language.NaturalLanguageProcessing" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
 
-<% User user = (UserStore.getInstance()).getUser(request.getSession().getAttribute("user").toString()); %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,6 +67,7 @@
     <% if(request.getSession().getAttribute("user") != null){ %>
       <!-- get list of activities -->
       <% List<Activity> activities = (List<Activity>) request.getAttribute("all_activities");
+      User user = (UserStore.getInstance()).getUser(request.getSession().getAttribute("user").toString());
       if(activities == null || activities.isEmpty()){ %>
         <p>The activity feed is currently empty. Start a conversation!</p>
       <% } else { %>
@@ -78,16 +77,24 @@
             <% Activity activity = activities.get(index); Activity.Type type = activity.getType(); %>
             <% if(type == Activity.Type.REGISTERED){ %>
                 <!-- new user registered -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= ((User)(activity.getUser())).getName() %>!</li>
+                <% if(activity.getUser() != null) { %>
+                    <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong>New user registered: welcome <%= ((User)(activity.getUser())).getName() %>!</li>
+                <% } %>
             <% } else if(type == Activity.Type.LOGGED_IN){ %>
                 <!-- user logged in -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((User)(activity.getUser())).getName() %> has logged in!</li>
+                <% if(activity.getUser() != null) { %>
+                  <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((User)(activity.getUser())).getName() %> has logged in!</li>
+                <% } %>
             <% } else if(type == Activity.Type.NEW_CONVERSATION){ %>
                 <!-- new conversation created -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
+                <% if(activity.getConversation() != null && activity.getConversation().getUser() != null) { %>
+                  <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Conversation)(activity.getConversation())).getUser() %> has started a conversation: <a href="/chat/<%= ((Conversation)(activity.getConversation())).getTitle() %>"><%= ((Conversation)(activity.getConversation())).getTitle() %></a>.</li>
+                <% } %>
             <% } else if(type == Activity.Type.NEW_MESSAGE){%>
                 <!-- new message sent -->
-                <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation()%></a>: <em><%=((Message)(activity.getMessage())).getTranslationAndAdd(user.getLanguagePreference())%></em></li>
+                <% if(activity.getMessage() != null && activity.getMessage().getUser() != null && activity.getMessage().getConversation() != null) { %>
+                  <li><strong><font size = "4"><%= activity.formattedTime() %>: </font></strong><%= ((Message)(activity.getMessage())).getUser() %> sent a message in <a href="/chat/<%= ((Message)(activity.getMessage())).getConversation() %>"><%= ((Message)(activity.getMessage())).getConversation()%></a>: <em><%=((Message)(activity.getMessage())).getTranslationAndAdd(user.getLanguagePreference())%></em></li>
+                <% } %>
             <% } %>
           <% } %>
         </ul>
