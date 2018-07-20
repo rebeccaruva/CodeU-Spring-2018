@@ -34,8 +34,11 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <head>
   <title><%= conversation.getTitle() %></title>
   <link rel="stylesheet" href="/css/main.css" type="text/css">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <!-- Add icon library for buttons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
 
   <style>
     #chat {
@@ -52,25 +55,21 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       chatDiv.scrollTop = chatDiv.scrollHeight;
     };
 
-    // When the user clicks the button, open the modal
-    function showModal() {
-      var modal = document.getElementById('myModal');
-      modal.style.display = "block";
+    //insert the photo link: message into text box
+    function imgInsert(text) {
+      var messageInput = document.getElementById("messageInput");
+      var input = messageInput.value;
+      input = input + text;
+      messageInput.value = input;
+
+      //put cursor in text box after photo link:
+      messageInput.focus();
     }
 
-    // When the user clicks on <span> (x), close the modal
-    function closeModal() {
-      var modal = document.getElementById('myModal');
-      modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      var modal = document.getElementById('myModal');
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+  //emoji under development alert
+  function emojiDevelop() {
+    alert("I'm not quite working yet!");
+  }
   </script>
 </head>
 <body onload="scrollChat()">
@@ -129,25 +128,23 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       <div id="first">
          <% if (request.getSession().getAttribute("user") != null) { %>
           <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-              <input type="text" name="message">
+            <input type="text" name="message" id="messageInput" size=35%/>
+            <%-- <div class="input-container"> --%>
+              <%-- <input type="text" class="input-field" name="message" id="messageInput" size=35%/> --%>
+              <%-- <button class="input-button" onclick="emojiDevelop()">
+                <i class="far fa-smile fa-xs"></i>
+              </button> --%>
+            <%-- </div> --%>
               <br/>
               <button type ="button">Check Sentiment</button>
               <button type="submit">Send</button>
           </form>
         </div>
         <div id="second">
-          <%-- button icon for triggering modal to appear --%>
-          <button class="butn" id="camerab" onclick="showModal()"><i class="fa fa-camera fa-lg"></i></button>
-        </div>
-      </div>
-
-      <!-- the modal for photo upload -->
-      <div id="myModal" class="modal">
-
-        <!-- modal content -->
-        <div class="modal-content">
-          <span class="close" onclick="closeModal()">&times;</span>
-          <p>Upload your photo here.</p>
+          <%-- button icon for giving photo link --%>
+          <button class="butn" id="camerab" value="photo link: " name="no" onclick="imgInsert(this.value)">
+            <i class="fa fa-camera fa-lg"></i>
+          </button>
         </div>
       </div>
       <% } else { %>

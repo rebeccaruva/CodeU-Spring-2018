@@ -155,7 +155,7 @@ public class PhotosServletTest {
         new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
     Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
         .thenReturn(fakeConversation);
-        
+
     photosServlet.doPost(mockRequest, mockResponse);
 
     Mockito.verify(mockResponse).sendRedirect("/photos/test_conversation");

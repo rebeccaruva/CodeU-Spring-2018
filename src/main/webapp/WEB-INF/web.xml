@@ -57,16 +57,6 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>ChatServlet</servlet-name>
-    <servlet-class>codeu.controller.ChatServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ChatServlet</servlet-name>
-    <url-pattern>/chat/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>PhotosServlet</servlet-name>
     <servlet-class>codeu.controller.PhotosServlet</servlet-class>
   </servlet>
@@ -74,6 +64,16 @@
   <servlet-mapping>
     <servlet-name>PhotosServlet</servlet-name>
     <url-pattern>/photos/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ChatServlet</servlet-name>
+    <servlet-class>codeu.controller.ChatServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ChatServlet</servlet-name>
+    <url-pattern>/chat/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

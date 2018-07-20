@@ -203,8 +203,9 @@ public class ChatServletTest {
 
     Mockito.when(mockRequest.getParameter("message"))
         .thenReturn("Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, "
-        + "<em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, :grinning:, and "
-        + "<script>JavaScript</script> content. <strong>bold</strong>");
+        + "<em>italics</em>, :grinning:, and <script>JavaScript</script> content. <p>not</p> "
+        + "<strong>bold</strong>, <img src='https://goo.gl/UjyT8U'>, "
+        + "<span class='classy'>span</span>");
     chatServlet.doPost(mockRequest, mockResponse);
 
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
@@ -212,8 +213,64 @@ public class ChatServletTest {
     // these html tags and emoji addition tests if whitelist and parsing is working
     Assert.assertEquals(
         "Contains <ins>underline</ins>, <del>strike</del>, <strong>bold</strong>, "
-        + "<em>italics</em>, <sub>subscript</sub>, <sup>superscript</sup>, &#128512;, and "
-        + " content. <strong>bold</strong>",
+        + "<em>italics</em>, &#128512;, and  content. not <strong>bold</strong>, "
+        + "<img src=\"https://goo.gl/UjyT8U\">, <span class=\"classy\">span</span>",
+        messageArgumentCaptor.getValue().getContent());
+    Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
+  }
+
+  @Test
+  public void testDoPost_ParsesEmoji() throws IOException, ServletException {
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+    Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
+
+    User fakeUser = new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
+    Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+
+    Conversation fakeConversation =
+        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
+    Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
+        .thenReturn(fakeConversation);
+
+    Mockito.when(mockRequest.getParameter("message"))
+        .thenReturn("Emoji 1 :turtle:, Emoji 2 :turt le:, Emoji 3 :turtle :, Emoji 4 ::turtle::, "
+        + "Emoji 5 :TURTLE:, Emoji 6 :turtle::sparkling_heart:");
+    chatServlet.doPost(mockRequest, mockResponse);
+
+    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
+    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
+    // these html tags and emoji addition tests if whitelist and parsing is working
+    Assert.assertEquals(
+        "Emoji 1 &#128034;, Emoji 2 :turt le:, Emoji 3 :turtle :, Emoji 4 :&#128034;:, "
+        + "Emoji 5 :TURTLE:, Emoji 6 &#128034;&#128150;",
+        messageArgumentCaptor.getValue().getContent());
+    Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
+  }
+
+  @Test
+  public void testDoPost_LinksPhotos() throws IOException, ServletException {
+    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+    Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
+
+    User fakeUser = new User(UUID.randomUUID(), "test_username", "test_username", Instant.now(), false);
+    Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+
+    Conversation fakeConversation =
+        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
+    Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
+        .thenReturn(fakeConversation);
+
+    Mockito.when(mockRequest.getParameter("message"))
+        .thenReturn("photo link: https://goo.gl/fDyk6z happy snow man!! photo "
+        + "link: https://goo.gl/7NTKYs photo link: https://itch.io/");
+    chatServlet.doPost(mockRequest, mockResponse);
+
+    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
+    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
+    // make sure img link goes to img tag
+    Assert.assertEquals(
+        "<img src=\"https://goo.gl/fDyk6z\" style=\"max-width: 50%;\"> happy snow man!! "
+         + "<img src=\"https://goo.gl/7NTKYs\" style=\"max-width: 50%;\"> https://itch.io/",
         messageArgumentCaptor.getValue().getContent());
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
