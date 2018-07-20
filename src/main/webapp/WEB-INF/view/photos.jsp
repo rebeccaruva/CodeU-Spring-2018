@@ -30,6 +30,8 @@ Conversation conversation = (Conversation) request.getAttribute("conversation");
 <head>
   <title><%= conversation.getTitle() %> Shared Photos</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <!-- Add icon library for button -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -38,13 +40,13 @@ Conversation conversation = (Conversation) request.getAttribute("conversation");
   <nav>
     <a id="navTitle" href="/">IMhere!</a>
     <a href="/conversations">Conversations</a>
+    <a href="/about.jsp">About</a>
+    <a href="/activity-feed">Activity Feed</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+      <a href="/notifications">Notifications</a>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
-    <a href="/about.jsp">About</a>
-    <a href="/activity-feed">Activity Feed</a>
     <% if((request.getSession().getAttribute("user") != null) && request.getSession().getAttribute("adminStatus") != null){ %>
     <% if((Boolean)request.getSession().getAttribute("adminStatus").equals(true)){ %>
       <a href="/admin">Admin</a>
