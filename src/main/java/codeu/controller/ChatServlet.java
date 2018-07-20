@@ -47,11 +47,18 @@ import java.util.Arrays;
 
 //imports for image url checker
 import java.awt.Image;
+import java.awt.image.RenderedImage;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.net.MalformedURLException;
 import javax.imageio.ImageIO;
 import org.apache.commons.lang3.StringUtils;
+import java.io.*;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.Toolkit;
 
 // import for emoji parser
 import com.vdurmont.emoji.EmojiParser;
@@ -127,23 +134,32 @@ public class ChatServlet extends HttpServlet {
 		}
 	}
 
-  /* this will return true if image url is actual image */
-  public static boolean isImage(String imgURL) {
-    boolean URLresult = false;
-    try {
-      BufferedImage image = ImageIO.read(new URL(imgURL));
-      if(image == null) {
-        URLresult = false;
-      } else {
-        URLresult = true;
-      }
-    } catch (MalformedURLException e) {
-      System.out.println("URL error with image");
-    } catch (IOException e) {
-      System.out.println("IO error with image");
-    }
-    return URLresult;
-  }
+  /* this chunk of code should return true if image url is actual image
+  * only works locally on devserver
+  */
+  // /* this will return true if image url is actual image */
+  // public static boolean isImage(String imgURL) {
+  //   boolean URLresult;
+  //
+  //   //read image
+  //   try{
+  //     URL url = new URL(imgURL);
+  //     BufferedImage image = ImageIO.read(imageURL);
+  //     System.out.println(image);
+  //     if(image == null) {
+  //       URLresult = false;
+  //     } else {
+  //       URLresult = true;
+  //     }
+  //   } catch (MalformedURLException e) {
+  //     System.out.println("URL error with image" + e.getMessage());
+  //     URLresult = false;
+  //   } catch (IOException e) {
+  //     System.out.println("IO error with image" + e.getMessage());
+  //   }
+  //   System.out.println(URLresult);
+  //   return URLresult;
+  // }
 
   /* this will return true if message is single emoji */
   public static boolean isOneEmoji(String emojiMess) {
@@ -194,7 +210,7 @@ public class ChatServlet extends HttpServlet {
         imageURL = mess.substring(pl2); //url in message until end
       }
       if (isValid(imageURL)) {
-        if(isImage(imageURL)) {
+        // if(isImage(imageURL)) { //only works locally
           String modifiedImageURL = "<img src=\"" + imageURL + "\" style=\"max-width: 50%;\">";
           //isPhoto is true!!!
 
@@ -203,14 +219,16 @@ public class ChatServlet extends HttpServlet {
           modifiedMessage = modifiedMessage.replace(imageURL, modifiedImageURL);
           modifiedMessage = modifiedMessage.replaceFirst("photo link: ", "");
           mess = modifiedMessage; //update
-        }
+        // }
       }
     }
 
     //return message with modifications
     System.out.println(modifiedMessage);
     //get rid of any remaining photo link (ex. if link was not image)
-    modifiedMessage = modifiedMessage.replaceAll("photo link: ", "");
+    if (modifiedMessage.contains("photo link: ")){ //if still has photo link
+      modifiedMessage = modifiedMessage.replaceAll("photo link: ", "");
+    }
     return modifiedMessage;
   }
 

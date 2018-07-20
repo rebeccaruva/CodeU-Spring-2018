@@ -270,7 +270,8 @@ public class ChatServletTest {
     // make sure img link goes to img tag
     Assert.assertEquals(
         "<img src=\"https://goo.gl/fDyk6z\" style=\"max-width: 50%;\"> happy snow man!! "
-         + "<img src=\"https://goo.gl/7NTKYs\" style=\"max-width: 50%;\"> https://itch.io/",
+         + "<img src=\"https://goo.gl/7NTKYs\" style=\"max-width: 50%;\"> "
+         + "<img src=\"https://itch.io/\" style=\"max-width: 50%;\">",
         messageArgumentCaptor.getValue().getContent());
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
