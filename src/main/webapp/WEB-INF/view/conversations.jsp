@@ -23,7 +23,6 @@
 
 <%
   UserStore userStore = UserStore.getInstance();
-  User user = userStore.getUser((String)(request.getSession().getAttribute("user")));
   HashMap<String,String> languageDict = (new LanguageDictionary()).getDict();
 %>
 
@@ -55,7 +54,8 @@
         <!-- dropdown list of languages -->
         <form action="/conversations" method="GET">
             <select name="language" onmousedown="if(this.options.length>8){this.size=6;}"  onchange="this.form.submit()" onblur="this.size=0;">
-              <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
+              <% User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString()); %>
+                  <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
               <% for(String key : languageDict.keySet()){ %>
                 <option value="<%=key%>"><%=languageDict.get(key)%></option>
               <% } %>
