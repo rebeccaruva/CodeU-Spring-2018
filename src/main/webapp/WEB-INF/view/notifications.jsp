@@ -12,6 +12,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Notifications</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 

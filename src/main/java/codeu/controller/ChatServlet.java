@@ -49,11 +49,26 @@ import java.util.regex.*;
 import com.vladsch.flexmark.ast.Node; // imports for using markdown with flexmark
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.options.MutableDataSet;
 import java.util.Arrays;
 import com.vdurmont.emoji.EmojiParser; // import for emoji parser
+//imports for image url checker
+import java.awt.Image;
+import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
+import java.net.URL;
+import java.net.MalformedURLException;
+import javax.imageio.ImageIO;
+import org.apache.commons.lang3.StringUtils;
+import java.io.*;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.Toolkit;
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -115,6 +130,119 @@ public class ChatServlet extends HttpServlet {
   void setActivityStore(ActivityStore activityStore) {
     this.activityStore = activityStore;
   }
+
+  /* this will return true if image url is valid */
+	public static boolean isValid(String url) {
+		//first try to create a valid URL
+		try {
+			new URL(url).toURI();
+			return true;
+		}
+
+		// then if there was an Exception while creating URL
+		catch (Exception e) {
+			return false;
+		}
+	}
+
+  /* this chunk of code should return true if image url is actual image
+  * only works locally on devserver
+  */
+  // /* this will return true if image url is actual image */
+  // public static boolean isImage(String imgURL) {
+  //   boolean URLresult;
+  //
+  //   //read image
+  //   try{
+  //     URL url = new URL(imgURL);
+  //     BufferedImage image = ImageIO.read(imageURL);
+  //     System.out.println(image);
+  //     if(image == null) {
+  //       URLresult = false;
+  //     } else {
+  //       URLresult = true;
+  //     }
+  //   } catch (MalformedURLException e) {
+  //     System.out.println("URL error with image" + e.getMessage());
+  //     URLresult = false;
+  //   } catch (IOException e) {
+  //     System.out.println("IO error with image" + e.getMessage());
+  //   }
+  //   System.out.println(URLresult);
+  //   return URLresult;
+  // }
+
+  /* this will return true if message is single emoji */
+  public static boolean isOneEmoji(String emojiMess) {
+    boolean emojiResult;
+
+    // count all the colons(:) in the message
+    int counter = 0;
+    for(int i = 0; i < emojiMess.length(); i++) {
+      if( emojiMess.charAt(i) == ':' ) {
+        counter++;
+      }
+    }
+
+    //if there are only 2 colons --> :example:, not ::example:
+    //and the first and last index of (:) are the same length as String
+    //then emoji is the only thing in message
+    if(counter == 2) {
+      if ((emojiMess.indexOf(':') == 0) && (emojiMess.lastIndexOf(':') == emojiMess.length()-1)){
+        System.out.println("only one emoji");
+        emojiResult = true;
+      } else {
+        System.out.println("emoji plus some extra characters");
+        emojiResult = false;
+      }
+    } else {
+      System.out.println("there are more than 2 colons (:)");
+      emojiResult = false;
+    }
+    return emojiResult;
+  }
+
+  /* this will return modified message if contains photo */
+  public String checkPhotoLink(String mess, int count) {
+    String modifiedMessage = ""; // will use to return
+    for (int i = 0; i < count; i++) {
+      modifiedMessage = mess; //will return later
+
+      int pl1 = mess.indexOf("photo link: "); //find the index of the photo link, should be 0
+  		int pl2 = pl1 + 12; //find the concluding space index of the photo link
+
+      //find image link and send to find if valid link or not
+      int endOfLink = 0;
+      String imageURL = "";
+      if(mess.indexOf(" ", pl2) > 0) { //make sure end of link is not out of range
+        endOfLink = mess.indexOf(" ", pl2);
+        imageURL = mess.substring(pl2, endOfLink); //url in message until space
+      } else {
+        imageURL = mess.substring(pl2); //url in message until end
+      }
+      if (isValid(imageURL)) {
+        // if(isImage(imageURL)) { //only works locally
+          String modifiedImageURL = "<img src=\"" + imageURL + "\" style=\"max-width: 50%;\">";
+          //isPhoto is true!!!
+
+          //update message content with link and img src html
+          //delete photo link and leave image link
+          modifiedMessage = modifiedMessage.replace(imageURL, modifiedImageURL);
+          modifiedMessage = modifiedMessage.replaceFirst("photo link: ", "");
+          mess = modifiedMessage; //update
+        // }
+      }
+    }
+
+    //return message with modifications
+    System.out.println(modifiedMessage);
+    //get rid of any remaining photo link (ex. if link was not image)
+    if (modifiedMessage.contains("photo link: ")){ //if still has photo link
+      modifiedMessage = modifiedMessage.replaceAll("photo link: ", "");
+    }
+    return modifiedMessage;
+  }
+
 
   /**
    * Sets the NotificationStore used by this servlet. This function provides a common setup method for
@@ -239,15 +367,21 @@ public class ChatServlet extends HttpServlet {
     Whitelist allowedTags = Whitelist.none(); // no tags allowed, empty whitelist
     // now add tags to empty whitelist
     // ins: underline, del: strikethrough, strong: bold
-    // em: italics, sub: subscript, sup: superscript
-    allowedTags.addTags("ins", "del", "strong", "em", "sub", "sup");
+    // em: italics, a: link (+ href), img: image (+ src)
+    allowedTags.addTags("ins", "del", "strong", "em", "img", "span");
+    allowedTags.addAttributes("span", "href", "class");
+    allowedTags.addAttributes("a", "href", "title");
+    allowedTags.addAttributes("img", "alt", "height", "src", "title", "style");
+    allowedTags.addProtocols("a", "href", "ftp", "http", "https", "mailto");
+    allowedTags.addProtocols("img", "src", "http", "https");
+
 
     // this allows for extensions to be added for markdown
     MutableDataSet options = new MutableDataSet();
 
-    // set underline(++) and strikethrough(~~) extension for markdown
-    options.set(
-        Parser.EXTENSIONS, Arrays.asList(InsExtension.create(), StrikethroughExtension.create()));
+    // set underline(++) and strikethrough(~~) and autolink extension for markdown
+    options.set(Parser.EXTENSIONS, Arrays.asList(InsExtension.create(),
+    StrikethroughExtension.create())); //, AutolinkExtension.create()
 
     // parse markdown to html
     Parser parser = Parser.builder(options).build();
@@ -267,9 +401,28 @@ public class ChatServlet extends HttpServlet {
     // this removes any style / script / html (other than allowed tags) from the message content
     String cleanedMessageContent = Jsoup.clean(markdownContent, "", allowedTags, settings);
 
-    // this parses emojis to unicode and html
+    //this code will check for emojis in message
+    // this checks if message is single emoji, if not just skip to parse html
+    if (isOneEmoji(cleanedMessageContent)) {
+      //parse single emoji and double check there is an actual emoji
+      cleanedMessageContent = EmojiParser.parseToUnicode(cleanedMessageContent);
+      cleanedMessageContent = EmojiParser.parseToHtmlDecimal(cleanedMessageContent);
+      if (!cleanedMessageContent.contains(":")) {
+        cleanedMessageContent = "<span class=\"singleEmoji\">" + cleanedMessageContent + "</span>";
+      }
+    }
+    //this parses :emojis: to unicode and html
     cleanedMessageContent = EmojiParser.parseToUnicode(cleanedMessageContent);
     cleanedMessageContent = EmojiParser.parseToHtmlDecimal(cleanedMessageContent);
+
+    // this code will go through the message to find if it's an image link or regular message
+    // first check if message contains image link
+    int photoCount = 0;
+    if(cleanedMessageContent.contains("photo link: ")) {
+      photoCount = StringUtils.countMatches(cleanedMessageContent, "photo link: ");
+      System.out.println(photoCount);
+      cleanedMessageContent = checkPhotoLink(cleanedMessageContent, photoCount);
+    }
 
     Message message =
         new Message(
