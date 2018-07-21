@@ -8,7 +8,8 @@
 <head>
   <title>Admin</title>
   <link rel="stylesheet" href="/css/main.css" type="text/css">
-
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <style>
 
   </style>
