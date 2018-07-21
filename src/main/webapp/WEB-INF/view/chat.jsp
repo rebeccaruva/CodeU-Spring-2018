@@ -183,8 +183,8 @@ String current_message = (String) request.getAttribute("message");
     <div id="myModal" class="modal">
       <!-- modal content -->
       <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <p>Upload your photo here.</p>
+        <!--<span class="close" onclick="closeModal()">&times;</span>
+        <p>Upload your photo here.</p> -->
       </div>
     </div>
     <% } else { %>
