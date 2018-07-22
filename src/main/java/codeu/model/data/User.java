@@ -16,6 +16,7 @@ package codeu.model.data;
 
 import java.time.Instant;
 import java.util.UUID;
+import codeu.model.store.basic.UserStore;
 
 /** Class representing a registered user. */
 public class User {
@@ -25,6 +26,7 @@ public class User {
   private final Instant creation;
   private Boolean adminStatus;
   private String preferredLang;
+  private UserStore userStore;
 
   /**
    * Constructs a new User.
@@ -36,6 +38,7 @@ public class User {
    * @param adminStatus the admin status of this User
    */
   public User(UUID id, String name, String passwordHash, Instant creation, Boolean adminStatus) {
+    userStore = UserStore.getInstance();
     this.id = id;
     this.name = name;
     this.passwordHash = passwordHash;
@@ -78,6 +81,7 @@ public class User {
 
   public void setLanguage(String lang) {
     preferredLang = lang;
+    userStore.updateUser(this); // update language in datastore
   }
 
   public String getLanguagePreference() {

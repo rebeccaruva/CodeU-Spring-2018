@@ -20,6 +20,7 @@ import codeu.model.data.Message;
 import codeu.model.data.Notification;
 import codeu.model.data.User;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is the interface between the application and PersistentDataStore, which handles
@@ -118,6 +119,21 @@ public class PersistentStorageAgent {
   /** Write a Message object to the Datastore service. */
   public void writeThrough(Conversation conversation) {
     persistentDataStore.writeThrough(conversation);
+  }
+
+  /** Update User with language preference. */
+  public void updateUser(User user){
+    persistentDataStore.updateUser(user);
+  }
+
+  /** Update Message with translation in language. */
+  public void updateMessage(UUID id, String translatedText, String language){
+    persistentDataStore.updateMessage(id, translatedText, language);
+  }
+
+  /** Load Message with specific id and string of specific language. */
+  public String loadSpecificLanguage(UUID id, String language){
+    return persistentDataStore.loadSpecificLanguage(id, language);
   }
 
   /** Write a Conversation object to the Datastore service. */

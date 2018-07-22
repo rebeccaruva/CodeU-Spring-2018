@@ -100,6 +100,16 @@ public class MessageStore {
     return null;
   }
 
+  /** Updates Message object with translated translated */
+  public void updateMessage(UUID id, String translatedText, String language) {
+    persistentStorageAgent.updateMessage(id, translatedText, language);
+  }
+
+  /** Gets Message with specific ID and translated message in language */
+  public String getSpecificLanguage(UUID id, String language){
+    return persistentStorageAgent.loadSpecificLanguage(id, language);
+  }
+
   /** Returns the number of messages stored. */
   public int numberOfMessages() {
     return messages.size();

@@ -150,17 +150,8 @@ public class PersistentDataStore {
         UUID authorUuid = UUID.fromString((String) entity.getProperty("author_uuid"));
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         String content = (String) entity.getProperty("content");
-        String property = "";
-        String translatedText = "";
-        // adds all languages for which values exist into translations
-        HashMap<String, String> languageDict = (new LanguageDictionary()).getDict();
-        for (String key : languageDict.keySet()) {
-          property = "message-" + key;
-          translatedText = (String) entity.getProperty(property);
-          if (translatedText != null) translations.put(key, translatedText);
-        }
         Message message =
-            new Message(uuid, conversationUuid, authorUuid, content, translations, creationTime);
+            new Message(uuid, conversationUuid, authorUuid, content, creationTime);
         messages.add(message);
       } catch (Exception e) {
         // In a production environment, errors should be very rare. Errors which may
@@ -171,6 +162,27 @@ public class PersistentDataStore {
     }
 
     return messages;
+  }
+
+  /**
+   * Loads Message object from the Datastore service with language.
+   *
+   * @throws codeu.model.store.persistence.PersistentDataStoreException if an error was detected
+   *     during the load from the Datastore service
+   */
+  public String loadSpecificLanguage(UUID id, String language) {
+    // Retrieve message with id from datastore
+    Query query = new Query("chat-messages").setFilter(new FilterPredicate("uuid", FilterOperator.EQUAL, id.toString()));
+    Entity messageEntity = (datastore.prepare(query)).asSingleEntity();
+
+    try {
+       // get and return translated text
+      String property = "message-" + language;
+      String translatedText = (String) messageEntity.getProperty(property);
+
+      return translatedText;
+    } catch (Exception e) {}
+    return null;
   }
 
   /**
@@ -268,13 +280,41 @@ public class PersistentDataStore {
     // adds columns for each language and puts values from map into columns where exist
     for (String key : translations.keySet()) {
       property = "message-" + key;
-      if (message.getTranslation(key) != null)
-        messageEntity.setProperty(property, message.getTranslation(key));
+      if (key.equals("en"))
+        messageEntity.setProperty(property, message.getContent());
       else {
         messageEntity.setProperty(property, null);
       }
     }
     datastore.put(messageEntity);
+  }
+
+  /** Update Message object in Datastore with text in language */
+  public void updateMessage(UUID id, String translatedText, String language) {
+    try{
+      // retrieve Message with id
+      Query query = new Query("chat-messages").setFilter(new FilterPredicate("uuid", FilterOperator.EQUAL, id.toString()));
+      Entity messageEntity = (datastore.prepare(query)).asSingleEntity();
+
+      // update datastore with text in language
+      String property = "message-" + language;
+      messageEntity.setProperty(property, translatedText);
+
+      datastore.put(messageEntity);
+    } catch(Exception e){}
+  }
+
+  /** Update User object with language preference */
+  public void updateUser(User user) {
+    try{
+      // retrieve User from datastore
+      Query query = new Query("chat-users").setFilter(new FilterPredicate("uuid", FilterOperator.EQUAL, user.getId().toString()));
+      Entity userEntity = (datastore.prepare(query)).asSingleEntity();
+
+      // update User with language preference and put in datastore 
+      userEntity.setProperty("preferred_language", user.getLanguagePreference().toString());
+      datastore.put(userEntity);
+    } catch(Exception e){}
   }
 
   /** Write a Conversation object to the Datastore service. */

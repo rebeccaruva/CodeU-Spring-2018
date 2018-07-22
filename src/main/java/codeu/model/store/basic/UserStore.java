@@ -114,7 +114,7 @@ public class UserStore {
 
   /** Update an existing User. */
   public void updateUser(User user) {
-    persistentStorageAgent.writeThrough(user);
+    persistentStorageAgent.updateUser(user);
   }
 
   /** Return true if the given username is known to the application. */
