@@ -25,7 +25,6 @@ body {
   font-family: 'Roboto', sans-serif;
   line-height: 1.6;
   font-size: 18px;
-  line-height: 1.6;
   color: #444;
   background-color: #fbfbfb;
 }
@@ -327,5 +326,4 @@ button {
     color: white;
     background-color: inherit;
     font-family: inherit;
-    margin: 12px;
   }

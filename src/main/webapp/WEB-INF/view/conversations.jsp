@@ -41,29 +41,35 @@
     <% numUnreadNotifications = (int) request.getSession().getAttribute("numUnreadNotifications"); %>
   <% } %>
 
-  <nav>
-    <a id="navTitle" href="/">IMhere!</a>
-    <a href="/conversations">Conversations</a>
-    <a href="/about.jsp">About</a>
-    <a href="/activity-feed">Activity Feed</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-      <% if (numUnreadNotifications != 0) { %>
-        <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
-      <% } else { %>
-        <a href="/notifications">Notifications</a>
-      <% } %>
-      <div class="languages" style="float:right">
-        <!-- dropdown list of languages -->
-        <form action="/conversations" method="GET">
-            <select name="language" onmousedown="if(this.options.length>8){this.size=6;}"  onchange="this.form.submit()" onblur="this.size=0;">
-              <% User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString()); %>
-                  <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
-              <% for(String key : languageDict.keySet()){ %>
-                <option value="<%=key%>"><%=languageDict.get(key)%></option>
-              <% } %>
-            </select>
-        </form>
+  <nav style="height: 52px">
+    <div style="float:left">
+      <a id="navTitle" href="/">IMhere!</a>
+      <a href="/conversations">Conversations</a>
+      <a href="/about.jsp">About</a>
+      <a href="/activity-feed">Activity Feed</a>
+      <% if(request.getSession().getAttribute("user") != null){ %>
+        <% if (numUnreadNotifications != 0) { %>
+          <a href="/notifications">Notifications (<%= numUnreadNotifications %>)</a>
+        <% } else { %>
+          <a href="/notifications">Notifications</a>
+        <% } %>
       </div>
+      <div class="languages" style="float:left">
+        <div style="margin-top:12px; margin-left: 12px; position:absolute">
+          <!-- dropdown list of languages -->
+          <form action="/conversations" method="GET">
+              <select name="language" style="font-size:18px" onmousedown="if(this.options.length>8){this.size=6;}"  onchange="this.form.submit()" onblur="this.size=0;">
+                <% User user = UserStore.getInstance().getUser(request.getSession().getAttribute("user").toString()); %>
+                    <option value="<%= user.getLanguagePreference() %>" selected><%=(new LanguageDictionary()).getValue(user.getLanguagePreference())%></option>
+                <% for(String key : languageDict.keySet()){ %>
+                  <option value="<%=key%>"><%=languageDict.get(key)%></option>
+                <% } %>
+              </select>
+          </form>
+        </div>
+      </div>
+      <!-- <div style="height:52px; float:right">
+    </div> -->
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
