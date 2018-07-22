@@ -36,7 +36,7 @@ public class NaturalLanguageProcessing {
     float score = sentiment.getScore();
 
     // Returns whether professional (score > -0.4) or not
-    if (score > -0.4) return "Sounds professional!";
+    if (score > -0.3) return "Sounds professional!";
     else {
       return "Please consider re-phrasing. This may not come across as professional.";
     }
