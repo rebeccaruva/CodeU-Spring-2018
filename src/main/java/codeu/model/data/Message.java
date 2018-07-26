@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.regex.*;
+import codeu.model.store.basic.MessageStore;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
@@ -33,8 +34,8 @@ public class Message {
   private final UUID id;
   private final Instant creation;
   private String content;
-  private HashMap<String, String> translations;
   private UserStore userStore;
+  private MessageStore messageStore;
 
   /**
    * Constructs a new Message (2 constructors).
@@ -44,10 +45,10 @@ public class Message {
    * @param author the ID of the User who sent this Message
    * @param content the text content of this Message
    * @param creation the creation time of this Message
-   * @param translations the map that stores used translations of message
    */
   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation) {
     userStore = UserStore.getInstance();
+    messageStore = MessageStore.getInstance();
     this.id = id;
     this.conversation = conversation;
     this.author = author;
@@ -65,25 +66,6 @@ public class Message {
       }
     }
     this.content = content;
-    translations = new HashMap<String, String>();
-    translations.put("en", content); // put English message into map
-  }
-
-  public Message(
-      UUID id,
-      UUID conversation,
-      UUID author,
-      String content,
-      HashMap<String, String> translations,
-      Instant creation) {
-    userStore = UserStore.getInstance();
-    this.id = id;
-    this.conversation = conversation;
-    this.author = author;
-    this.content = content;
-    this.creation = creation;
-    this.translations = new HashMap<String, String>();
-    (this.translations).putAll(translations); // transfer data to map
   }
 
   /** Adds translation to message in targetLanguage */
@@ -122,7 +104,7 @@ public class Message {
         curr_index++;
       }
 
-      translations.put(targetLanguage, translatedText); // put translated text into map
+      messageStore.updateMessage(id, translatedText, targetLanguage); // put translated text into datastore
       return translatedText;
     } catch (IOException e) {
       System.err.println(e.getMessage());
@@ -132,12 +114,12 @@ public class Message {
 
   /** Gets translation of specific language */
   public String getTranslation(String language) {
-    return translations.get(language);
+    return messageStore.getSpecificLanguage(id, language);
   }
 
-  /** Gets translation in language if in map or adds if not */
+  /** Gets translation in language if in datastore or adds if not */
   public String getTranslationAndAdd(String language) {
-    String translatedText = translations.get(language);
+    String translatedText = messageStore.getSpecificLanguage(id, language);
     if (translatedText != null) {
       return translatedText;
     }
